@@ -1,5 +1,16 @@
+import sys
 import Client
 import psycopg2
+
+if(len(sys.argv) != 3) :
+    print('Please provide module # and channel # to suscribe.')
+    print('Exiting script...')
+    exit()
+
+modN = str(sys.argv[1])
+chN = str(sys.argv[2])
+
+topic = modN + '/' + chN
 
 user = input("Username: ")
 password = input("Password: ")
@@ -8,11 +19,7 @@ port = int(input("port: "))
 
 my_client = Client.create_client(user, password, host, port)
 
-while True :
-    topic = input("topic (s - stop): ")
-    if(topic == "s") :
-        break
-    my_client.subscribe(topic, qos = 1)
+my_client.suscribe(topic, qos = 1)
 
 # WyksF8.Um58i9YH
 
