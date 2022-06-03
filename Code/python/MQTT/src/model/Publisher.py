@@ -34,6 +34,7 @@ def read_analog() :
     return grvEpic.GetAnalogPointValue(modN, chN)
 
 def read_digital() :
+    dest = 0xF01E0000 + (modN * 0x1000) + (chN * 0x40)
     data = grvEpic.ReadBlock(dest, size = 4) #Min size is 4 bytes
     data_block = data[16:20] # data_block is in bytes 16-19 for Read Response, stop at 20.
     # decode bytearray in big-endian order (>) for float value (f)
