@@ -31,22 +31,35 @@ my_client = Client.create_client(user, password, host, port)
 
 my_client.subscribe(topic, qos = 1)
 
-def establish_db_connection(db, u, p) :
-    return psycopg2.connect(database = db, user = u, password = p)
+params = {
+  'dbname': 'icesiepicdb',
+  'user': 'icesiepicpg',
+  'password': 'IcesiEpicPgDb',
+  'host': 'xepic1',
+  'port': 5432
+}
+
+def establish_db_connection(params) :
+    return psycopg2.connect(**params)
     
-connection = establish_db_connection(db_name, db_user, db_password)
+connection = establish_db_connection(params)
 cursor1 = connection.cursor()
 
+count = 2
+
 def on_message(client, userdata, msg) :
+    global count
     print(msg.topic + " " + str(msg.qos) + " " + str(msg.payload))
-    sql = 'INSERT INTO public."Value" values(nextval("seq_Value"), %s)'
+    sql = 'INSERT INTO public."Value" values(%s)'
     e = datetime.datetime.now()
     time_s = e.strftime("%Y-%m-%d %H:%M:%S")
     value = float(msg.payload.decode('UTF-8'))
     channel = int(str(msg.topic).split("/")[1])
-    data = (time_s, value, channel,)
+    
+    data = (count, time_s, value, channel)
     cursor1.execute(sql, data)
     connection.commit()
+    count = count + 1
 
 my_client.on_message = on_message
 
