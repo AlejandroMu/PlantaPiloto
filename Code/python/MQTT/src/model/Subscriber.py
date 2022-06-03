@@ -1,6 +1,7 @@
 import sys
 import Client
 import psycopg2
+import maskpass
 
 if(len(sys.argv) != 3) :
     print('Please provide module # and channel # to suscribe.')
@@ -13,15 +14,13 @@ chN = str(sys.argv[2])
 topic = modN + '/' + chN
 
 user = input("Username: ")
-password = input("Password: ")
+password = maskpass.askpass(prompt="Password: ", mask="#")
 host = input("Broker url: ")
 port = int(input("port: "))
 
 my_client = Client.create_client(user, password, host, port)
 
 my_client.subscribe(topic, qos = 1)
-
-# WyksF8.Um58i9YH
 
 def establish_db_connection(db, u, p) :
     return psycopg2.connect(database = db, user = u, password = p)
