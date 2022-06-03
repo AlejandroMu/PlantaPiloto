@@ -13,9 +13,10 @@ CREATE TABLE public."ControllableDevice" (
 	id integer NOT NULL,
 	type varchar,
 	processor varchar,
+	status char,
 	CONSTRAINT "ControllableDevice_pk" PRIMARY KEY (id)
 );
-ALTER TABLE public."ControllableDevice" OWNER TO postgres;
+ALTER TABLE public."ControllableDevice" OWNER TO icesiepicpg;
 
 CREATE SEQUENCE seq_controllable
 INCREMENT 1
@@ -25,10 +26,11 @@ CREATE TABLE public."IOModule" (
 	id integer NOT NULL,
 	name varchar,
 	type varchar,
+	status char,
 	"id_ControllableDevice" integer,
 	CONSTRAINT "IOModule_pk" PRIMARY KEY (id)
 );
-ALTER TABLE public."IOModule" OWNER TO postgres;
+ALTER TABLE public."IOModule" OWNER TO icesiepicpg;
 
 CREATE SEQUENCE seq_IOModule
 INCREMENT 1
@@ -44,10 +46,11 @@ CREATE TABLE public."Channel" (
 	signal varchar,
 	range varchar,
 	unit varchar,
+	status char,
 	"id_IOModule" integer,
 	CONSTRAINT "Channel_pk" PRIMARY KEY (id)
 );
-ALTER TABLE public."Channel" OWNER TO postgres;
+ALTER TABLE public."Channel" OWNER TO icesiepicpg;
 
 CREATE SEQUENCE seq_Channel
 INCREMENT 1
@@ -64,7 +67,7 @@ CREATE TABLE public."Value" (
 	"id_Channel" integer,
 	CONSTRAINT value_pk PRIMARY KEY (id)
 );
-ALTER TABLE public."Value" OWNER TO postgres;
+ALTER TABLE public."Value" OWNER TO icesiepicpg;
 
 CREATE SEQUENCE seq_Value
 INCREMENT 1
