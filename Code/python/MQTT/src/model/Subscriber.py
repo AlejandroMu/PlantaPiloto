@@ -14,12 +14,12 @@ topic = modN + '/' + chN
 
 user = input("Username: ")
 password = input("Password: ")
-host = input("Host (url): ")
+host = input("Broker url: ")
 port = int(input("port: "))
 
 my_client = Client.create_client(user, password, host, port)
 
-my_client.suscribe(topic, qos = 1)
+my_client.subscribe(topic, qos = 1)
 
 # WyksF8.Um58i9YH
 
