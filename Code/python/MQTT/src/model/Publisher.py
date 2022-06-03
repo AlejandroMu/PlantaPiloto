@@ -19,7 +19,7 @@ user = raw_input('Username: ')
 password = raw_input('Password: ')
 host = raw_input('Broker url: ')
 port = int(raw_input('port: '))
-sleep_time = float(raw_input('sleep time: '))
+sleep_time = float(raw_input('sleep time (s): '))
 
 my_client = Client.create_client(user, password, host, port)
 
