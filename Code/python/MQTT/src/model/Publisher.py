@@ -1,5 +1,8 @@
 from fileinput import close
 import sys
+from time import sleep
+
+from psycopg2 import Time
 import Client
 import optommp
 
@@ -23,10 +26,14 @@ my_client = Client.create_client(user, password, host, port)
 
 grvEpic = optommp.O22MMP()
 
-value = grvEpic.GetAnalogPointValue(modN, chN)
+my_client.loop_start()
 
-my_client.publish(topic = target, payload = value, qos = 1)
+while True :
+    value = grvEpic.GetAnalogPointValue(modN, chN)
+    my_client.publish(topic = target, payload = value, qos = 1)
+    sleep(0.1)
 
-my_client.loop_forever()
+
+my_client.loop_stop()
 
 grvEpic.close()
