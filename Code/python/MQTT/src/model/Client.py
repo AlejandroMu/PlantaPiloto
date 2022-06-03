@@ -1,3 +1,6 @@
+# enable TLS client.tls_set(tls_version=mqtt.client.ssl.PROTOCOL_TLS)
+
+import ssl
 import paho.mqtt.client as paho
 from paho import mqtt
 
@@ -21,14 +24,11 @@ def on_message(client, userdata, msg) :
 def create_client(user, password, host, port) :
     client = paho.Client(client_id="", userdata=None, protocol=paho.MQTTv5)
     client.username_pw_set(user, password)
-    client.tls_set(tls_version=mqtt.client.ssl.PROTOCOL_TLS)
+    client.tls_set(tls_version = ssl.PROTOCOL_TLSv1_2)
     client.on_connect = on_connect
     client.on_subscribe = on_subscribe
     client.on_message = on_message
     client.on_publish = on_publish
     client.connect(host, port)
     return client
-
-
-
 
