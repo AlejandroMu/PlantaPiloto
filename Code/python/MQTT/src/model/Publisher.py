@@ -30,7 +30,7 @@ my_client.loop_start()
 while True :
     value = grvEpic.GetAnalogPointValue(modN, chN)
     my_client.publish(topic = target, payload = value, qos = 1)
-    print(target + ' : ' + value)
+    print(target + ' : ' + str(value))
     sleep(sleep_time)
 
 my_client.loop_stop()
