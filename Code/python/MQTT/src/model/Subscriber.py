@@ -1,7 +1,7 @@
+from getpass import getpass
 import sys
 import Client
 import psycopg2
-import maskpass
 
 if(len(sys.argv) != 3) :
     print('Please provide module # and channel # to suscribe.')
@@ -14,7 +14,7 @@ chN = str(sys.argv[2])
 topic = modN + '/' + chN
 
 user = input("Username: ")
-password = maskpass.askpass(prompt="Password: ", mask="#")
+password = getpass()
 host = input("Broker url: ")
 port = int(input("port: "))
 
