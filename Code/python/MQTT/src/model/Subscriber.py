@@ -50,13 +50,12 @@ count = 2
 def on_message(client, userdata, msg) :
     global count
     print(msg.topic + " " + str(msg.qos) + " " + str(msg.payload))
-    sql = 'INSERT INTO public."Value" values(%s)'
+    sql = 'INSERT INTO public."Value" values(%s,%s,%s,%s)'
     e = datetime.datetime.now()
     time_s = e.strftime("%Y-%m-%d %H:%M:%S")
     value = float(msg.payload.decode('UTF-8'))
     channel = int(str(msg.topic).split("/")[1])
-    
-    data = (count, time_s, value, channel)
+    data = (count, time_s, value, channel+1)
     cursor1.execute(sql, data)
     connection.commit()
     count = count + 1
