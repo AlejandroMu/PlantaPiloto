@@ -1,8 +1,6 @@
 from fileinput import close
 import sys
 from time import sleep
-
-from psycopg2 import Time
 import Client
 import optommp
 
