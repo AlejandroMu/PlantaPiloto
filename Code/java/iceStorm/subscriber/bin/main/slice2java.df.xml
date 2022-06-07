@@ -1,0 +1,12 @@
+<state>
+  <timestamp value='1654556874093' />
+  <sourceSet name='default'>
+    <source name='C:\Users\janus\OneDrive - Universidad Icesi (@icesi.edu.co)\Escritorio\iceStorm\Measures.ice'>
+      <file name='C:\Users\janus\OneDrive - Universidad Icesi (@icesi.edu.co)\Escritorio\iceStorm\subscriber\build\generated-src\publisher\Measures.java' />
+      <file name='C:\Users\janus\OneDrive - Universidad Icesi (@icesi.edu.co)\Escritorio\iceStorm\subscriber\build\generated-src\publisher\MeasuresPrx.java' />
+      <file name='C:\Users\janus\OneDrive - Universidad Icesi (@icesi.edu.co)\Escritorio\iceStorm\subscriber\build\generated-src\publisher\_MeasuresPrxI.java' />
+    </source>
+    <arg value='C:\Program Files\ZeroC\Ice-3.7.6\bin\slice2java.exe' />
+    <arg value='-IC:\Program Files\ZeroC\Ice-3.7.6\slice' />
+  </sourceSet>
+</state>
