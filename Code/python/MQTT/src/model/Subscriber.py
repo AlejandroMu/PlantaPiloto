@@ -37,16 +37,19 @@ def establish_db_connection(db, u, p) :
 connection = establish_db_connection(db_name, db_user, db_password)
 cursor1 = connection.cursor()
 
+count = 2
+
 def on_message(client, userdata, msg) :
     print(msg.topic + " " + str(msg.qos) + " " + str(msg.payload))
-    sql = 'INSERT INTO public."Value" values(nextval("seq_Value"), %s)'
+    sql = 'INSERT INTO public."Value" values(%s)'
     e = datetime.datetime.now()
     time_s = e.strftime("%Y-%m-%d %H:%M:%S")
     value = float(msg.payload.decode('UTF-8'))
     channel = int(str(msg.topic).split("/")[1])
-    data = (time_s, value, channel,)
+    data = (count, time_s, value, channel,)
     cursor1.execute(sql, data)
     connection.commit()
+    count = count + 1
 
 my_client.on_message = on_message
 
