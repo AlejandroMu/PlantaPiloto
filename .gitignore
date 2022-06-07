@@ -2,3 +2,4 @@ db/*
 *.jar
 build/*
 bin/*
+*.class
