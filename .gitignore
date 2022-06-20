@@ -3,3 +3,5 @@ db
 build/*
 bin/*
 *.class
+.*
+*.java
