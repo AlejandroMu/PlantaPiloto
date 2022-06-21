@@ -1,3 +1,4 @@
+package opto22.mmp;
 
 import java.io.IOException;
 import java.io.InputStream;

@@ -1,3 +1,4 @@
+package opto22.mmp;
 
 public class O22SIOUT{
     //Transaction Codes (tcode)
