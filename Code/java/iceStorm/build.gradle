@@ -1,54 +1,10 @@
-//
-// Install the gradle Ice Builder plug-in from the plug-in portal
-//
-plugins {
-    id 'com.zeroc.gradle.ice-builder.slice' version '1.4.7' apply false
+def execute(dir,command,arg){
+    exec{
+        workingDir dir
+        executable command
+        args arg
+    }
 }
-  
-subprojects {
-    //
-    // Apply Java and Ice Builder plug-ins to all sub-projects
-    //
-    apply plugin: 'java'
-    apply plugin: 'com.zeroc.gradle.ice-builder.slice'
- 
-    //
-    // Both Client and Server projects share the Printer.ice Slice definitions
-    //
-    slice {
-        java {
-          files = [file("../Measures.ice")]
-        }
-    }
- 
-    //
-    // Use Ice JAR files from maven central repository
-    //
-    repositories {
-        mavenCentral()
-    }
- 
-    //
-    // Both Client and Server depend only on Ice JAR
-    //
-    dependencies {
-        implementation 'com.zeroc:ice:3.7.6'
-        implementation 'com.zeroc:icestorm:3.7.6'
-
-        //runtimeOnly localDependency("icessl")
-        //runtimeOnly "org.apache.commons:commons-compress:1.14"
-    }
- 
-    //
-    // Create a JAR file with the appropriate Main-Class and Class-Path attributes
-    //
-
-   jar {
-        manifest {
-            attributes(
-                "Main-Class": project.name.capitalize(),
-                "Class-Path": configurations.runtimeClasspath.resolve().collect { it.toURI() }.join(' ')
-            )
-        }
-    }
+task run{
+    def pid = execute("iceConfig","cmd",["/c ","icebox","--Ice.Config=config.icebox"])
 }

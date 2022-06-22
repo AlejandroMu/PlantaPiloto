@@ -1,45 +1,35 @@
-//
-// Install the gradle Ice Builder plug-in from the plug-in portal
-//
-plugins {
-    id 'com.zeroc.gradle.ice-builder.slice' version '1.4.7' apply false
-}
-  
-subprojects {
-    //
-    // Apply Java and Ice Builder plug-ins to all sub-projects
-    //
-    apply plugin: 'java'
-    apply plugin: 'com.zeroc.gradle.ice-builder.slice'
- 
-    //
-    // Both Client and Server projects share the Printer.ice Slice definitions
-    //
-    
- 
-    //
-    // Use Ice JAR files from maven central repository
-    //
-    repositories {
-        mavenCentral()
-    }
- 
-    //
-    // Both Client and Server depend only on Ice JAR
-    //
-    dependencies {
-        implementation group: 'com.hivemq', name: 'hivemq-mqtt-client', version: '1.2.2'        
-        implementation 'com.zeroc:ice:3.7.6'
+apply plugin: 'java'
+apply plugin: 'application'
 
-    }
- 
-  
-   jar {
-        manifest {
-            attributes(
-                "Main-Class": project.name.capitalize(),
-                "Class-Path": configurations.runtimeClasspath.resolve().collect { it.toURI() }.join(' ')
-            )
-        }
+mainClassName = "Client"
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'com.hivemq:hivemq-mqtt-client:1.2.2'
+    implementation project(':opto22MMP')
+}
+
+
+jar{
+    manifest{
+        attributes 'Main-Class': "Client",
+                    'Class-Path': configurations.runtimeClasspath.resolve().collect { it.toURI() }.join(' ')
     }
 }
+task deployMQTT{
+    doLast{
+        def dir = System.getenv()['HIVE_MQ_HOME']
+        execute("${dir}/bin","cmd", ["/c","run.bat"])
+    }
+}
+def execute(dir,command,arg){
+    exec{
+        workingDir dir
+        executable command
+        args arg
+    }
+}
+
