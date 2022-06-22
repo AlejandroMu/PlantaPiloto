@@ -12,14 +12,13 @@ import java.nio.charset.StandardCharsets;
 public class Mqtt {
 
     private String host; // use your host-name, it should look like '<alphanumeric>.s2.eu.hivemq.cloud'
-    private String password;
     private Mqtt5BlockingClient client;
     
     public Mqtt(String id,String host){
        this.host=host;
         client = Mqtt5Client.builder()
        .identifier(id) // use a unique identifier
-       .serverHost(host)
+       .serverHost(this.host)
        .buildBlocking();
         client.connect();
         System.out.println("connect");
@@ -39,5 +38,8 @@ public class Mqtt {
             .topic(topic)
             .payload(msg.getBytes(StandardCharsets.UTF_8))
             .send();
+    }
+    public void diconnect(){
+        client.disconnect();
     }
 }

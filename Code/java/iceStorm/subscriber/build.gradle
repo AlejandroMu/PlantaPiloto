@@ -1,0 +1,29 @@
+plugins {
+    id 'com.zeroc.gradle.ice-builder.slice' version '1.4.7' apply false
+}
+apply plugin: 'java'
+apply plugin: 'com.zeroc.gradle.ice-builder.slice'
+slice {
+    java {
+        files = [file("../Measures.ice")]
+    }
+}
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+
+    implementation 'com.zeroc:ice:3.7.6'
+    implementation 'com.zeroc:icestorm:3.7.6'
+}
+
+
+jar {
+    manifest {
+        attributes(
+            "Main-Class": "Subscriber",
+            "Class-Path": configurations.runtimeClasspath.resolve().collect { it.toURI() }.join(' ')
+        )
+    }
+}
