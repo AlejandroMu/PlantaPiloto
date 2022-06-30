@@ -19,7 +19,6 @@ public class Opto22MMP {
             
             
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }
@@ -142,7 +141,6 @@ public class Opto22MMP {
             outS.write(block);
             intS.read(response);
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         return response;

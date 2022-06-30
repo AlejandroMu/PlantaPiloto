@@ -5,7 +5,6 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import opto22.mmp.Opto22MMP;
 
 public class Client {
     public static void main(String[] args)throws java.lang.Exception {
@@ -28,7 +27,6 @@ public class Client {
         System.out.println(id);
 
         Mqtt mqtt = new Mqtt(id,host);
-        Opto22MMP opto= new Opto22MMP("epic1");
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         System.out.print("=> Suscriber? Y/n: ");
         String line = br.readLine();

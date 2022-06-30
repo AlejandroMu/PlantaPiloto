@@ -1,0 +1,18 @@
+apply plugin: 'java'
+apply plugin: 'application'
+mainClassName = "icesi.plantapiloto.Main"
+repositories{
+    mavenCentral()
+}
+dependencies{
+    implementation 'org.hibernate:hibernate-core:5.2.12.Final'
+    implementation 'javax.persistence:javax.persistence-api:2.2'
+    implementation 'org.postgresql:postgresql:42.4.0'
+    implementation 'javax.xml.bind:jaxb-api:2.3.1'
+}
+jar{
+    manifest{
+        attributes 'Main-Class': "icesi.plantapiloto.Main",
+                    'Class-Path': configurations.runtimeClasspath.resolve().collect { it.toURI() }.join(' ')
+    }
+}

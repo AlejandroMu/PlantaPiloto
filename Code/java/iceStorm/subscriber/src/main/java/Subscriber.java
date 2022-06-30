@@ -52,7 +52,6 @@ public class Subscriber
 
         String topicName = "measures";
         String id = "susc1";
-        String retryCount = null;
 
         com.zeroc.IceStorm.TopicManagerPrx manager = com.zeroc.IceStorm.TopicManagerPrx.checkedCast(
             communicator.propertyToProxy("TopicManager.Proxy"));
@@ -119,11 +118,7 @@ public class Subscriber
         catch(com.zeroc.IceStorm.AlreadySubscribed e)
         {
             // This should never occur when subscribing with an UUID
-            if(id == null)
-            {
-                e.printStackTrace();
-                return 1;
-            }
+            
             System.out.println("reactivating persistent subscriber");
         }
         catch(com.zeroc.IceStorm.InvalidSubscriber e)

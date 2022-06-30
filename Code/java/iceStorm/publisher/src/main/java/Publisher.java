@@ -32,7 +32,6 @@ public class Publisher
 
     private static int run(com.zeroc.Ice.Communicator communicator, String[] args)
     {
-        String option = "None";
         String topicName = "measures";
 
         com.zeroc.IceStorm.TopicManagerPrx manager = com.zeroc.IceStorm.TopicManagerPrx.checkedCast(
