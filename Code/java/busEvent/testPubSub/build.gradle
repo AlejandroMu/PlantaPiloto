@@ -1,0 +1,20 @@
+apply plugin: 'java'
+
+repositories{
+    mavenCentral()
+}
+
+dependencies{
+    implementation project(':MQTT')
+    implementation project(':iceStorm')
+    implementation project(':opto22MMP')
+    implementation project(':model')
+
+}
+
+jar{
+    manifest{
+        attributes 'Main-Class': "Client",
+                    'Class-Path': configurations.runtimeClasspath.resolve().collect { it.toURI() }.join(' ')
+    }
+}

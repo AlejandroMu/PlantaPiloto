@@ -1,0 +1,14 @@
+#
+# The IceStorm service instance name.
+#
+IceStorm.InstanceName=DemoIceStorm
+
+IceStorm.TopicManager.Endpoints=default -p 10000
+
+IceStorm.Publish.Endpoints=tcp -p 10001:udp -p 10001
+
+IceStorm.Flush.Timeout=2000
+
+IceStorm.LMDB.Path=db
+
+Ice.Default.Host=10.147.19.165

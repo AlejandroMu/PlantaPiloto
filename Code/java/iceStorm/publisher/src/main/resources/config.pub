@@ -1,8 +1,0 @@
-#
-# This property is used by the clients to connect to IceStorm.
-#
-TopicManager.Proxy=DemoIceStorm/TopicManager:default -p 10000
-
-
-Ice.Default.Host=10.147.19.165
-
