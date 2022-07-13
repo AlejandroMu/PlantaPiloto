@@ -38,10 +38,14 @@ public class Subscriber implements SubscriberI
     private ObjectAdapter adapter;
     private String uriStorm;
     private Communicator communicator;
+    private TopicPrx topic;
+    private ObjectPrx subscriber;
 
     public Subscriber(String endpoint, String uriStorm){
-        this.endpoint = endpoint;
-        this.uriStorm =uriStorm;
+        String storm ="DemoIceStorm/TopicManager:default -h "+uriStorm+" -p 10000";
+        String host = "tcp -h "+endpoint+" -p 9099";
+        this.endpoint = host;
+        this.uriStorm =storm;
 
         communicator = Util.initialize();
         
@@ -61,7 +65,7 @@ public class Subscriber implements SubscriberI
 
     @Override
     public void subscribe(String topicName, CallbackSubI call) {
-        TopicPrx topic = null;
+        topic = null;
         try
         {
             topic = manager.retrieve(topicName);
@@ -80,7 +84,7 @@ public class Subscriber implements SubscriberI
         String id = UUID.randomUUID().toString();
         Identity subId = Util.stringToIdentity(id);
 
-        ObjectPrx subscriber = adapter.add(new MeasuresI(call), subId);
+        subscriber = adapter.add(new MeasuresI(call), subId);
         adapter.activate();
 
         java.util.Map<String, String> qos = new java.util.HashMap<>();
@@ -110,6 +114,7 @@ public class Subscriber implements SubscriberI
 
     @Override
     public void close() {
+        topic.unsubscribe(subscriber);
         communicator.close();
     }
 }

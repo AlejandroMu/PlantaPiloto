@@ -1,7 +1,7 @@
-*/db
-*.jar
-*/build
-*/bin
-*.class
+**/db
+**.jar
+**/build
+**/bin
+**.class
 
-.*
+.**

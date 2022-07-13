@@ -5,5 +5,5 @@ repositories {
 }
 
 dependencies {
-    compile localGroovy()
+    implementation localGroovy()
 }

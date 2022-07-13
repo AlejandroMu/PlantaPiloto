@@ -81,6 +81,16 @@ public class Opto22MMP {
         return unpackReadResponse(data, 'f');
     }
 
+    public double[] getAnalogPointValues(int module, int channels) throws Exception{
+        long offset = (O22SIOUT.BASE_APOINT_READ
+                + (O22SIOUT.OFFSET_APOINT_MOD * module)
+                + (O22SIOUT.OFFSET_APOINT ));
+        byte[] data = readBlock(offset, 4);
+        double[] res= new double[channels];
+        unpackReadResponse(data, 'f');
+        return res;
+    }
+
     // SetAnalogPointValue
     public double setAnalogPointValue(int module, int channel, float value) throws Exception{
         long offset = (O22SIOUT.BASE_APOINT_WRITE

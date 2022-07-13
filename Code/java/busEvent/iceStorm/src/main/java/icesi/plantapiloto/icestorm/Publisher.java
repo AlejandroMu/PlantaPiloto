@@ -22,7 +22,9 @@ public class Publisher implements PublisherI
 
     public Publisher(String proxy)
     {
-        this.proxy = proxy;
+        String storm ="DemoIceStorm/TopicManager:default -h "+proxy+" -p 10000";
+
+        this.proxy = storm;
 
         communicator = Util.initialize();
         manager = TopicManagerPrx.checkedCast(
