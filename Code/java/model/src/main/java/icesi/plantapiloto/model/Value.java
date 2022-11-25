@@ -1,5 +1,6 @@
 package icesi.plantapiloto.model;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.CascadeType;
@@ -12,7 +13,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table
-public class Value {
+public class Value implements Serializable {
 
     @Id()
     @Column
@@ -26,7 +27,7 @@ public class Value {
     @JoinColumn
     private Channel channel;
 
-    public Value(){
+    public Value() {
 
     }
 
@@ -36,24 +37,28 @@ public class Value {
         this.value = value;
         this.channel = channel;
     }
+
     /**
      * @return the id
      */
     public Long getId() {
         return id;
     }
+
     /**
      * @param id the id to set
      */
     public void setId(Long id) {
         this.id = id;
     }
+
     /**
      * @return the timeStamp
      */
     public Date getTimeStamp() {
         return timeStamp;
     }
+
     /**
      * @param timeStamp the timeStamp to set
      */
@@ -88,13 +93,5 @@ public class Value {
     public void setChannel(Channel channel) {
         this.channel = channel;
     }
-   
-    
 
-   
-
-    
-
-    
-    
 }

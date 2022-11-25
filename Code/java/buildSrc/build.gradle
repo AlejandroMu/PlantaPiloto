@@ -1,9 +1,0 @@
-apply plugin: 'groovy-gradle-plugin'
-
-repositories {
-    mavenCentral()
-}
-
-dependencies {
-    implementation localGroovy()
-}

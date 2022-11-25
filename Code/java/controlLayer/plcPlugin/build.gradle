@@ -1,0 +1,17 @@
+apply plugin: 'java'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+
+    implementation project(":controlLayerCommon")
+    implementation fileTree(dir:'.', include:'*.jar')
+}
+
+jar{
+    manifest{
+        attributes 'Class-Path': configurations.runtimeClasspath.resolve().collect { it.toURI() }.join(' ')
+    }
+}

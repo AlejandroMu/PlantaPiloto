@@ -1,8 +1,0 @@
-apply plugin: 'java-app'
-apply plugin: 'com.zeroc.gradle.ice-builder.slice'
-
-dependencies {
-    implementation 'com.zeroc:ice:3.7.6'
-}
-
-print "${projectName}"

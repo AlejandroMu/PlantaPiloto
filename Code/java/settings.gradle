@@ -12,11 +12,17 @@ include ':opto22MMP'
 project(':opto22MMP').projectDir = new File("opto22MMP")
 include ':model'
 project(':model').projectDir = new File("model")
-include ':busEventcommon'
-project(':busEventcommon').projectDir = new File("busEvent/common")
+include ':controlLayerCommon'
+project(':controlLayerCommon').projectDir = new File("controlLayer/common")
 include ':iceStorm'
-project(':iceStorm').projectDir = new File("busEvent/iceStorm")
+project(':iceStorm').projectDir = new File("controlLayer/iceStorm")
 include ':MQTT'
-project(':MQTT').projectDir = new File("busEvent/MQTT")
+project(':MQTT').projectDir = new File("controlLayer/MQTT")
 include ':test'
-project(':test').projectDir = new File("busEvent/testPubSub")
+project(':test').projectDir = new File("controlLayer/testPubSub")
+include ':scheduler'
+project(':scheduler').projectDir = new File("controlLayer/scheduleManager")
+include ':plcPlugin'
+project(':plcPlugin').projectDir = new File("controlLayer/plcPlugin")
+include ':plcSubscriber'
+project(':plcSubscriber').projectDir = new File("controlLayer/plcSubscriber")

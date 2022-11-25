@@ -1,0 +1,23 @@
+apply plugin: 'java'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+
+    implementation project(":controlLayerCommon")
+    implementation project(":model")
+    implementation project(":MQTT")
+
+    implementation 'com.zeroc:ice:3.7.6'
+
+    implementation fileTree(dir:'.', include:'*.jar')
+
+}
+jar{
+    manifest{
+        attributes 'Main-Class': "icesi.plantapiloto.controlLayer.plcSubscriber.PlcSubscriber",
+                    'Class-Path': configurations.runtimeClasspath.resolve().collect { it.toURI() }.join(' ')
+    }
+}

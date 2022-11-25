@@ -1,5 +1,6 @@
 package icesi.plantapiloto.model;
 
+import java.io.Serializable;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -14,7 +15,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table
-public class ControllableDevice {
+public class ControllableDevice implements Serializable {
 
     @Id
     private Long id;
@@ -101,6 +102,4 @@ public class ControllableDevice {
         this.modules = modules;
     }
 
-    
-    
 }

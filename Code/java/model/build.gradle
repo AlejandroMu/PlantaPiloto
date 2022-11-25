@@ -1,15 +1,24 @@
+plugins {
+    id 'com.zeroc.gradle.ice-builder.slice' version '1.5.0' 
+}
 apply plugin: 'java'
 apply plugin: 'application'
 mainClassName = "icesi.plantapiloto.Main"
+slice {
+    java {
+        files = [file("Model.ice")]
+    }
+}
 repositories{
     mavenCentral()
 }
 dependencies{
-
+    implementation 'com.zeroc:ice:3.7.6'
     implementation 'org.hibernate:hibernate-core:5.2.12.Final'
     implementation 'javax.persistence:javax.persistence-api:2.2'
     implementation 'org.postgresql:postgresql:42.4.0'
-   // implementation 'javax.xml.bind:jaxb-api:2.3.1'
+
+    implementation 'javax.xml.bind:jaxb-api:2.3.1'
 }
 jar{
     manifest{

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.util.Arrays;
 
 public class Opto22MMP {
     private int tlabel;
@@ -36,7 +37,7 @@ public class Opto22MMP {
                 + (module * O22SIOUT.OFFSET_DPOINT_MOD)
                 + (channel * O22SIOUT.OFFSET_DPOINT));
         byte[] data = readBlock(offset, 4);
-        return unpackReadResponse(data,'i');
+        return unpackReadResponse(data,'i')[0];
     }
 
     // SetDigitalPointState
@@ -45,7 +46,7 @@ public class Opto22MMP {
                 + (module * O22SIOUT.OFFSET_DPOINT_MOD)
                 + (channel * O22SIOUT.OFFSET_DPOINT));
         byte[] data = writeBlock(offset, new int[]{0,0,0,state});
-        return unpackReadResponse(data,'i');
+        return unpackReadResponse(data,'i')[0];
     }
   
     /**
@@ -61,7 +62,7 @@ public class Opto22MMP {
                 + (O22SIOUT.OFFSET_APOINT * channel)
                 + O22SIOUT.OFFSET_APOINT_MAX);
         byte[] data = readBlock(offset, 4);
-        return unpackReadResponse(data,'f');
+        return unpackReadResponse(data,'f')[0];
     }
 
     public double getAnalogPointMin(int module, int channel) throws Exception{
@@ -70,7 +71,7 @@ public class Opto22MMP {
                 + (O22SIOUT.OFFSET_APOINT * channel)
                 + O22SIOUT.OFFSET_APOINT_MIN);
         byte[] data = readBlock(offset, 4);
-        return unpackReadResponse(data, 'f');
+        return unpackReadResponse(data, 'f')[0];
     }
 
     public double getAnalogPointValue(int module, int channel) throws Exception{
@@ -78,17 +79,18 @@ public class Opto22MMP {
                 + (O22SIOUT.OFFSET_APOINT_MOD * module)
                 + (O22SIOUT.OFFSET_APOINT * channel));
         byte[] data = readBlock(offset, 4);
-        return unpackReadResponse(data, 'f');
+        return unpackReadResponse(data, 'f')[0];
     }
 
     public double[] getAnalogPointValues(int module, int channels) throws Exception{
         long offset = (O22SIOUT.BASE_APOINT_READ
                 + (O22SIOUT.OFFSET_APOINT_MOD * module)
-                + (O22SIOUT.OFFSET_APOINT ));
-        byte[] data = readBlock(offset, 4);
-        double[] res= new double[channels];
-        unpackReadResponse(data, 'f');
-        return res;
+                );
+        int length = (channels-1)*O22SIOUT.OFFSET_APOINT+4;
+        byte[] data = readBlock(offset, length);
+        System.out.println("len read byte: " + data.length);
+        return unpackReadResponse(data, 'f');
+        
     }
 
     // SetAnalogPointValue
@@ -97,7 +99,7 @@ public class Opto22MMP {
                 + (O22SIOUT.OFFSET_APOINT_MOD * module)
                 + (O22SIOUT.OFFSET_APOINT * channel));
         byte[] data = writeBlock(offset, packFloat(value));
-        return unpackReadResponse(data, 'i');
+        return unpackReadResponse(data, 'i')[0];
     }
 
     private int[] packFloat(float value) {
@@ -110,26 +112,33 @@ public class Opto22MMP {
         }
         return ret;
     }
-    public double unpackReadResponse(byte[] data,char type) throws Exception{
+    public double[] unpackReadResponse(byte[] data,char type) throws Exception{
         int dataI[] = readInts(data);
+        System.out.println("len read int: " + dataI.length);
+        System.out.println(Arrays.toString(dataI));
         int rcode = dataI[6] >> 4;
         int tcode = dataI[3] >>4;
         if(rcode!=0){
             throw new Exception("Codigo de error: "+rcode);
         }
         if(tcode == 7){
-
-            int res =0;
-            for (int i = 0; i < 4; i++) {
-                int tem = dataI[dataI.length-4+i] << (8*(3-i));
-                res+=tem;
+            double values[] = new double[1+(dataI.length/64)];
+            int n =0;
+            for (int j = 16; j < dataI.length; j+=64,n++) {
+                int res =0;
+                for (int i = 0; i < 4; i++) {
+                    int tem = dataI[j+i] << (8*(3-i));
+                    res+=tem;
+                }
+                if(type == 'f'){
+                    values[n]= Float.intBitsToFloat(res);
+                }
+                
             }
-            if(type == 'f'){
-                return Float.intBitsToFloat(res);
-            }
-            return res;
+            System.out.println("print n: "+n);
+            return values;
         }else if(tcode == 2){
-            return tcode;
+            return new double[]{tcode};
         }
         throw new Exception("Codigo de respuesta invalido: "+tcode);
     }
