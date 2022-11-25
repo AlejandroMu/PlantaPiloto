@@ -42,6 +42,7 @@ ON DELETE SET NULL ON UPDATE CASCADE;
 
 CREATE TABLE public."Channel" (
 	id integer NOT NULL,
+	name varchar,
 	type varchar,
 	signal varchar,
 	range varchar,

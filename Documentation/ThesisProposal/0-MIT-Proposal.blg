@@ -1,0 +1,46 @@
+This is BibTeX, Version 0.99d (TeX Live 2019)
+Capacity: max_strings=100000, hash_size=100000, hash_prime=85009
+The top-level auxiliary file: 0-MIT-Proposal.aux
+The style file: alphaabbr.bst
+Database file #1: self-adaptation.bib
+You've used 2 entries,
+            2543 wiz_defined-function locations,
+            574 strings with 5686 characters,
+and the built_in function-call counts, 2003 in all, are:
+= -- 144
+> -- 242
+< -- 2
++ -- 93
+- -- 93
+* -- 218
+:= -- 379
+add.period$ -- 7
+call.type$ -- 2
+change.case$ -- 51
+chr.to.int$ -- 2
+cite$ -- 2
+duplicate$ -- 34
+empty$ -- 59
+format.name$ -- 95
+if$ -- 352
+int.to.chr$ -- 1
+int.to.str$ -- 0
+missing$ -- 3
+newline$ -- 14
+num.names$ -- 8
+pop$ -- 55
+preamble$ -- 1
+purify$ -- 53
+quote$ -- 0
+skip$ -- 20
+stack$ -- 0
+substring$ -- 14
+swap$ -- 5
+text.length$ -- 2
+text.prefix$ -- 1
+top$ -- 0
+type$ -- 12
+warning$ -- 0
+while$ -- 6
+width$ -- 3
+write$ -- 30

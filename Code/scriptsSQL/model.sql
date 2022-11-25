@@ -40,11 +40,12 @@ ON DELETE SET NULL ON UPDATE CASCADE;
 
 CREATE TABLE public."Channel" (
 	id integer NOT NULL,
-	type varchar,
-	signal varchar,
 	range varchar,
+	signal varchar,
+	type varchar,
 	unit varchar,
 	"id_IOModule" integer,
+	name varchar,
 	CONSTRAINT "Channel_pk" PRIMARY KEY (id)
 );
 ALTER TABLE public."Channel" OWNER TO postgres;

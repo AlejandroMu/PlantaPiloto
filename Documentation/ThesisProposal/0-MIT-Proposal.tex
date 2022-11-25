@@ -1,0 +1,141 @@
+\documentclass[letterpaper,11pt]{report}
+
+\textheight=22cm \textwidth=16.5cm \hoffset=-2cm \voffset=-1cm
+
+\usepackage{inputenc} % set input encoding (not needed with XeLaTeX)
+
+\input{includes} % required packages
+
+
+% ==========================================================================
+\begin{document}
+
+
+% Title information
+\begin{titlepage}
+\begin{center}
+
+% Upper part of the page
+~\\
+
+% Title
+{ \Huge \textbf{The Subject-Matter for}\\[0.2cm]
+\Huge \textbf{the Kind of Software Systems of Your Interest}}\\[3cm]
+
+
+\textsc{\Large Master Thesis Proposal}\\ [1cm]
+
+Presented in partial fulfillment to obtain the Title of \\
+Magister in Informatics and Telecommunications \\[3cm]
+
+by \\[0.5cm]
+
+\textsc{\Large Alejandro Muñoz }\\[1cm]
+
+\large{Advisor:} Gabriel Tamura \\
+
+\vfill
+
+{\Large Department of Information and Communication Technologies}\\[0.3cm]
+{\Large Faculty of Engineering}\\[0.5cm]
+
+\includegraphics[width=0.22\textwidth]{logos/logo-icesi.png}\\[0.3cm]
+
+\large 2012\\
+
+\end{center}
+
+\end{titlepage}
+
+
+\pagenumbering{roman}
+
+%Tablas de contenido
+\tableofcontents
+\listoftables
+\listoffigures
+%\pagebreak
+
+%Sections
+\sloppy
+
+\abstract{Summary of your Thesis Proposal. In English and then in Spanish.}
+
+\pagenumbering{arabic}
+
+% =========================================================================
+\chapter{Context and Motivation}
+\label{cha:MotivationBackground}
+
+
+% =========================================================================
+\chapter{Problem Definition}
+\label{cha:ProblemDef}
+
+As mentioned in Chapter \ref{cha:MotivationBackground}, the separation of concerns is crucial to facilitate the adaptation as a software system independently the adaptation mechanism. To understand the relevance of this proposal it is important to define the main concepts involved in this project: Autonomic computing, Self-Adaptive Systems, Component-Based Software, Software Architecture, Reference Models and Reference Architectures \cite{delemos-et-al:2011:software-engineering-for-sas-roadmap-2}.
+
+
+\section{Problem Statement}
+\label{sec:ProblStatmt}
+
+State your addressed problem as clearly and concisely as possible.
+
+Never mix the problem with the solution.
+
+
+% ----------------------------------------------------------------------------
+\section{Challenges (or Hypotheses)}
+\label{sec:Challenges}
+
+
+
+
+% =========================================================================
+\chapter{Objectives}
+\label{cha:Objectives}
+
+\section{General}
+
+\section{Specific}
+
+
+
+% =========================================================================
+\chapter{Theoretical Background -- Overview}
+\label{cha:TheoreticalBackground}
+
+
+% =========================================================================
+\chapter{Preliminary State of the Art}
+\label{cha:StateOfTheArt}
+
+
+
+% =========================================================================
+\chapter{Methodology}
+\label{cha:Methodology}
+
+Explain the steps required to achieve the stated objectives. Support them as required with appropriate methods \cite{creswell:2009:scientific-research-book}.
+Refine the  specific objectives and, more importantly, explain how are you going to validate your proposed solution.
+
+
+% =========================================================================
+\chapter{Expected Results}
+\label{cha:ExpectedResults}
+
+
+% =========================================================================
+\chapter{Tentative Project Schedule}
+\label{cha:ProjectSchedule}
+
+
+
+
+%%%%%%%%%%%%%%
+% BibTeX users 
+%\bibliographystyle{bib/splncs}
+\bibliographystyle{alphaabbr}
+\bibliography{self-adaptation}
+
+%%%%%%%%%%%%%%
+\end{document}
