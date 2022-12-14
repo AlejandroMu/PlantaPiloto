@@ -13,7 +13,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
-@Table
+@Table(schema = "icesi_bionic_plantapiloto")
 public class Channel implements Serializable {
 
     @Id

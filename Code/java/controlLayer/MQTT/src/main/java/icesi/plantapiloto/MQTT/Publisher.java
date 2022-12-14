@@ -16,7 +16,7 @@ public class Publisher implements PublisherI {
     private String topic;
 
     public Publisher() {
-        init("clientJava", "10.147.18.165");
+        init("clientJava", "10.147.19.126");
     }
 
     public Publisher(String id, String host) {

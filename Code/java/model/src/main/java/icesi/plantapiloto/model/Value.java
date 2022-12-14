@@ -6,17 +6,21 @@ import java.util.Date;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 @Entity
-@Table
+@Table(schema = "icesi_bionic_plantapiloto")
 public class Value implements Serializable {
 
     @Id()
     @Column
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_value")
     private Long id;
     @Column
     private Date timeStamp;

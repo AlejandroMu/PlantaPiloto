@@ -6,6 +6,8 @@ import icesi.plantapiloto.controlLayer.common.Message;
 import java.util.HashMap;
 import java.util.List;
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -34,21 +36,22 @@ public class PlcPlugin implements PluginI {
 
     private void loadTags() {
         try {
+            File propFile = new File("plugin.conf");
 
-            InputStream stream = this.getClass().getResourceAsStream("./plugin.conf");
+            InputStream stream = new FileInputStream(propFile);
             BufferedReader red = new BufferedReader(new InputStreamReader(stream));
-            String line = red.readLine().trim();
+            String line = red.readLine();
             while (line != null && !line.equals("")) {
-                String prop[] = line.split("=");
-                if (prop[0].equals("tagName")) {
-                    tags.add(prop[1]);
+                String prop[] = line.trim().split("=");
+                if (prop[0].contains("tagName")) {
+                    tags.add(prop[1].trim());
 
-                } else if (prop[0].equals("PLC_IP")) {
-                    ip = prop[1];
-                } else if (prop[0].equals("PLC_NAME")) {
-                    name = prop[1];
+                } else if (prop[0].contains("PLC_IP")) {
+                    ip = prop[1].trim();
+                } else if (prop[0].contains("PLC_NAME")) {
+                    name = prop[1].trim();
                 }
-                line = red.readLine().trim();
+                line = red.readLine();
             }
             red.close();
         } catch (Exception e) {

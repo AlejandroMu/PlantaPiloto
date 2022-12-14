@@ -32,7 +32,7 @@ public class PlcSubscriber implements CallbackSubI {
     }
 
     private void init() {
-        subscriberI.subscribe("T20", this);
+        subscriberI.subscribe("40B", this);
     }
 
     @Override
@@ -42,13 +42,14 @@ public class PlcSubscriber implements CallbackSubI {
         String value = msg.getValue();
         long time = msg.getTime().getTime();
         String registry = sourceData + ":" + type + ":" + value + ":" + time + ":" + msg.getName();
+        System.out.println("recive ");
         manager.save(registry);
     }
 
     public static void main(String[] args) throws Exception {
         Communicator communicator = Util.initialize(args, "subscriber.config");
         ManagerIPrx manager = ManagerIPrx.checkedCast(communicator.propertyToProxy("Model.Proxy"));
-        PlcSubscriber plcSubscriber = new PlcSubscriber(new Subscriber("plcSJava", "10.147.18.165"), manager);
+        PlcSubscriber plcSubscriber = new PlcSubscriber(new Subscriber("plcSJava", "10.147.19.2"), manager);
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         String line = reader.readLine();
         while (!line.equals("exit")) {

@@ -15,6 +15,7 @@ app.get('/getValues',(req,res)=>{
     let name = req.query.name;
     let count = req.query.count;
     getValuesByTagName(name,count).then((data) => {
+        console.log(data);
         res.json(data);
     });
 

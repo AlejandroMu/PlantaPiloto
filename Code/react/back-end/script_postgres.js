@@ -14,7 +14,7 @@ module.exports.connect = function(){
 module.exports.getValuesByTagName = async function(tag, firstN){
 
     const query = `SELECT timestamp,value
-    FROM value va,channel ch  
+    FROM icesi_bionic_plantapiloto.value va,icesi_bionic_plantapiloto.channel ch  
     WHERE  ch.name=$1 AND ch.id=va.channel_id ORDER BY timestamp 
     DESC LIMIT $2`;
 
