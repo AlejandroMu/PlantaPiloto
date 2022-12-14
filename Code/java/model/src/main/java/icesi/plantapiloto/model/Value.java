@@ -20,8 +20,8 @@ public class Value implements Serializable {
 
     @Id()
     @Column
-    @GeneratedValue(generator = "seq_value")
-    @SequenceGenerator(name = "seq_value", sequenceName = "seq_value", initialValue = 337176)
+    // @GeneratedValue(generator = "seq_value")
+    // @SequenceGenerator(name = "seq_value", sequenceName = "seq_value")
     private Long id;
     @Column
     private Date timeStamp;
@@ -36,7 +36,8 @@ public class Value implements Serializable {
 
     }
 
-    public Value(Date timeStamp, Float value, Channel channel) {
+    public Value(Long id, Date timeStamp, Float value, Channel channel) {
+        this.id = id;
         this.timeStamp = timeStamp;
         this.value = value;
         this.channel = channel;
