@@ -42,7 +42,6 @@ public class PlcSubscriber implements CallbackSubI {
         String value = msg.getValue();
         long time = msg.getTime().getTime();
         String registry = sourceData + ":" + type + ":" + value + ":" + time + ":" + msg.getName();
-        System.out.println("recive ");
         manager.save(registry);
     }
 

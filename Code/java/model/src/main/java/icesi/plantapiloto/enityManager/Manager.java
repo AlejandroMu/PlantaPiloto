@@ -21,7 +21,7 @@ import icesi.plantapiloto.model.*;
 public class Manager implements ManagerI {
 
     public static final EntityManager manager = Persistence.createEntityManagerFactory("planta").createEntityManager();
-    private long idValue = 337176;
+    private long idValue = 343327;
 
     public void begin(Current current) {
         manager.getTransaction().begin();
