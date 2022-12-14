@@ -36,8 +36,7 @@ public class Value implements Serializable {
 
     }
 
-    public Value(Long id, Date timeStamp, Float value, Channel channel) {
-        this.id = id;
+    public Value(Date timeStamp, Float value, Channel channel) {
         this.timeStamp = timeStamp;
         this.value = value;
         this.channel = channel;
