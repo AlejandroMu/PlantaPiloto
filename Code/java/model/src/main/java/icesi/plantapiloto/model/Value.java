@@ -20,7 +20,8 @@ public class Value implements Serializable {
 
     @Id()
     @Column
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_value")
+    @GeneratedValue(generator = "seq_value")
+    @SequenceGenerator(name = "seq_value", sequenceName = "seq_value")
     private Long id;
     @Column
     private Date timeStamp;
