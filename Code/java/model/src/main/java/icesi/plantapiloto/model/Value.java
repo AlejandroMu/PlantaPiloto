@@ -21,7 +21,7 @@ public class Value implements Serializable {
     @Id()
     @Column
     @GeneratedValue(generator = "seq_value")
-    @SequenceGenerator(name = "seq_value", sequenceName = "seq_value")
+    @SequenceGenerator(name = "seq_value", sequenceName = "seq_value", initialValue = 337176)
     private Long id;
     @Column
     private Date timeStamp;
