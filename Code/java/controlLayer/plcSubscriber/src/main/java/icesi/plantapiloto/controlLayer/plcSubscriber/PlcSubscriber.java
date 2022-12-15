@@ -24,15 +24,17 @@ public class PlcSubscriber implements CallbackSubI {
     private SubscriberI subscriberI;
 
     private ManagerIPrx manager;
+    private String topic;
 
-    public PlcSubscriber(SubscriberI sub, ManagerIPrx man) {
+    public PlcSubscriber(SubscriberI sub, ManagerIPrx man, String topic) {
         this.subscriberI = sub;
         this.manager = man;
+        this.topic = topic;
         init();
     }
 
     private void init() {
-        subscriberI.subscribe("40B", this);
+        subscriberI.subscribe(this.topic, this);
     }
 
     @Override
@@ -48,7 +50,11 @@ public class PlcSubscriber implements CallbackSubI {
     public static void main(String[] args) throws Exception {
         Communicator communicator = Util.initialize(args, "subscriber.config");
         ManagerIPrx manager = ManagerIPrx.checkedCast(communicator.propertyToProxy("Model.Proxy"));
-        PlcSubscriber plcSubscriber = new PlcSubscriber(new Subscriber("plcSJava", "10.147.19.2"), manager);
+        String clientId = communicator.getProperties().getProperty("subscriber.id");
+        String subIp = communicator.getProperties().getProperty("subscriber.ip");
+        String topic = communicator.getProperties().getProperty("topic");
+
+        PlcSubscriber plcSubscriber = new PlcSubscriber(new Subscriber(clientId, subIp), manager, topic);
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         String line = reader.readLine();
         while (!line.equals("exit")) {

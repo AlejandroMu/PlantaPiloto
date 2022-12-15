@@ -21,10 +21,12 @@ public class PlcPlugin implements PluginI {
     private String ip;
     private String name;
     private List<String> tags;
+    private HashMap<String, String> props;
 
     public PlcPlugin() {
         try {
             tags = new ArrayList<>();
+            props = new HashMap<>();
             loadTags();
             plc = new EtherNetIP(ip, 0);
             plc.connectTcp();
@@ -50,6 +52,9 @@ public class PlcPlugin implements PluginI {
                     ip = prop[1].trim();
                 } else if (prop[0].contains("PLC_NAME")) {
                     name = prop[1].trim();
+                    props.put("topic", name);
+                } else {
+                    props.put(prop[0].trim(), prop[1].trim());
                 }
                 line = red.readLine();
             }
@@ -84,11 +89,6 @@ public class PlcPlugin implements PluginI {
     }
 
     public HashMap<String, String> getSettings() {
-        HashMap<String, String> map = new HashMap<>();
-        map.put("startHour", "21:30");
-        map.put("lapse", "30000");
-        map.put("topic", name);
-
-        return map;
+        return props;
     }
 }

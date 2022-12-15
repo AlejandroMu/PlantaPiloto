@@ -14,14 +14,14 @@ public class Task extends TimerTask {
     public Task(PluginI p, PublisherI pi) {
         plugin = p;
         publisher = pi;
+        String channel = plugin.getSettings().get("topic");
+        publisher.setTopic(channel);
     }
 
     @Override
     public void run() {
 
         List<Message> messages = plugin.getValues();
-        String channel = plugin.getSettings().get("topic");
-        publisher.setTopic(channel);
         for (Message messages2 : messages) {
             publisher.publish(messages2);
         }

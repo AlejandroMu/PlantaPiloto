@@ -10,7 +10,7 @@ import javax.persistence.Persistence;
 import javax.persistence.Query;
 
 import icesi.plantapiloto.model.EntityWrapper;
-import icesi.plantapiloto.controller.entityManager.*;
+import icesi.plantapiloto.controller.entityManager.ManagerI;
 import com.zeroc.Ice.Current;
 
 import icesi.plantapiloto.model.*;
@@ -45,7 +45,7 @@ public class Manager implements ManagerI {
 
         Float f = Float.parseFloat(reg[2]);
         if (channels.size() > 0) {
-            Value valueO = new Value(idValue, new Date(Long.parseLong(reg[3])), f, (Channel) channels.get(0));
+            Value valueO = new Value(new Date(Long.parseLong(reg[3])), f, (Channel) channels.get(0));
             manager.getTransaction().begin();
             manager.persist(valueO);
             manager.getTransaction().commit();
