@@ -3,10 +3,7 @@
 module publisher{
 
 
-	["java:serializable:icesi.plantapiloto.controlLayer.common.Message"]
-	sequence<byte> Message;
-
 	interface Measures{
-		void putMeasure(Message value);
+		void putMeasure(string value);
 	}  
 }

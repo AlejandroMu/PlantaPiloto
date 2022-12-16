@@ -3,28 +3,24 @@ package icesi.plantapiloto.scheduleManager;
 import java.util.List;
 import java.util.TimerTask;
 
-import icesi.plantapiloto.controlLayer.common.Message;
 import icesi.plantapiloto.controlLayer.common.PluginI;
-import icesi.plantapiloto.controlLayer.common.PublisherI;
+import icesi.plantapiloto.controlLayer.common.entities.Message;
 
 public class Task extends TimerTask {
     private PluginI plugin;
-    private PublisherI publisher;
+    private PublisherManager publisher;
 
-    public Task(PluginI p, PublisherI pi) {
+    public Task(PluginI p, PublisherManager pi) {
         plugin = p;
         publisher = pi;
-        String channel = plugin.getSettings().get("topic");
-        publisher.setTopic(channel);
     }
 
     @Override
     public void run() {
-
-        List<Message> messages = plugin.getValues();
-        for (Message messages2 : messages) {
-            publisher.publish(messages2);
-        }
+        long time = System.currentTimeMillis();
+        Message messages = plugin.getMessage();
+        publisher.addMessage(messages);
+        System.out.println("tiempo de la tarea: " + (System.currentTimeMillis() - time) + " ms");
     }
 
 }

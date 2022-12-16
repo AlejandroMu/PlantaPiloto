@@ -1,12 +1,15 @@
 package icesi.plantapiloto.controlLayer.plcSubscriber;
 
-import icesi.plantapiloto.controlLayer.common.CallbackSubI;
-import icesi.plantapiloto.controlLayer.common.Message;
-import icesi.plantapiloto.controlLayer.common.SubscriberI;
+import icesi.plantapiloto.controlLayer.common.encoders.MessageEncoder;
+import icesi.plantapiloto.controlLayer.common.entities.Measure;
+import icesi.plantapiloto.controlLayer.common.entities.Message;
+import icesi.plantapiloto.controlLayer.common.envents.CallbackSubI;
+import icesi.plantapiloto.controlLayer.common.envents.SubscriberI;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.Date;
+import java.util.List;
 
 import icesi.plantapiloto.MQTT.Subscriber;
 import icesi.plantapiloto.model.*;
@@ -40,21 +43,32 @@ public class PlcSubscriber implements CallbackSubI {
     @Override
     public void reciveMessage(Message msg) {
         String sourceData = msg.getSourceData();
-        String type = msg.getType();
-        String value = msg.getValue();
+        List<Measure> measures = msg.getMeasures();
         long time = msg.getTime().getTime();
-        String registry = sourceData + ":" + type + ":" + value + ":" + time + ":" + msg.getName();
-        manager.save(registry);
+        for (Measure measure : measures) {
+            String value = measure.getValue();
+            String registry = sourceData + ":" + value + ":" + time + ":" + measure.getName();
+            manager.save(registry);
+        }
     }
 
     public static void main(String[] args) throws Exception {
         Communicator communicator = Util.initialize(args, "subscriber.config");
         ManagerIPrx manager = ManagerIPrx.checkedCast(communicator.propertyToProxy("Model.Proxy"));
+
         String clientId = communicator.getProperties().getProperty("subscriber.id");
         String subIp = communicator.getProperties().getProperty("subscriber.ip");
-        String topic = communicator.getProperties().getProperty("topic");
+        String topic = communicator.getProperties().getProperty("subscriber.topic");
+        String subClass = communicator.getProperties().getProperty("subscriber.class");
+        String encoderClass = communicator.getProperties().getProperty("subscriber.encoder");
 
-        PlcSubscriber plcSubscriber = new PlcSubscriber(new Subscriber(clientId, subIp), manager, topic);
+        SubscriberI subscriberI = (SubscriberI) Class.forName(subClass).getDeclaredConstructor().newInstance();
+        MessageEncoder encoder = (MessageEncoder) Class.forName(encoderClass).getDeclaredConstructor().newInstance();
+
+        subscriberI.setName(clientId);
+        subscriberI.setHost(subIp);
+        subscriberI.setEncoder(encoder);
+        PlcSubscriber plcSubscriber = new PlcSubscriber(subscriberI, manager, topic);
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         String line = reader.readLine();
         while (!line.equals("exit")) {

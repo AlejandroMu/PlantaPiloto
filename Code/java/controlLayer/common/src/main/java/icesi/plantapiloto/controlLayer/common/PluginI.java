@@ -1,8 +1,11 @@
 package icesi.plantapiloto.controlLayer.common;
+
 import java.util.HashMap;
-import java.util.List;
+
+import icesi.plantapiloto.controlLayer.common.entities.Message;
 
 public interface PluginI {
-    public List<Message> getValues();
-    public HashMap<String,String> getSettings();
+    public Message getMessage();
+
+    public HashMap<String, String> getSettings();
 }

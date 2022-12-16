@@ -4,6 +4,8 @@ plugins {
 apply plugin: 'java'
 apply plugin: 'application'
 mainClassName = "icesi.plantapiloto.Main"
+sourceCompatibility = 1.8
+
 slice {
     java {
         files = [file("Model.ice")]

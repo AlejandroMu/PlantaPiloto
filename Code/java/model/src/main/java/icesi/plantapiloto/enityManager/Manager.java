@@ -38,14 +38,14 @@ public class Manager implements ManagerI {
         Query moduleQ = manager.createQuery("FROM IOModule m WHERE m.name ='" + sourceName + "'");
         List<IOModule> modules = moduleQ.getResultList();
         long idM = modules.get(0).getId();
-        Query chanelQ = manager.createQuery("FROM Channel c WHERE c.module =" + idM + " and c.name ='" + reg[4] + "'");
+        Query chanelQ = manager.createQuery("FROM Channel c WHERE c.module =" + idM + " and c.name ='" + reg[3] + "'");
         List<?> channels = chanelQ.getResultList();
 
         // ystem.out.println("size: " + channels.size());
 
-        Float f = Float.parseFloat(reg[2]);
+        Float f = Float.parseFloat(reg[1]);
         if (channels.size() > 0) {
-            Value valueO = new Value(new Date(Long.parseLong(reg[3])), f, (Channel) channels.get(0));
+            Value valueO = new Value(new Date(Long.parseLong(reg[2])), f, (Channel) channels.get(0));
             manager.getTransaction().begin();
             manager.persist(valueO);
             manager.getTransaction().commit();

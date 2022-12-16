@@ -1,7 +1,8 @@
 package icesi.plantapiloto.controlLayer.plc;
 
 import icesi.plantapiloto.controlLayer.common.PluginI;
-import icesi.plantapiloto.controlLayer.common.Message;
+import icesi.plantapiloto.controlLayer.common.entities.Measure;
+import icesi.plantapiloto.controlLayer.common.entities.Message;
 
 import java.util.HashMap;
 import java.util.List;
@@ -28,8 +29,8 @@ public class PlcPlugin implements PluginI {
             tags = new ArrayList<>();
             props = new HashMap<>();
             loadTags();
-            plc = new EtherNetIP(ip, 0);
-            plc.connectTcp();
+            // plc = new EtherNetIP(ip, 0);
+            // plc.connectTcp();
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -64,28 +65,28 @@ public class PlcPlugin implements PluginI {
         }
     }
 
-    public List<Message> getValues() {
-        List<Message> messages = new ArrayList<>();
+    public Message getMessage() {
+        Message msg = new Message();
         try {
+            msg.setSourceData(name + " " + ip)
+                    .setTime(Calendar.getInstance().getTime())
+                    .setTopic(props.get("topic"));
             for (String tag : tags) {
-                CIPData data = plc.readTag(tag, (short) 1);
-                String value = data.toString().split("\\[")[1].split("\\]")[0];
-                Message msg = new Message();
-                msg.setSourceData(name + " " + ip)
-                        .setType(data.getType().toString())
-                        .setTime(Calendar.getInstance().getTime())
-                        .setValue(value)
-                        .setName(tag);
 
-                System.out.println(data);
-                messages.add(msg);
+                // CIPData data = plc.readTag(tag, (short) 1);
+                // String value = data.toString().split("\\[")[1].split("\\]")[0];
+                String value = "" + Math.random();
+                Measure measure = new Measure();
+                measure.setName(tag);
+                measure.setValue(value);
+                msg.addMeasure(measure);
             }
 
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        return messages;
+        return msg;
     }
 
     public HashMap<String, String> getSettings() {

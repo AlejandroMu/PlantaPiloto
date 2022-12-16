@@ -4,8 +4,16 @@
 package icesi.plantapiloto.icestorm;
 
 import icesi.plantapiloto.controlLayer.common.*;
+import icesi.plantapiloto.controlLayer.common.encoders.MessageEncoder;
+import icesi.plantapiloto.controlLayer.common.entities.Message;
+import icesi.plantapiloto.controlLayer.common.envents.CallbackSubI;
+import icesi.plantapiloto.controlLayer.common.envents.SubscriberI;
 import icesi.plantapiloto.icestorm.publisher.*;
 
+import java.net.Inet4Address;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.util.Enumeration;
 import java.util.UUID;
 
 import com.zeroc.Ice.Communicator;
@@ -17,104 +25,138 @@ import com.zeroc.Ice.Util;
 import com.zeroc.IceStorm.TopicManagerPrx;
 import com.zeroc.IceStorm.TopicPrx;
 
-public class Subscriber implements SubscriberI
-{
-    public static class MeasuresI implements Measures
-    {
+public class Subscriber implements SubscriberI {
+    public static class MeasuresI implements Measures {
         private CallbackSubI calbackSubI;
-        MeasuresI(CallbackSubI calbackSubI){
+        private MessageEncoder encoder;
+
+        MeasuresI(CallbackSubI calbackSubI, MessageEncoder encoder) {
             this.calbackSubI = calbackSubI;
+            this.encoder = encoder;
         }
+
         @Override
-        public void putMeasure(Message me, Current current)
-        {
-            calbackSubI.reciveMessage(me);
+        public void putMeasure(String me, Current current) {
+            calbackSubI.reciveMessage(encoder.decode(me));
         }
 
     }
 
     private TopicManagerPrx manager;
-    private String endpoint;
     private ObjectAdapter adapter;
-    private String uriStorm;
     private Communicator communicator;
     private TopicPrx topic;
     private ObjectPrx subscriber;
+    private MessageEncoder encoder;
 
-    public Subscriber(String endpoint, String uriStorm){
-        String storm ="DemoIceStorm/TopicManager:default -h "+uriStorm+" -p 10000";
-        String host = "tcp -h "+endpoint+" -p 9099";
-        this.endpoint = host;
-        this.uriStorm =storm;
+    private String endpoint;
+    private String uriStorm;
+    private String name;
 
-        communicator = Util.initialize();
-        
+    public Subscriber() {
 
-        manager = TopicManagerPrx.checkedCast(
-            communicator.stringToProxy(this.uriStorm));
-        if(manager == null)
-        {
-            System.err.println("invalid proxy");
-        }
-
-        adapter = communicator.createObjectAdapterWithEndpoints("subscribe",this.endpoint);
-
-        
     }
-
 
     @Override
     public void subscribe(String topicName, CallbackSubI call) {
         topic = null;
-        try
-        {
+        try {
             topic = manager.retrieve(topicName);
-        }
-        catch(com.zeroc.IceStorm.NoSuchTopic e)
-        {
-            try
-            {
+        } catch (com.zeroc.IceStorm.NoSuchTopic e) {
+            try {
                 topic = manager.create(topicName);
-            }
-            catch(com.zeroc.IceStorm.TopicExists ex)
-            {
+            } catch (com.zeroc.IceStorm.TopicExists ex) {
                 System.err.println("temporary failure, try again.");
             }
         }
-        String id = UUID.randomUUID().toString();
-        Identity subId = Util.stringToIdentity(id);
+        Identity subId = Util.stringToIdentity(this.name);
 
-        subscriber = adapter.add(new MeasuresI(call), subId);
+        subscriber = adapter.add(new MeasuresI(call, encoder), subId);
         adapter.activate();
 
         java.util.Map<String, String> qos = new java.util.HashMap<>();
-      
-        try
-        {
-            topic.subscribeAndGetPublisher(qos, subscriber);
-        }
-        catch(com.zeroc.IceStorm.AlreadySubscribed e)
-        {
-            // This should never occur when subscribing with an UUID
-            
-            System.out.println("reactivating persistent subscriber");
-        }
-        catch(com.zeroc.IceStorm.InvalidSubscriber e)
-        {
-            e.printStackTrace();
-        }
-        catch(com.zeroc.IceStorm.BadQoS e)
-        {
-            e.printStackTrace();
-        }
 
+        try {
+            topic.subscribeAndGetPublisher(qos, subscriber);
+        } catch (com.zeroc.IceStorm.AlreadySubscribed e) {
+            // This should never occur when subscribing with an UUID
+
+            System.out.println("reactivating persistent subscriber");
+        } catch (com.zeroc.IceStorm.InvalidSubscriber e) {
+            e.printStackTrace();
+        } catch (com.zeroc.IceStorm.BadQoS e) {
+            e.printStackTrace();
+        }
 
     }
-
 
     @Override
     public void close() {
         topic.unsubscribe(subscriber);
         communicator.close();
+    }
+
+    @Override
+    public void setEncoder(MessageEncoder encoder) {
+        this.encoder = encoder;
+    }
+
+    @Override
+    public void setHost(String host) {
+        String storm = "DemoIceStorm/TopicManager:default -h " + host + " -p 10000";
+        this.uriStorm = storm;
+
+        String localHost = getAdress(host);
+        this.endpoint = "tcp -h " + localHost + " -p 9099";
+    }
+
+    private String getAdress(String netSeg) {
+        try {
+
+            Enumeration<NetworkInterface> nets = NetworkInterface.getNetworkInterfaces();
+            InetAddress i1 = InetAddress.getByName(netSeg);
+            boolean isv4 = i1 instanceof Inet4Address;
+
+            while (nets.hasMoreElements()) {
+                NetworkInterface net = nets.nextElement();
+                boolean reach = i1.isReachable(net, 0, 50);
+                if (reach) {
+                    System.out.println("Network: " + net.getName());
+                    Enumeration<InetAddress> adres = net.getInetAddresses();
+                    while (adres.hasMoreElements()) {
+                        InetAddress same = adres.nextElement();
+                        boolean sisv4 = same instanceof Inet4Address;
+                        if ((sisv4 && isv4) || (!sisv4 && !isv4)) {
+                            return same.getHostAddress();
+                        }
+
+                    }
+
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "localhost";
+    }
+
+    @Override
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public void connect() {
+
+        communicator = Util.initialize();
+
+        manager = TopicManagerPrx.checkedCast(
+                communicator.stringToProxy(this.uriStorm));
+        if (manager == null) {
+            System.err.println("invalid proxy");
+        }
+
+        adapter = communicator.createObjectAdapterWithEndpoints("subscribe", this.endpoint);
+
     }
 }

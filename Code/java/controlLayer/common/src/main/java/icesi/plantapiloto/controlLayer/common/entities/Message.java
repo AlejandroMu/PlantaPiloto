@@ -1,7 +1,9 @@
-package icesi.plantapiloto.controlLayer.common;
+package icesi.plantapiloto.controlLayer.common.entities;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class Message implements Serializable {
 
@@ -11,11 +13,12 @@ public class Message implements Serializable {
 
     private Date time;
 
-    private String value;
+    private List<Measure> measures;
 
-    private String name;
+    private String topic;
 
     public Message() {
+        measures = new ArrayList<>();
     }
 
     /**
@@ -66,34 +69,37 @@ public class Message implements Serializable {
     }
 
     /**
-     * @return the value
+     * @return the topic
      */
-    public String getValue() {
-        return value;
+    public String getTopic() {
+        return topic;
     }
 
     /**
-     * @param value the value to set
+     * @param topic the topic to set
      */
-    public Message setValue(String value) {
-        this.value = value;
+    public Message setTopic(String topic) {
+        this.topic = topic;
         return this;
-
     }
 
     /**
-     * @return the name
+     * @return the measures
      */
-    public String getName() {
-        return name;
+    public List<Measure> getMeasures() {
+        return measures;
     }
 
     /**
-     * @param name the name to set
+     * @param measures the measures to set
      */
-    public Message setName(String name) {
-        this.name = name;
+    public Message setMeasures(List<Measure> measures) {
+        this.measures = measures;
         return this;
+    }
+
+    public void addMeasure(Measure measure) {
+        this.measures.add(measure);
     }
 
 }

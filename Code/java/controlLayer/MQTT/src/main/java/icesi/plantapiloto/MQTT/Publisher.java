@@ -1,50 +1,33 @@
 package icesi.plantapiloto.MQTT;
 
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
 import com.hivemq.client.mqtt.mqtt5.Mqtt5BlockingClient;
 import com.hivemq.client.mqtt.mqtt5.Mqtt5Client;
 
-import icesi.plantapiloto.controlLayer.common.Message;
-import icesi.plantapiloto.controlLayer.common.PublisherI;
+import icesi.plantapiloto.controlLayer.common.encoders.MessageEncoder;
+import icesi.plantapiloto.controlLayer.common.entities.Message;
+import icesi.plantapiloto.controlLayer.common.envents.PublisherI;
 
 public class Publisher implements PublisherI {
 
     private String host;
     private Mqtt5BlockingClient client;
     private String topic;
-
-    public Publisher() {
-        init("clientJava", "10.147.19.126");
-    }
-
-    public Publisher(String id, String host) {
-        init(id, host);
-
-    }
-
-    public void init(String id, String host) {
-        this.host = host;
-        client = Mqtt5Client.builder()
-                .identifier(id) // use a unique identifier
-                .serverHost(this.host)
-                .buildBlocking();
-        client.connect();
-        this.topic = "default";
-
-    }
+    private MessageEncoder encoder;
+    private String name;
 
     @Override
     public void publish(Message msg) {
         String message;
+
         try {
-            message = Utils.toString(msg);
+            message = encoder.encode(msg);
             client.publishWith()
                     .topic(topic)
                     .payload(message.getBytes(StandardCharsets.UTF_8))
                     .send();
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -57,6 +40,30 @@ public class Publisher implements PublisherI {
     @Override
     public void close() {
         client.disconnect();
+    }
+
+    @Override
+    public void connect() {
+        client = Mqtt5Client.builder()
+                .identifier(name) // use a unique identifier
+                .serverHost(this.host)
+                .buildBlocking();
+        client.connect();
+    }
+
+    @Override
+    public void setEncoder(MessageEncoder encoder) {
+        this.encoder = encoder;
+    }
+
+    @Override
+    public void setHost(String host) {
+        this.host = host;
+    }
+
+    @Override
+    public void setName(String name) {
+        this.name = name;
     }
 
 }

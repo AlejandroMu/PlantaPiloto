@@ -11,7 +11,8 @@ import java.util.Iterator;
 import java.util.Properties;
 
 import icesi.plantapiloto.controlLayer.common.PluginI;
-import icesi.plantapiloto.controlLayer.common.PublisherI;
+import icesi.plantapiloto.controlLayer.common.encoders.MessageEncoder;
+import icesi.plantapiloto.controlLayer.common.envents.PublisherI;
 
 public class ScheduleManager {
     private PublisherI publisherI;
@@ -27,12 +28,23 @@ public class ScheduleManager {
         }
         InputStream stream = new FileInputStream(propFile);
         properties.load(stream);
-        String pubName = properties.getProperty("Publisher");
-        publisherI = (PublisherI) Class.forName(pubName).getDeclaredConstructor().newInstance();
-        if (publisherI == null) {
+
+        String pubClass = properties.getProperty("publisher.class").trim();
+        String pubIp = properties.getProperty("publisher.ip").trim();
+        String pubEncoder = properties.getProperty("publisher.encoder").trim();
+        String pubName = properties.getProperty("publisher.name").trim();
+
+        if (pubClass == null || pubIp == null || pubEncoder == null || pubName == null) {
             System.out.println("No publisher config");
             return;
         }
+        MessageEncoder encoder = (MessageEncoder) Class.forName(pubEncoder).getDeclaredConstructor().newInstance();
+        publisherI = (PublisherI) Class.forName(pubClass).getDeclaredConstructor().newInstance();
+
+        publisherI.setEncoder(encoder);
+        publisherI.setHost(pubIp);
+        publisherI.setName(pubName);
+
         scheduler = new Scheduler(publisherI);
 
         Iterator<?> keys = properties.keySet().iterator();
