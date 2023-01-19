@@ -1,8 +1,5 @@
 package icesi.plantapiloto.controlLayer.common.encoders;
 
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-
 import com.google.gson.Gson;
 
 public class JsonEncoder implements ObjectEncoder {

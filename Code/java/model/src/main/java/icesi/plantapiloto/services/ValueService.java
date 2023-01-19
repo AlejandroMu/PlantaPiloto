@@ -1,18 +1,15 @@
 package icesi.plantapiloto.services;
 
-import icesi.plantapiloto.repositories.ChannelRepository;
-import icesi.plantapiloto.repositories.ValueRepository;
-
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-
-import javax.persistence.EntityTransaction;
 
 import icesi.plantapiloto.controlLayer.common.entities.Measure;
 import icesi.plantapiloto.controlLayer.common.entities.Message;
 import icesi.plantapiloto.model.Channel;
 import icesi.plantapiloto.model.Value;
+import icesi.plantapiloto.repositories.ChannelRepository;
+import icesi.plantapiloto.repositories.ValueRepository;
 
 public class ValueService {
     private ValueRepository valueRepository;
@@ -44,7 +41,7 @@ public class ValueService {
     }
 
     public List<Value> getValues() {
-        return valueRepository.findAll();
+        return valueRepository.findAll(Value.class);
     }
 
 }

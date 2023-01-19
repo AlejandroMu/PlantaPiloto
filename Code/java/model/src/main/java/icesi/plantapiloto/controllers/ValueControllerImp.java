@@ -2,8 +2,6 @@ package icesi.plantapiloto.controllers;
 
 import java.util.List;
 
-import org.hibernate.service.Service;
-
 import com.zeroc.Ice.Current;
 
 import icesi.plantapiloto.controlLayer.common.encoders.ObjectEncoder;

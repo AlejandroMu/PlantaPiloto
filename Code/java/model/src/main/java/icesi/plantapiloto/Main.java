@@ -1,21 +1,17 @@
 package icesi.plantapiloto;
 
-import icesi.plantapiloto.controlLayer.common.entities.Measure;
-import icesi.plantapiloto.controlLayer.common.entities.Message;
-import icesi.plantapiloto.controlLayer.common.encoders.JsonEncoder;
+import java.util.List;
 
+import com.zeroc.Ice.Communicator;
+import com.zeroc.Ice.ObjectAdapter;
+import com.zeroc.Ice.Util;
+
+import icesi.plantapiloto.controlLayer.common.encoders.JsonEncoder;
 import icesi.plantapiloto.controllers.ValueControllerImp;
 import icesi.plantapiloto.model.Value;
 import icesi.plantapiloto.repositories.ChannelRepository;
 import icesi.plantapiloto.repositories.ValueRepository;
 import icesi.plantapiloto.services.ValueService;
-
-import java.util.List;
-import java.util.Date;
-
-import com.zeroc.Ice.Communicator;
-import com.zeroc.Ice.ObjectAdapter;
-import com.zeroc.Ice.Util;
 
 public class Main {
     public static void main(String[] args) {
@@ -32,6 +28,10 @@ public class Main {
         ObjectAdapter adapter = communicator.createObjectAdapter("Model");
         adapter.add(valueControllerImp, Util.stringToIdentity("valueController"));
         adapter.activate();
+        List<Value> vals = service.getValues();
+        for (int i = 0; i < 10; i++) {
+            System.out.println(vals.get(i).getTimeStamp());
+        }
         communicator.waitForShutdown();
         communicator.close();
 

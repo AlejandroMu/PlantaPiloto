@@ -1,15 +1,12 @@
 package icesi.plantapiloto.controlLayer.plcSubscriber;
 
 import icesi.plantapiloto.controlLayer.common.encoders.ObjectEncoder;
-import icesi.plantapiloto.controlLayer.common.entities.Measure;
 import icesi.plantapiloto.controlLayer.common.entities.Message;
 import icesi.plantapiloto.controlLayer.common.envents.CallbackSubI;
 import icesi.plantapiloto.controlLayer.common.envents.SubscriberI;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.lang.reflect.Type;
-import java.util.List;
 
 import icesi.plantapiloto.controllers.ValueControllerPrx;
 

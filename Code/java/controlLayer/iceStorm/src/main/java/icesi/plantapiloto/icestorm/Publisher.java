@@ -18,7 +18,6 @@ public class Publisher implements PublisherI {
     private MeasuresPrx measures;
     private Communicator communicator;
     private TopicPrx topic;
-    private String name;
     private String topicName;
 
     private ObjectEncoder encoder;
@@ -82,6 +81,5 @@ public class Publisher implements PublisherI {
 
     @Override
     public void setName(String name) {
-        this.name = name;
     }
 }

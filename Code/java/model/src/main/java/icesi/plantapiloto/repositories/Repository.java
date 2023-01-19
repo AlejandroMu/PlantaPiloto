@@ -1,7 +1,5 @@
 package icesi.plantapiloto.repositories;
 
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,23 +17,19 @@ public interface Repository<T, K> {
         manager.close();
     };
 
-    public default Optional<T> findById(K id) {
+    public default Optional<T> findById(Class<T> type, K id) {
         EntityManager manager = Manager.managerFactory.createEntityManager();
-        Type[] parameterizedType = ((ParameterizedType) this.getClass()
-                .getGenericSuperclass()).getActualTypeArguments();
-        Class<T> type = (Class<T>) parameterizedType[0];
+        Optional<T> element = Optional.ofNullable(manager.find(type, id));
         manager.close();
-        return Optional.ofNullable(manager.find(type, id));
+        return element;
     }
 
-    public default List<T> findAll() {
+    public default List<T> findAll(Class<T> type) {
         EntityManager manager = Manager.managerFactory.createEntityManager();
-        Type[] parameterizedType = ((ParameterizedType) this.getClass()
-                .getGenericSuperclass()).getActualTypeArguments();
-        Class<T> type = (Class<T>) parameterizedType[0];
+        String query = "From " + type.getSimpleName();
+        System.out.println(query);
         List<T> values = manager
-                .createQuery("FROM :tableName", type)
-                .setParameter("tableName", type.getTypeName())
+                .createQuery(query, type)
                 .getResultList();
         manager.close();
         return values;

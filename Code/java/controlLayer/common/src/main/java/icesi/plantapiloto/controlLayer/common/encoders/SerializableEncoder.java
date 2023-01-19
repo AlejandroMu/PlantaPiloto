@@ -5,11 +5,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.util.Base64;
-
-import icesi.plantapiloto.controlLayer.common.entities.Message;
 
 public class SerializableEncoder implements ObjectEncoder {
 

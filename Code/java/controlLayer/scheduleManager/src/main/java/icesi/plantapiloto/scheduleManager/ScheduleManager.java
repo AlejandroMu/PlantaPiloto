@@ -12,7 +12,6 @@ import java.util.Properties;
 
 import icesi.plantapiloto.controlLayer.common.PluginI;
 import icesi.plantapiloto.controlLayer.common.encoders.ObjectEncoder;
-import icesi.plantapiloto.controlLayer.common.entities.Message;
 import icesi.plantapiloto.controlLayer.common.envents.PublisherI;
 
 public class ScheduleManager {
