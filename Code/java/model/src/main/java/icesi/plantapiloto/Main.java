@@ -28,10 +28,6 @@ public class Main {
         ObjectAdapter adapter = communicator.createObjectAdapter("Model");
         adapter.add(valueControllerImp, Util.stringToIdentity("valueController"));
         adapter.activate();
-        List<Value> vals = service.getValues();
-        for (int i = 0; i < 10; i++) {
-            System.out.println(vals.get(i).getTimeStamp());
-        }
         communicator.waitForShutdown();
         communicator.close();
 
