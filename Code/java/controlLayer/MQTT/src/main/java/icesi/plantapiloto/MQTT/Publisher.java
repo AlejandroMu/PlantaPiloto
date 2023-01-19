@@ -5,8 +5,7 @@ import java.nio.charset.StandardCharsets;
 import com.hivemq.client.mqtt.mqtt5.Mqtt5BlockingClient;
 import com.hivemq.client.mqtt.mqtt5.Mqtt5Client;
 
-import icesi.plantapiloto.controlLayer.common.encoders.MessageEncoder;
-import icesi.plantapiloto.controlLayer.common.entities.Message;
+import icesi.plantapiloto.controlLayer.common.encoders.ObjectEncoder;
 import icesi.plantapiloto.controlLayer.common.envents.PublisherI;
 
 public class Publisher implements PublisherI {
@@ -14,11 +13,11 @@ public class Publisher implements PublisherI {
     private String host;
     private Mqtt5BlockingClient client;
     private String topic;
-    private MessageEncoder encoder;
+    private ObjectEncoder encoder;
     private String name;
 
     @Override
-    public void publish(Message msg) {
+    public <T> void publish(T msg) {
         String message;
 
         try {
@@ -52,7 +51,7 @@ public class Publisher implements PublisherI {
     }
 
     @Override
-    public void setEncoder(MessageEncoder encoder) {
+    public void setEncoder(ObjectEncoder encoder) {
         this.encoder = encoder;
     }
 

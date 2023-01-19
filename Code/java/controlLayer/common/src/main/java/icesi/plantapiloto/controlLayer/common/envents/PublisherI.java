@@ -1,11 +1,10 @@
 package icesi.plantapiloto.controlLayer.common.envents;
 
-import icesi.plantapiloto.controlLayer.common.encoders.MessageEncoder;
-import icesi.plantapiloto.controlLayer.common.entities.Message;
+import icesi.plantapiloto.controlLayer.common.encoders.ObjectEncoder;
 
 public interface PublisherI {
 
-    public void setEncoder(MessageEncoder encoder);
+    public void setEncoder(ObjectEncoder encoder);
 
     public void setHost(String host);
 
@@ -13,7 +12,7 @@ public interface PublisherI {
 
     public void setTopic(String topic);
 
-    public void publish(Message msg);
+    public <T> void publish(T msg);
 
     public void close();
 

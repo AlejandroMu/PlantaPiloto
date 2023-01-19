@@ -1,9 +1,11 @@
 package icesi.plantapiloto.controlLayer.common.encoders;
 
-import icesi.plantapiloto.controlLayer.common.entities.Message;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+
 import com.google.gson.Gson;
 
-public class JsonEncoder implements MessageEncoder {
+public class JsonEncoder implements ObjectEncoder {
 
     private Gson parser;
 
@@ -12,13 +14,13 @@ public class JsonEncoder implements MessageEncoder {
     }
 
     @Override
-    public String encode(Message message) {
+    public <T> String encode(T message) {
         return parser.toJson(message);
     }
 
     @Override
-    public Message decode(String json) {
-        return parser.fromJson(json, Message.class);
+    public <T> T decode(String json, Class<T> type) {
+        return parser.fromJson(json, type);
     }
 
 }

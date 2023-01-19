@@ -1,6 +1,6 @@
 package icesi.plantapiloto.controlLayer.plcSubscriber;
 
-import icesi.plantapiloto.controlLayer.common.encoders.MessageEncoder;
+import icesi.plantapiloto.controlLayer.common.encoders.ObjectEncoder;
 import icesi.plantapiloto.controlLayer.common.entities.Measure;
 import icesi.plantapiloto.controlLayer.common.entities.Message;
 import icesi.plantapiloto.controlLayer.common.envents.CallbackSubI;
@@ -8,53 +8,39 @@ import icesi.plantapiloto.controlLayer.common.envents.SubscriberI;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.util.Date;
+import java.lang.reflect.Type;
 import java.util.List;
 
-import icesi.plantapiloto.MQTT.Subscriber;
-import icesi.plantapiloto.model.*;
-import icesi.plantapiloto.controller.entityManager.*;
+import icesi.plantapiloto.controllers.ValueControllerPrx;
 
 import com.zeroc.Ice.Communicator;
-import com.zeroc.Ice.Current;
-import com.zeroc.Ice.Identity;
-import com.zeroc.Ice.ObjectAdapter;
-import com.zeroc.Ice.ObjectPrx;
 import com.zeroc.Ice.Util;
 
 public class PlcSubscriber implements CallbackSubI {
 
     private SubscriberI subscriberI;
 
-    private ManagerIPrx manager;
+    private ValueControllerPrx valueControllerPrx;
     private String topic;
 
-    public PlcSubscriber(SubscriberI sub, ManagerIPrx man, String topic) {
+    public <T> PlcSubscriber(SubscriberI sub, ValueControllerPrx man, String topic, Class<T> type) {
         this.subscriberI = sub;
-        this.manager = man;
+        this.valueControllerPrx = man;
         this.topic = topic;
-        init();
-    }
-
-    private void init() {
-        subscriberI.subscribe(this.topic, this);
+        subscriberI.connect();
+        subscriberI.subscribe(this.topic, this, type);
     }
 
     @Override
-    public void reciveMessage(Message msg) {
-        String sourceData = msg.getSourceData();
-        List<Measure> measures = msg.getMeasures();
-        long time = msg.getTime().getTime();
-        for (Measure measure : measures) {
-            String value = measure.getValue();
-            String registry = sourceData + ":" + value + ":" + time + ":" + measure.getName();
-            manager.save(registry);
-        }
+    public <T> void reciveMessage(T msg) {
+        String data = subscriberI.getEncoder().encode(msg);
+        System.out.println(data);
+        valueControllerPrx.saveValues(data);
     }
 
     public static void main(String[] args) throws Exception {
         Communicator communicator = Util.initialize(args, "subscriber.config");
-        ManagerIPrx manager = ManagerIPrx.checkedCast(communicator.propertyToProxy("Model.Proxy"));
+        ValueControllerPrx manager = ValueControllerPrx.checkedCast(communicator.propertyToProxy("Model.Proxy"));
 
         String clientId = communicator.getProperties().getProperty("subscriber.id");
         String subIp = communicator.getProperties().getProperty("subscriber.ip");
@@ -63,12 +49,13 @@ public class PlcSubscriber implements CallbackSubI {
         String encoderClass = communicator.getProperties().getProperty("subscriber.encoder");
 
         SubscriberI subscriberI = (SubscriberI) Class.forName(subClass).getDeclaredConstructor().newInstance();
-        MessageEncoder encoder = (MessageEncoder) Class.forName(encoderClass).getDeclaredConstructor().newInstance();
+        ObjectEncoder encoder = (ObjectEncoder) Class.forName(encoderClass).getDeclaredConstructor()
+                .newInstance();
 
         subscriberI.setName(clientId);
         subscriberI.setHost(subIp);
         subscriberI.setEncoder(encoder);
-        PlcSubscriber plcSubscriber = new PlcSubscriber(subscriberI, manager, topic);
+        new PlcSubscriber(subscriberI, manager, topic, Message.class);
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         String line = reader.readLine();
         while (!line.equals("exit")) {

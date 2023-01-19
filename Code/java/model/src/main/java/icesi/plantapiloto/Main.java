@@ -1,28 +1,39 @@
 package icesi.plantapiloto;
 
+import icesi.plantapiloto.controlLayer.common.entities.Measure;
+import icesi.plantapiloto.controlLayer.common.entities.Message;
+import icesi.plantapiloto.controlLayer.common.encoders.JsonEncoder;
+
+import icesi.plantapiloto.controllers.ValueControllerImp;
+import icesi.plantapiloto.model.Value;
+import icesi.plantapiloto.repositories.ChannelRepository;
+import icesi.plantapiloto.repositories.ValueRepository;
+import icesi.plantapiloto.services.ValueService;
+
+import java.util.List;
 import java.util.Date;
 
-import icesi.plantapiloto.enityManager.Manager;
-import icesi.plantapiloto.model.Channel;
-import icesi.plantapiloto.model.ControllableDevice;
-import icesi.plantapiloto.model.EntityWrapper;
-import icesi.plantapiloto.model.IOModule;
-import icesi.plantapiloto.model.Value;
 import com.zeroc.Ice.Communicator;
-import com.zeroc.Ice.Current;
-import com.zeroc.Ice.Identity;
 import com.zeroc.Ice.ObjectAdapter;
-import com.zeroc.Ice.ObjectPrx;
 import com.zeroc.Ice.Util;
 
 public class Main {
     public static void main(String[] args) {
-        Manager vManager = new Manager();
+
+        ValueService service = new ValueService();
+        service.setChannelRepository(new ChannelRepository());
+        service.setValueRepository(new ValueRepository());
+        ValueControllerImp valueControllerImp = new ValueControllerImp();
+        valueControllerImp.setService(service);
+
+        JsonEncoder encoder = new JsonEncoder();
+        valueControllerImp.setEncoder(encoder);
         Communicator communicator = Util.initialize(args, "model.config");
         ObjectAdapter adapter = communicator.createObjectAdapter("Model");
-        adapter.add(vManager, Util.stringToIdentity("model"));
+        adapter.add(valueControllerImp, Util.stringToIdentity("valueController"));
         adapter.activate();
         communicator.waitForShutdown();
+        communicator.close();
 
     }
 }

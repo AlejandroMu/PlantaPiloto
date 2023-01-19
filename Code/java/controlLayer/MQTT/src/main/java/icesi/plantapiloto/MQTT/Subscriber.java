@@ -7,8 +7,7 @@ import com.hivemq.client.mqtt.mqtt5.Mqtt5BlockingClient;
 import com.hivemq.client.mqtt.mqtt5.Mqtt5Client;
 import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5Publish;
 
-import icesi.plantapiloto.controlLayer.common.encoders.MessageEncoder;
-import icesi.plantapiloto.controlLayer.common.entities.Message;
+import icesi.plantapiloto.controlLayer.common.encoders.ObjectEncoder;
 import icesi.plantapiloto.controlLayer.common.envents.CallbackSubI;
 import icesi.plantapiloto.controlLayer.common.envents.SubscriberI;
 
@@ -16,15 +15,15 @@ public class Subscriber implements SubscriberI {
 
     private String host;
     private Mqtt5BlockingClient client;
-    private MessageEncoder encoder;
+    private ObjectEncoder encoder;
     private String name;
 
     @Override
-    public void subscribe(String topic, CallbackSubI call) {
+    public <T> void subscribe(String topic, CallbackSubI call, Class<T> type) {
         Consumer<Mqtt5Publish> callback = (publish) -> {
             String msg = new String(publish.getPayloadAsBytes(), StandardCharsets.UTF_8);
-            Message messObject;
-            messObject = encoder.decode(msg);
+            T messObject;
+            messObject = encoder.decode(msg, type);
             call.reciveMessage(messObject);
 
         };
@@ -40,7 +39,7 @@ public class Subscriber implements SubscriberI {
     }
 
     @Override
-    public void setEncoder(MessageEncoder encoder) {
+    public void setEncoder(ObjectEncoder encoder) {
         this.encoder = encoder;
     }
 
@@ -61,6 +60,11 @@ public class Subscriber implements SubscriberI {
                 .serverHost(this.host)
                 .buildBlocking();
         client.connect();
+    }
+
+    @Override
+    public ObjectEncoder getEncoder() {
+        return encoder;
     }
 
 }

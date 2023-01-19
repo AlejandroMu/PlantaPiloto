@@ -1,6 +1,5 @@
 package icesi.plantapiloto.scheduleManager;
 
-import java.util.List;
 import java.util.TimerTask;
 
 import icesi.plantapiloto.controlLayer.common.PluginI;

@@ -3,9 +3,7 @@
 //
 package icesi.plantapiloto.icestorm;
 
-import icesi.plantapiloto.controlLayer.common.*;
-import icesi.plantapiloto.controlLayer.common.encoders.MessageEncoder;
-import icesi.plantapiloto.controlLayer.common.entities.Message;
+import icesi.plantapiloto.controlLayer.common.encoders.ObjectEncoder;
 import icesi.plantapiloto.controlLayer.common.envents.CallbackSubI;
 import icesi.plantapiloto.controlLayer.common.envents.SubscriberI;
 import icesi.plantapiloto.icestorm.publisher.*;
@@ -14,7 +12,6 @@ import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.util.Enumeration;
-import java.util.UUID;
 
 import com.zeroc.Ice.Communicator;
 import com.zeroc.Ice.Current;
@@ -26,18 +23,20 @@ import com.zeroc.IceStorm.TopicManagerPrx;
 import com.zeroc.IceStorm.TopicPrx;
 
 public class Subscriber implements SubscriberI {
-    public static class MeasuresI implements Measures {
+    public static class MeasuresI<T> implements Measures {
         private CallbackSubI calbackSubI;
-        private MessageEncoder encoder;
+        private ObjectEncoder encoder;
+        private Class<T> type;
 
-        MeasuresI(CallbackSubI calbackSubI, MessageEncoder encoder) {
+        MeasuresI(CallbackSubI calbackSubI, ObjectEncoder encoder, Class<T> type) {
             this.calbackSubI = calbackSubI;
             this.encoder = encoder;
+            this.type = type;
         }
 
         @Override
         public void putMeasure(String me, Current current) {
-            calbackSubI.reciveMessage(encoder.decode(me));
+            calbackSubI.reciveMessage(encoder.decode(me, type));
         }
 
     }
@@ -47,7 +46,7 @@ public class Subscriber implements SubscriberI {
     private Communicator communicator;
     private TopicPrx topic;
     private ObjectPrx subscriber;
-    private MessageEncoder encoder;
+    private ObjectEncoder encoder;
 
     private String endpoint;
     private String uriStorm;
@@ -58,7 +57,7 @@ public class Subscriber implements SubscriberI {
     }
 
     @Override
-    public void subscribe(String topicName, CallbackSubI call) {
+    public <T> void subscribe(String topicName, CallbackSubI call, Class<T> type) {
         topic = null;
         try {
             topic = manager.retrieve(topicName);
@@ -71,7 +70,7 @@ public class Subscriber implements SubscriberI {
         }
         Identity subId = Util.stringToIdentity(this.name);
 
-        subscriber = adapter.add(new MeasuresI(call, encoder), subId);
+        subscriber = adapter.add(new MeasuresI<T>(call, encoder, type), subId);
         adapter.activate();
 
         java.util.Map<String, String> qos = new java.util.HashMap<>();
@@ -97,7 +96,7 @@ public class Subscriber implements SubscriberI {
     }
 
     @Override
-    public void setEncoder(MessageEncoder encoder) {
+    public void setEncoder(ObjectEncoder encoder) {
         this.encoder = encoder;
     }
 
@@ -158,5 +157,10 @@ public class Subscriber implements SubscriberI {
 
         adapter = communicator.createObjectAdapterWithEndpoints("subscribe", this.endpoint);
 
+    }
+
+    @Override
+    public ObjectEncoder getEncoder() {
+        return encoder;
     }
 }

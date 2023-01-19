@@ -1,14 +1,13 @@
 package icesi.plantapiloto.scheduleManager;
 
 import java.util.ArrayDeque;
-import java.util.Queue;
 
 import icesi.plantapiloto.controlLayer.common.entities.Message;
 import icesi.plantapiloto.controlLayer.common.envents.PublisherI;
 
 public class PublisherManager extends Thread {
     private PublisherI publisherI;
-    private Queue<Message> messages;
+    private ArrayDeque<Message> messages;
     private boolean stop;
 
     /**
@@ -31,26 +30,34 @@ public class PublisherManager extends Thread {
 
     public void run() {
         while (!stop) {
+            Message mesg = null;
+            boolean sended = true;
             try {
-                if (!messages.isEmpty()) {
+                synchronized (messages) {
+                    if (!messages.isEmpty()) {
+                        publisherI.connect();
+                        while (!messages.isEmpty()) {
+                            mesg = messages.poll();
+                            sended = false;
+                            publisherI.setTopic(mesg.getTopic());
+                            publisherI.publish(mesg);
+                            sended = true;
+                        }
+                        publisherI.close();
 
-                    Queue<Message> temp = messages;
-                    synchronized (messages) {
-                        messages = new ArrayDeque<>();
+                    } else {
+                        Thread.yield();
                     }
-                    publisherI.connect();
-                    while (!temp.isEmpty()) {
-                        Message mesg = temp.poll();
-                        publisherI.setTopic(mesg.getTopic());
-                        publisherI.publish(mesg);
-                    }
-                    publisherI.close();
 
-                } else {
-                    Thread.yield();
                 }
 
             } catch (Exception e) {
+                if (!sended) {
+                    synchronized (messages) {
+                        messages.addFirst(mesg);
+                    }
+                    sended = true;
+                }
                 System.out.println("FAIL SEND MESSAGE");
             }
 

@@ -28,7 +28,7 @@ public class Value implements Serializable {
     @Column
     private Float value;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn
     private Channel channel;
 

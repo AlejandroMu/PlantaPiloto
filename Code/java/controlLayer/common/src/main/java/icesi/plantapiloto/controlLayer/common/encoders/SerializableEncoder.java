@@ -5,14 +5,16 @@ import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.Base64;
 
 import icesi.plantapiloto.controlLayer.common.entities.Message;
 
-public class SerializableEncoder implements MessageEncoder {
+public class SerializableEncoder implements ObjectEncoder {
 
     @Override
-    public String encode(Message message) {
+    public <T> String encode(T message) {
         try {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             ObjectOutputStream oos = new ObjectOutputStream(baos);
@@ -28,14 +30,15 @@ public class SerializableEncoder implements MessageEncoder {
     }
 
     @Override
-    public Message decode(String string) {
+    public <T> T decode(String string, Class<T> type) {
         try {
             byte[] data = Base64.getDecoder().decode(string);
             ObjectInputStream ois = new ObjectInputStream(
                     new ByteArrayInputStream(data));
             Object o = ois.readObject();
             ois.close();
-            return (Message) o;
+
+            return type.cast(o);
         } catch (Exception e) {
             e.printStackTrace();
         }

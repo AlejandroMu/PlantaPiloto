@@ -1,13 +1,8 @@
-["java:package:icesi.plantapiloto.controller"]
-module entityManager{
+["java:package:icesi.plantapiloto"]
+module controllers{
 
-    ["java:serializable:icesi.plantapiloto.model.EntityWrapper"]
-	sequence<byte> Message;
-
-    interface ManagerI{
-        void begin();
-        void commit();
-        void save(string elemnt);
-        Message getById();
+    interface ValueController{
+        string getValues();
+        void saveValues(string data);
     }
 }

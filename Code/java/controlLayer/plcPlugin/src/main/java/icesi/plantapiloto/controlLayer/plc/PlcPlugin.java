@@ -75,7 +75,7 @@ public class PlcPlugin implements PluginI {
 
                 // CIPData data = plc.readTag(tag, (short) 1);
                 // String value = data.toString().split("\\[")[1].split("\\]")[0];
-                String value = "" + Math.random();
+                String value = "1061816906";
                 Measure measure = new Measure();
                 measure.setName(tag);
                 measure.setValue(value);

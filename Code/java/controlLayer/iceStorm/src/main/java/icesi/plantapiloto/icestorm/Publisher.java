@@ -8,8 +8,7 @@ import com.zeroc.Ice.Util;
 import com.zeroc.IceStorm.TopicManagerPrx;
 import com.zeroc.IceStorm.TopicPrx;
 
-import icesi.plantapiloto.controlLayer.common.encoders.MessageEncoder;
-import icesi.plantapiloto.controlLayer.common.entities.Message;
+import icesi.plantapiloto.controlLayer.common.encoders.ObjectEncoder;
 import icesi.plantapiloto.controlLayer.common.envents.PublisherI;
 import icesi.plantapiloto.icestorm.publisher.MeasuresPrx;
 
@@ -22,7 +21,7 @@ public class Publisher implements PublisherI {
     private String name;
     private String topicName;
 
-    private MessageEncoder encoder;
+    private ObjectEncoder encoder;
 
     public Publisher() {
 
@@ -35,7 +34,7 @@ public class Publisher implements PublisherI {
     }
 
     @Override
-    public void publish(Message msg) {
+    public <T> void publish(T msg) {
         String mseg = encoder.encode(msg);
         measures.putMeasure(mseg);
 
@@ -71,7 +70,7 @@ public class Publisher implements PublisherI {
     }
 
     @Override
-    public void setEncoder(MessageEncoder encoder) {
+    public void setEncoder(ObjectEncoder encoder) {
         this.encoder = encoder;
     }
 

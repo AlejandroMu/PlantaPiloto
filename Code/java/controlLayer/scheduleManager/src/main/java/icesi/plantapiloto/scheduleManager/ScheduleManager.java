@@ -11,7 +11,8 @@ import java.util.Iterator;
 import java.util.Properties;
 
 import icesi.plantapiloto.controlLayer.common.PluginI;
-import icesi.plantapiloto.controlLayer.common.encoders.MessageEncoder;
+import icesi.plantapiloto.controlLayer.common.encoders.ObjectEncoder;
+import icesi.plantapiloto.controlLayer.common.entities.Message;
 import icesi.plantapiloto.controlLayer.common.envents.PublisherI;
 
 public class ScheduleManager {
@@ -38,7 +39,8 @@ public class ScheduleManager {
             System.out.println("No publisher config");
             return;
         }
-        MessageEncoder encoder = (MessageEncoder) Class.forName(pubEncoder).getDeclaredConstructor().newInstance();
+        ObjectEncoder encoder = (ObjectEncoder) Class.forName(pubEncoder).getDeclaredConstructor()
+                .newInstance();
         publisherI = (PublisherI) Class.forName(pubClass).getDeclaredConstructor().newInstance();
 
         publisherI.setEncoder(encoder);
