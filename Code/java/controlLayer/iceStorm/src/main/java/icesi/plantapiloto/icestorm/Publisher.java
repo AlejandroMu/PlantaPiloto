@@ -82,4 +82,9 @@ public class Publisher implements PublisherI {
     @Override
     public void setName(String name) {
     }
+
+    @Override
+    public ObjectEncoder getEncoder() {
+        return encoder;
+    }
 }

@@ -4,6 +4,8 @@ import icesi.plantapiloto.controlLayer.common.encoders.ObjectEncoder;
 
 public interface PublisherI {
 
+    public ObjectEncoder getEncoder();
+
     public void setEncoder(ObjectEncoder encoder);
 
     public void setHost(String host);

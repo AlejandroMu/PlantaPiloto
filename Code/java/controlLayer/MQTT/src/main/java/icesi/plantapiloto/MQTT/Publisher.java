@@ -65,4 +65,9 @@ public class Publisher implements PublisherI {
         this.name = name;
     }
 
+    @Override
+    public ObjectEncoder getEncoder() {
+        return encoder;
+    }
+
 }

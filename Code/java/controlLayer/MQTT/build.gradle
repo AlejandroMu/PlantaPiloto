@@ -20,17 +20,10 @@ jar{
                     'Class-Path': configurations.runtimeClasspath.resolve().collect { it.toURI() }.join(' ')
     }
 }
-task deployMQTT{
-    doLast{
-        def dir = System.getenv()['HIVE_MQ_HOME']
-        execute("${dir}/bin","cmd", ["/c","run.bat"])
-    }
+task copyToLib(type: Copy) {
+    into "${buildDir}/libs"
+    from configurations.runtimeClasspath
 }
-def execute(dir,command,arg){
-    exec{
-        workingDir dir
-        executable command
-        args arg
-    }
-}
+
+build.dependsOn(copyToLib)
 

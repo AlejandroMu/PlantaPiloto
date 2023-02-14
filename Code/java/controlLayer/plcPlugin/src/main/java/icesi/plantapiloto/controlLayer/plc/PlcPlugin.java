@@ -29,8 +29,8 @@ public class PlcPlugin implements PluginI {
             tags = new ArrayList<>();
             props = new HashMap<>();
             loadTags();
-            plc = new EtherNetIP(ip, 0);
-            plc.connectTcp();
+            // plc = new EtherNetIP(ip, 0);
+            // plc.connectTcp();
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -73,8 +73,8 @@ public class PlcPlugin implements PluginI {
                     .setTopic(props.get("topic"));
             for (String tag : tags) {
 
-                CIPData data = plc.readTag(tag, (short) 1);
-                String value = data.toString().split("\\[")[1].split("\\]")[0];
+                CIPData data = null;// plc.readTag(tag, (short) 1);
+                String value = "" + msg.getTime().getTime();// data.toString().split("\\[")[1].split("\\]")[0];
                 Measure measure = new Measure();
                 measure.setName(tag);
                 measure.setValue(value);

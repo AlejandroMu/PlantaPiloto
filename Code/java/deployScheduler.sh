@@ -2,10 +2,11 @@
 
 copy_files(){
     mkdir -p bin
+    cp controlLayer/common/build/libs/*.jar bin/
     cp controlLayer/plcPlugin/build/libs/plcPlugin.jar bin/
     cp controlLayer/plcPlugin/etherip-1.0.0.jar bin/
     cp controlLayer/plcPlugin/src/main/resources/plugin.conf bin/
-    cp controlLayer/MQTT/build/libs/MQTT.jar bin/
+    cp controlLayer/MQTT/build/libs/*.jar bin/
     cp controlLayer/scheduleManager/build/libs/scheduler.jar bin/
     cp controlLayer/scheduleManager/src/main/resources/schedule.properties bin/
     

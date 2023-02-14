@@ -5,3 +5,5 @@
 **.class
 .**
 !eth*.jar
+**/tmp
+**.vpp.**

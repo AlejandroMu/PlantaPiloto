@@ -18,8 +18,10 @@ public class Task extends TimerTask {
     public void run() {
         long time = System.currentTimeMillis();
         Message messages = plugin.getMessage();
+        long getMes = System.currentTimeMillis();
+        System.out.println("tiempo de la tarea: " + (getMes - time) + " ms");
         publisher.addMessage(messages);
-        System.out.println("tiempo de la tarea: " + (System.currentTimeMillis() - time) + " ms");
+        System.out.println("tiempo de addMessage: " + (System.currentTimeMillis() - getMes) + " ms");
     }
 
 }

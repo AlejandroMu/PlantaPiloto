@@ -12,12 +12,13 @@ app.get('/', (req, res) => {
 });
 
 app.get('/getValues',(req,res)=>{
-    let name = req.query.name;
+    let names = req.query.tags;
     let count = req.query.count;
-    getValuesByTagName(name,count).then((data) => {
-        console.log(data);
-        res.json(data);
-    });
+    console.log("names " +names)
+    // getValuesByTagName(name,count).then((data) => {
+    //     console.log(data);
+    //     res.json(data);
+    // });
 
 });
 
