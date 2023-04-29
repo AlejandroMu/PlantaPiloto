@@ -22,6 +22,7 @@ then
     echo "build arg"
     ./gradlew $1
     copy_files
+    run_app
 elif [ "$1" = "run" ]
 then
     run_app

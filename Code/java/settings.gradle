@@ -11,18 +11,14 @@ rootProject.name = 'java'
 include ':opto22MMP'
 project(':opto22MMP').projectDir = new File("opto22MMP")
 include ':model'
-project(':model').projectDir = new File("model")
+project(':model').projectDir = new File("modelManager")
 include ':controlLayerCommon'
-project(':controlLayerCommon').projectDir = new File("controlLayer/common")
-include ':iceStorm'
-project(':iceStorm').projectDir = new File("controlLayer/iceStorm")
+project(':controlLayerCommon').projectDir = new File("common")
 include ':MQTT'
-project(':MQTT').projectDir = new File("controlLayer/MQTT")
-include ':test'
-project(':test').projectDir = new File("controlLayer/testPubSub")
-include ':scheduler'
-project(':scheduler').projectDir = new File("controlLayer/scheduleManager")
-include ':plcPlugin'
-project(':plcPlugin').projectDir = new File("controlLayer/plcPlugin")
+project(':MQTT').projectDir = new File("MQTT")
+include ':plcDriver'
+project(':plcDriver').projectDir = new File("plcDriver")
 include ':plcSubscriber'
-project(':plcSubscriber').projectDir = new File("controlLayer/plcSubscriber")
+project(':plcSubscriber').projectDir = new File("plcSubscriber")
+include ':driverAsset'
+project(':driverAsset').projectDir = new File("driverAsset")

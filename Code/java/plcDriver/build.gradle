@@ -1,0 +1,25 @@
+apply plugin: 'java'
+sourceCompatibility = 1.8
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+
+    implementation project(":driverAsset")
+
+    implementation fileTree(dir:'.', include:'*.jar')
+
+}
+jar{
+    manifest{
+        attributes 'Main-Class': "Main",
+                    'Class-Path': configurations.runtimeClasspath.resolve().collect { it.toURI() }.join(' ')
+    }
+}
+task copyToLib(type: Copy) {
+    into "${buildDir}/libs"
+    from configurations.runtimeClasspath
+}
+
+build.dependsOn(copyToLib)
