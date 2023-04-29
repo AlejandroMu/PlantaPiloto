@@ -8,17 +8,9 @@
  */
 
 rootProject.name = 'java'
+include ':common'
 include ':opto22MMP'
-project(':opto22MMP').projectDir = new File("opto22MMP")
-include ':model'
-project(':model').projectDir = new File("modelManager")
-include ':controlLayerCommon'
-project(':controlLayerCommon').projectDir = new File("common")
-include ':MQTT'
-project(':MQTT').projectDir = new File("MQTT")
-include ':plcDriver'
-project(':plcDriver').projectDir = new File("plcDriver")
-include ':plcSubscriber'
-project(':plcSubscriber').projectDir = new File("plcSubscriber")
+include ':managerServer'
 include ':driverAsset'
-project(':driverAsset').projectDir = new File("driverAsset")
+include ':MQTT'
+include ':plcDriver'

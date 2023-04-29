@@ -7,13 +7,13 @@ repositories {
 dependencies {
 
     implementation project(":driverAsset")
-
+    implementation 'com.zeroc:ice:3.7.6'
     implementation fileTree(dir:'.', include:'*.jar')
 
 }
 jar{
     manifest{
-        attributes 'Main-Class': "Main",
+        attributes 'Main-Class': "icesi.plantapiloto.plcDriver.PlcDriver",
                     'Class-Path': configurations.runtimeClasspath.resolve().collect { it.toURI() }.join(' ')
     }
 }
@@ -22,4 +22,4 @@ task copyToLib(type: Copy) {
     from configurations.runtimeClasspath
 }
 
-build.dependsOn(copyToLib)
+copyToLib.mustRunAfter(build)

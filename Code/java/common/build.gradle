@@ -10,10 +10,3 @@ dependencies{
     implementation 'com.google.code.gson:gson:2.10'
 
 }
-print(configurations.runtimeClasspath)
-task copyToLib(type: Copy) {
-    into "${buildDir}/libs"
-    from configurations.runtimeClasspath
-}
-
-build.dependsOn(copyToLib)

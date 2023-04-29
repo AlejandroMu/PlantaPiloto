@@ -1,8 +1,5 @@
 apply plugin: 'java'
-apply plugin: 'application'
 sourceCompatibility = 1.8
-
-mainClassName = "Client"
 
 repositories {
     mavenCentral()
@@ -10,20 +7,8 @@ repositories {
 
 dependencies {
     implementation 'com.hivemq:hivemq-mqtt-client:1.2.2'
-    implementation project(':controlLayerCommon')
+    implementation project(':common')
 }
 
 
-jar{
-    manifest{
-        attributes 'Main-Class': "Client",
-                    'Class-Path': configurations.runtimeClasspath.resolve().collect { it.toURI() }.join(' ')
-    }
-}
-task copyToLib(type: Copy) {
-    into "${buildDir}/libs"
-    from configurations.runtimeClasspath
-}
-
-build.dependsOn(copyToLib)
 

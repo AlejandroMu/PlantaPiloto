@@ -15,12 +15,5 @@ repositories{
 }
 dependencies{
     implementation 'com.zeroc:ice:3.7.6'
-    implementation project(":controlLayerCommon")
 
-}
-jar{
-    manifest{
-        attributes 'Main-Class': "icesi.plantapiloto.Main",
-                    'Class-Path': configurations.runtimeClasspath.resolve().collect { it.toURI() }.join(' ')
-    }
 }
