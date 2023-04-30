@@ -7,12 +7,12 @@ import com.zeroc.Ice.Current;
 import com.zeroc.Ice.ObjectAdapter;
 import com.zeroc.Ice.Util;
 
+import icesi.plantapiloto.common.controllers.AssetManagerCallbackPrx;
+import icesi.plantapiloto.common.controllers.DriverAsset;
+import icesi.plantapiloto.common.dtos.AssetDTO;
 import icesi.plantapiloto.driverAsset.RMSender.PublisherManager;
 import icesi.plantapiloto.driverAsset.concrete.DriverAssetConcrete;
 import icesi.plantapiloto.driverAsset.scheduler.ScheduleManager;
-import icesi.plantapiloto.modelManager.controllers.AssetDTO;
-import icesi.plantapiloto.modelManager.controllers.AssetManagerCallbackPrx;
-import icesi.plantapiloto.modelManager.controllers.DriverAsset;
 
 public class DriverAssetImp implements DriverAsset {
 

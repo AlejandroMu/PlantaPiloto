@@ -7,6 +7,7 @@ repositories {
 dependencies {
 
     implementation project(":driverAsset")
+    implementation project(":common")
     implementation 'com.zeroc:ice:3.7.6'
     implementation fileTree(dir:'.', include:'*.jar')
 

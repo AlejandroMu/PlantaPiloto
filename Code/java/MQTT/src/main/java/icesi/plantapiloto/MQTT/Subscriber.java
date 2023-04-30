@@ -7,9 +7,9 @@ import com.hivemq.client.mqtt.mqtt5.Mqtt5BlockingClient;
 import com.hivemq.client.mqtt.mqtt5.Mqtt5Client;
 import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5Publish;
 
-import icesi.plantapiloto.controlLayer.common.encoders.ObjectEncoder;
-import icesi.plantapiloto.controlLayer.common.envents.CallbackSubI;
-import icesi.plantapiloto.controlLayer.common.envents.SubscriberI;
+import icesi.plantapiloto.common.encoders.ObjectEncoder;
+import icesi.plantapiloto.common.envents.CallbackSubI;
+import icesi.plantapiloto.common.envents.SubscriberI;
 
 public class Subscriber implements SubscriberI {
 

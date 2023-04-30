@@ -9,9 +9,9 @@ import java.util.concurrent.TimeUnit;
 
 import com.zeroc.Ice.Communicator;
 
+import icesi.plantapiloto.common.dtos.AssetDTO;
 import icesi.plantapiloto.driverAsset.DriverAssetImp;
 import icesi.plantapiloto.driverAsset.concrete.DriverAssetConcrete;
-import icesi.plantapiloto.modelManager.controllers.AssetDTO;
 
 public class ScheduleManager {
 

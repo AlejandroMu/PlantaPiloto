@@ -1,4 +1,4 @@
-package icesi.plantapiloto.controlLayer.common.encoders;
+package icesi.plantapiloto.common.encoders;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

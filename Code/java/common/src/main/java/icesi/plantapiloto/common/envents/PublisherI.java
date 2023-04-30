@@ -1,6 +1,6 @@
-package icesi.plantapiloto.controlLayer.common.envents;
+package icesi.plantapiloto.common.envents;
 
-import icesi.plantapiloto.controlLayer.common.encoders.ObjectEncoder;
+import icesi.plantapiloto.common.encoders.ObjectEncoder;
 
 public interface PublisherI {
 

@@ -5,9 +5,9 @@ import java.util.HashMap;
 
 import com.zeroc.Ice.ObjectPrx;
 
+import icesi.plantapiloto.common.controllers.AssetManagerCallbackPrx;
+import icesi.plantapiloto.common.dtos.AssetValue;
 import icesi.plantapiloto.driverAsset.DriverAssetImp;
-import icesi.plantapiloto.modelManager.controllers.AssetManagerCallbackPrx;
-import icesi.plantapiloto.modelManager.controllers.AssetValue;
 
 public class PublisherManager extends Thread {
     private static HashMap<String, PublisherManager> instances = new HashMap<>();

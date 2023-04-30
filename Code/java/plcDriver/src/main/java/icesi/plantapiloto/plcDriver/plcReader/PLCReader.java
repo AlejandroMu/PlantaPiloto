@@ -6,9 +6,9 @@ import java.util.Map;
 import etherip.EtherNetIP;
 import etherip.types.CIPData;
 import etherip.types.CIPData.Type;
+import icesi.plantapiloto.common.dtos.AssetDTO;
+import icesi.plantapiloto.common.dtos.MeasurementDTO;
 import icesi.plantapiloto.driverAsset.concrete.DriverAssetConcrete;
-import icesi.plantapiloto.modelManager.controllers.AssetDTO;
-import icesi.plantapiloto.modelManager.controllers.MeasurementDTO;
 
 public class PLCReader implements DriverAssetConcrete {
 

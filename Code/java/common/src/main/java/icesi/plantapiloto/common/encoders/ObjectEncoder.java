@@ -1,4 +1,4 @@
-package icesi.plantapiloto.controlLayer.common.encoders;
+package icesi.plantapiloto.common.encoders;
 
 public interface ObjectEncoder {
 

@@ -1,8 +1,8 @@
-package icesi.plantapiloto.controlLayer.common;
+package icesi.plantapiloto.common;
 
 import java.util.HashMap;
 
-import icesi.plantapiloto.controlLayer.common.entities.Message;
+import icesi.plantapiloto.common.entities.Message;
 
 public interface PluginI {
     public Message getMessage();

@@ -2,8 +2,8 @@ package icesi.plantapiloto.driverAsset.concrete;
 
 import java.util.Map;
 
-import icesi.plantapiloto.modelManager.controllers.AssetDTO;
-import icesi.plantapiloto.modelManager.controllers.MeasurementDTO;
+import icesi.plantapiloto.common.dtos.AssetDTO;
+import icesi.plantapiloto.common.dtos.MeasurementDTO;
 
 public interface DriverAssetConcrete {
 

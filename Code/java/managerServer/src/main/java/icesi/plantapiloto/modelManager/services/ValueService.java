@@ -4,8 +4,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-import icesi.plantapiloto.controlLayer.common.entities.Measure;
-import icesi.plantapiloto.controlLayer.common.entities.Message;
+import icesi.plantapiloto.common.entities.Measure;
+import icesi.plantapiloto.common.entities.Message;
 import icesi.plantapiloto.modelManager.dtos.ValueQuery;
 import icesi.plantapiloto.modelManager.model.Channel;
 import icesi.plantapiloto.modelManager.model.Value;

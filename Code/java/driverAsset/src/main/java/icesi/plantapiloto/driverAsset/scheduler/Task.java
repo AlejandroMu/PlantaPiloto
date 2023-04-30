@@ -3,11 +3,11 @@ package icesi.plantapiloto.driverAsset.scheduler;
 import java.util.Map;
 import java.util.TimerTask;
 
+import icesi.plantapiloto.common.dtos.AssetDTO;
+import icesi.plantapiloto.common.dtos.AssetValue;
+import icesi.plantapiloto.common.dtos.MeasurementDTO;
 import icesi.plantapiloto.driverAsset.RMSender.PublisherManager;
 import icesi.plantapiloto.driverAsset.concrete.DriverAssetConcrete;
-import icesi.plantapiloto.modelManager.controllers.AssetDTO;
-import icesi.plantapiloto.modelManager.controllers.AssetValue;
-import icesi.plantapiloto.modelManager.controllers.MeasurementDTO;
 
 public class Task extends TimerTask {
     private DriverAssetConcrete source;

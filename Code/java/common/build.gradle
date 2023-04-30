@@ -1,3 +1,13 @@
+plugins {
+    id 'com.zeroc.gradle.ice-builder.slice' version '1.5.0' 
+}
+
+slice {
+    java {
+        files = [file("../ManagerDriver.ice")]
+    }
+}
+
 apply plugin: 'java'
 sourceCompatibility = 1.8
 
@@ -8,5 +18,7 @@ repositories{
 dependencies{
     // https://mvnrepository.com/artifact/com.google.code.gson/gson
     implementation 'com.google.code.gson:gson:2.10'
+    implementation 'com.zeroc:ice:3.7.6'
+
 
 }

@@ -1,4 +1,4 @@
-package icesi.plantapiloto.controlLayer.common.envents;
+package icesi.plantapiloto.common.envents;
 
 public interface CallbackSubI {
 

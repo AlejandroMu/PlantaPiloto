@@ -1,4 +1,4 @@
-package icesi.plantapiloto.controlLayer.common.entities;
+package icesi.plantapiloto.common.entities;
 
 import java.io.Serializable;
 

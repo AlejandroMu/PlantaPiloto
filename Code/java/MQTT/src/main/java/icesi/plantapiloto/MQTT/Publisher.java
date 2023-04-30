@@ -5,8 +5,8 @@ import java.nio.charset.StandardCharsets;
 import com.hivemq.client.mqtt.mqtt5.Mqtt5BlockingClient;
 import com.hivemq.client.mqtt.mqtt5.Mqtt5Client;
 
-import icesi.plantapiloto.controlLayer.common.encoders.ObjectEncoder;
-import icesi.plantapiloto.controlLayer.common.envents.PublisherI;
+import icesi.plantapiloto.common.encoders.ObjectEncoder;
+import icesi.plantapiloto.common.envents.PublisherI;
 
 public class Publisher implements PublisherI {
 
