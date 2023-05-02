@@ -1,0 +1,85 @@
+plugins {
+    id 'org.hidetake.ssh' version '2.11.2' apply false
+}
+subprojects{
+    apply plugin: 'java'
+    apply plugin: 'application'
+    apply plugin: 'org.hidetake.ssh'
+    sourceCompatibility = 1.8   
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies{
+        implementation 'com.zeroc:ice:3.7.6'
+    }
+
+    remotes {
+        hgrid22 {
+            role 'plcDriver'
+            host = 'xhgrid22'
+            user = project.property("plcDriver.user")
+            password = project.property("plcDriver.password")
+        }
+        hgrid20 {
+            role 'managerServer'
+            host = 'xhgrid20'
+            user = project.property("managerServer.user")
+            password = project.property("managerServer.password")
+        }
+    }
+
+    task cleanBin(type: Delete){
+        delete "${projectDir}/bin"
+    }
+    clean.finalizedBy(cleanBin)
+
+    task cleanZip(type: Delete){
+        delete "$rootDir/distributable/${project.name}.zip"
+    }
+    task copyToLib(type: Copy) {
+        into "${buildDir}/libs"
+        from configurations.runtimeClasspath
+        dependsOn build
+    }
+
+    task comprimir(type: Zip){
+        from "$buildDir/libs/"
+        archiveName "${project.name}.zip"
+        destinationDir(file("$rootDir/distributable"))
+        dependsOn copyToLib
+        dependsOn cleanZip
+    }
+    task deploy {
+        doLast {
+            def remoteFolder = "planta/${project.name}"
+            def machines = remotes.role("$project.name")
+            def mainClass = "${application.mainClassName}"
+            if(!machines.isEmpty() && !mainClass.toString().equals('null')){
+                ssh.run {
+                    session(machines) {
+                        def awkCommand = "ps -ef | awk -F \" \" '\$0 ~ /.*$mainClass.*/ && \$8 ~ /java/ {print \$2}'"
+                        println "awkCommand: $awkCommand"
+                        def processId = execute "$awkCommand"
+                        if(!processId.isBlank()){
+                            execute "kill -9 $processId"
+                            println "kill process $processId"
+                        }
+                        execute "rm -rf $remoteFolder"
+                        execute "mkdir -p $remoteFolder"
+                        put from: "$rootDir/distributable/${project.name}.zip", into: "$remoteFolder/"
+                        execute "cd $remoteFolder && unzip ${project.name}.zip"
+                        def nohupCommand = "nohup java -cp \"$remoteFolder/*\" $mainClass > $remoteFolder/${project.name}.out 2>&1 &"
+                        println "nohupCommand: $nohupCommand"
+                        def nohupOut = execute "$nohupCommand"
+                        println "nohupCommandOut: $nohupOut"
+
+                    }
+                }
+            }
+        }
+        dependsOn comprimir 
+    }
+
+}
