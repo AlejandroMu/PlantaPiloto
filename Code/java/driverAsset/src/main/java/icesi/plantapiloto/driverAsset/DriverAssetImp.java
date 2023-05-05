@@ -1,7 +1,5 @@
 package icesi.plantapiloto.driverAsset;
 
-import java.util.Map;
-
 import com.zeroc.Ice.Communicator;
 import com.zeroc.Ice.Current;
 import com.zeroc.Ice.ObjectAdapter;
@@ -9,7 +7,7 @@ import com.zeroc.Ice.Util;
 
 import icesi.plantapiloto.common.controllers.AssetManagerCallbackPrx;
 import icesi.plantapiloto.common.controllers.DriverAsset;
-import icesi.plantapiloto.common.dtos.AssetDTO;
+import icesi.plantapiloto.common.dtos.output.AssetDTO;
 import icesi.plantapiloto.driverAsset.RMSender.PublisherManager;
 import icesi.plantapiloto.driverAsset.concrete.DriverAssetConcrete;
 import icesi.plantapiloto.driverAsset.scheduler.ScheduleManager;
@@ -17,11 +15,13 @@ import icesi.plantapiloto.driverAsset.scheduler.ScheduleManager;
 public class DriverAssetImp implements DriverAsset {
 
     public static Communicator communicator;
+    public static final String ENDPOINT_STRING = "driver.asset.Endpoints";
+    public static final String THREADPOOL_SIZE = "driver.asset.threadpool.size";
 
     public static void initServices(Class<? extends DriverAssetConcrete> clasz) {
         communicator = Util.initialize(null, "application.properties");
         DriverAsset driverAsset = new DriverAssetImp(clasz);
-        String pr = communicator.getProperties().getProperty("driver.asset.Endpoints");
+        String pr = communicator.getProperties().getProperty(ENDPOINT_STRING);
         if (pr == null) {
             pr = "tcp -h * -p 8041";
         }
@@ -41,12 +41,11 @@ public class DriverAssetImp implements DriverAsset {
     }
 
     @Override
-    public void readAsset(AssetDTO[] asset, Map<String, String> config, AssetManagerCallbackPrx server,
+    public void readAsset(AssetDTO[] asset, AssetManagerCallbackPrx server, int execId, long period,
             Current current) {
         String proxy = server.ice_getEndpoints()[0]._toString();
         PublisherManager.addInstance(server, proxy);
-        config.put("asset.manager.proxy", proxy);
-        manager.addProcess(asset, config, getConcreteInstance());
+        manager.addProcess(asset, execId, period, getConcreteInstance(), proxy);
 
     }
 
@@ -56,9 +55,9 @@ public class DriverAssetImp implements DriverAsset {
     }
 
     @Override
-    public void setPointAsset(AssetDTO asset, double value, Map<String, String> config, Current current) {
+    public void setPointAsset(AssetDTO asset, double value, Current current) {
         DriverAssetConcrete obj = getConcreteInstance();
-        obj.setPointAsset(asset, value, config);
+        obj.setPointAsset(asset, value);
     }
 
     public DriverAssetConcrete getConcreteInstance() {

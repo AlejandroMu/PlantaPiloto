@@ -4,10 +4,12 @@ plugins {
 
 slice {
     java {
-        files = [file("../ManagerDriver.ice")]
+        files = [file("../sliceFiles/ManagerDriver.ice")]
     }
 }
 
 dependencies{
     implementation 'com.google.code.gson:gson:2.10'
+    implementation 'javax.persistence:javax.persistence-api:2.2'
+
 }

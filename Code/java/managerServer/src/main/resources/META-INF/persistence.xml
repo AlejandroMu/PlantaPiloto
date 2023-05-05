@@ -6,14 +6,24 @@
  >
 
   <persistence-unit name="planta">
-    <class>icesi.plantapiloto.model.Value</class>
-    <class>icesi.plantapiloto.model.IOModule</class>
-    <class>icesi.plantapiloto.model.ControllableDevice</class>
-    <class>icesi.plantapiloto.model.Channel</class>
+    <class>icesi.plantapiloto.common.model.Action</class>
+	<class>icesi.plantapiloto.common.model.Asset</class>
+	<class>icesi.plantapiloto.common.model.Driver</class>
+	<class>icesi.plantapiloto.common.model.Execution</class>
+	<class>icesi.plantapiloto.common.model.ExecutionInstruction</class>
+	<class>icesi.plantapiloto.common.model.ExecutionInstructionPK</class>
+	<class>icesi.plantapiloto.common.model.Instruction</class>
+	<class>icesi.plantapiloto.common.model.Measurement</class>
+	<class>icesi.plantapiloto.common.model.MetaData</class>
+	<class>icesi.plantapiloto.common.model.Process</class>
+	<class>icesi.plantapiloto.common.model.ProcessAsset</class>
+	<class>icesi.plantapiloto.common.model.ProcessAssetPK</class>
+	<class>icesi.plantapiloto.common.model.Type</class>
+	<class>icesi.plantapiloto.common.model.WorkSpace</class>
 
     <properties>
         <property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver" />
-        <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/piloto" />
+        <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/assets" />
         <property name="javax.persistence.jdbc.user" value="postgres" />
         <property name="javax.persistence.jdbc.password" value="postgres" />
         <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect" />

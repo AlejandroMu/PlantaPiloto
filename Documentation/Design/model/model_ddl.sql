@@ -1,0 +1,80 @@
+INSERT INTO WORK_SPACE VALUES(nextval('work_space_seq'),'Laboratorio de práctica IBQ planta piloto','Laboratorio de BioQuimica',null);
+
+INSERT INTO DRIVER VALUES(nextval('driver_seq'),'PLC Driver','DriverAsset:tcp -h xrio -p 5431',1);
+
+INSERT INTO TYPE VALUES(nextval('type_seq'),'PLC','PLC Allen Bradley','Asset');
+INSERT INTO TYPE VALUES(nextval('type_seq'),'PLC_TAG','TAG de un PLC Allen Bradley','Asset');
+INSERT INTO TYPE VALUES(nextval('type_seq'),'Auto','Instrucción se valida y ejecuta por el sistema','Instruction');
+INSERT INTO TYPE VALUES(nextval('type_seq'),'Manual','Instrucción se valida y ejecuta por el operario','Instruction');
+INSERT INTO TYPE VALUES(nextval('type_seq'),'Mixto','Instrucción se valida por el operario y ejecuta el sistema','Instruction');
+
+INSERT INTO ASSET VALUES(nextval('asset_seq'),'A','B40B','Bio Reactor 40B',1,1,null);
+INSERT INTO ASSET VALUES(nextval('asset_seq'),'A','ANTIESPUMANTE.ACC','Tag del Bio Reactor 40B',2,1,1);
+INSERT INTO ASSET VALUES(nextval('asset_seq'),'A','ENT_AGITADOR','Tag del Bio Reactor 40B',2,1,1);       
+INSERT INTO ASSET VALUES(nextval('asset_seq'),'A','ENT_FCV101','Tag del Bio Reactor 40B',2,1,1);
+INSERT INTO ASSET VALUES(nextval('asset_seq'),'A','ENT_P101','Tag del Bio Reactor 40B',2,1,1);
+INSERT INTO ASSET VALUES(nextval('asset_seq'),'A','ENT_P102','Tag del Bio Reactor 40B',2,1,1);
+INSERT INTO ASSET VALUES(nextval('asset_seq'),'A','ENT_P103','Tag del Bio Reactor 40B',2,1,1);
+INSERT INTO ASSET VALUES(nextval('asset_seq'),'A','ENT_P104_CHILLER','Tag del Bio Reactor 40B',2,1,1);   
+INSERT INTO ASSET VALUES(nextval('asset_seq'),'A','FLUJO_ACIDO_HMI','Tag del Bio Reactor 40B',2,1,1);    
+INSERT INTO ASSET VALUES(nextval('asset_seq'),'A','FLUJO_BASE_HMI','Tag del Bio Reactor 40B',2,1,1);     
+INSERT INTO ASSET VALUES(nextval('asset_seq'),'A','FLUJO_GAS','Tag del Bio Reactor 40B',2,1,1);
+INSERT INTO ASSET VALUES(nextval('asset_seq'),'A','FLUJO_SUSTRATO','Tag del Bio Reactor 40B',2,1,1);     
+INSERT INTO ASSET VALUES(nextval('asset_seq'),'A','PENDIENTE_ACIDO_10','Tag del Bio Reactor 40B',2,1,1); 
+INSERT INTO ASSET VALUES(nextval('asset_seq'),'A','PENDIENTE_ACIDO_30','Tag del Bio Reactor 40B',2,1,1); 
+INSERT INTO ASSET VALUES(nextval('asset_seq'),'A','PENDIENTE_ACIDO_100','Tag del Bio Reactor 40B',2,1,1);
+INSERT INTO ASSET VALUES(nextval('asset_seq'),'A','PENDIENTE_BASE_10','Tag del Bio Reactor 40B',2,1,1);  
+INSERT INTO ASSET VALUES(nextval('asset_seq'),'A','PENDIENTE_BASE_30','Tag del Bio Reactor 40B',2,1,1);  
+INSERT INTO ASSET VALUES(nextval('asset_seq'),'A','PENDIENTE_BASE_100','Tag del Bio Reactor 40B',2,1,1); 
+INSERT INTO ASSET VALUES(nextval('asset_seq'),'A','PH_MAXIMO','Tag del Bio Reactor 40B',2,1,1);
+INSERT INTO ASSET VALUES(nextval('asset_seq'),'A','PH_MINIMO','Tag del Bio Reactor 40B',2,1,1);
+INSERT INTO ASSET VALUES(nextval('asset_seq'),'A','PID_PRESION.SP','Tag del Bio Reactor 40B',2,1,1);     
+INSERT INTO ASSET VALUES(nextval('asset_seq'),'A','PID_PRESION.KP','Tag del Bio Reactor 40B',2,1,1);
+INSERT INTO ASSET VALUES(nextval('asset_seq'),'A','PID_PRESION.KI','Tag del Bio Reactor 40B',2,1,1);
+INSERT INTO ASSET VALUES(nextval('asset_seq'),'A','PID_PRESION.KD','Tag del Bio Reactor 40B',2,1,1);
+INSERT INTO ASSET VALUES(nextval('asset_seq'),'A','RANGO_CALENTAMIENTO','Tag del Bio Reactor 40B',2,1,1);
+INSERT INTO ASSET VALUES(nextval('asset_seq'),'A','RANGO_ENFRIAMIENTO','Tag del Bio Reactor 40B',2,1,1);
+INSERT INTO ASSET VALUES(nextval('asset_seq'),'A','SAL_FLUJO_GAS','Tag del Bio Reactor 40B',2,1,1);
+INSERT INTO ASSET VALUES(nextval('asset_seq'),'A','SAL_NIVEL','Tag del Bio Reactor 40B',2,1,1);
+INSERT INTO ASSET VALUES(nextval('asset_seq'),'A','SAL_NIVEL1','Tag del Bio Reactor 40B',2,1,1);
+INSERT INTO ASSET VALUES(nextval('asset_seq'),'A','SAL_OXIGENO','Tag del Bio Reactor 40B',2,1,1);
+INSERT INTO ASSET VALUES(nextval('asset_seq'),'A','SAL_PH','Tag del Bio Reactor 40B',2,1,1);
+INSERT INTO ASSET VALUES(nextval('asset_seq'),'A','SAL_PRESION','Tag del Bio Reactor 40B',2,1,1);
+INSERT INTO ASSET VALUES(nextval('asset_seq'),'A','SAL_RTD_TE101','Tag del Bio Reactor 40B',2,1,1);
+INSERT INTO ASSET VALUES(nextval('asset_seq'),'A','SAL_RTD_TE102','Tag del Bio Reactor 40B',2,1,1);
+INSERT INTO ASSET VALUES(nextval('asset_seq'),'A','SAL_RTD_TE103','Tag del Bio Reactor 40B',2,1,1);
+INSERT INTO ASSET VALUES(nextval('asset_seq'),'A','SAL_RTD_TE106','Tag del Bio Reactor 40B',2,1,1);
+INSERT INTO ASSET VALUES(nextval('asset_seq'),'A','SV101','Tag del Bio Reactor 40B',2,1,1);
+INSERT INTO ASSET VALUES(nextval('asset_seq'),'A','SV102','Tag del Bio Reactor 40B',2,1,1);
+INSERT INTO ASSET VALUES(nextval('asset_seq'),'A','SV103','Tag del Bio Reactor 40B',2,1,1);
+INSERT INTO ASSET VALUES(nextval('asset_seq'),'A','SV104','Tag del Bio Reactor 40B',2,1,1);
+INSERT INTO ASSET VALUES(nextval('asset_seq'),'A','SV105','Tag del Bio Reactor 40B',2,1,1);
+INSERT INTO ASSET VALUES(nextval('asset_seq'),'A','T_DOSIFICACION','Tag del Bio Reactor 40B',2,1,1);
+INSERT INTO ASSET VALUES(nextval('asset_seq'),'A','T_ESPERA_DOSIFICACION','Tag del Bio Reactor 40B',2,1,1);
+INSERT INTO ASSET VALUES(nextval('asset_seq'),'A','T_SANITIZACION_HMI','Tag del Bio Reactor 40B',2,1,1);
+INSERT INTO ASSET VALUES(nextval('asset_seq'),'A','TEMP_TE106','Tag del Bio Reactor 40B',2,1,1);
+INSERT INTO ASSET VALUES(nextval('asset_seq'),'A','TEMPE_TE101','Tag del Bio Reactor 40B',2,1,1);
+INSERT INTO ASSET VALUES(nextval('asset_seq'),'A','TIEMPO_CALENTAMIENTO_CICLO_HMI','Tag del Bio Reactor 40B',2,1,1);
+INSERT INTO ASSET VALUES(nextval('asset_seq'),'A','TIEMPO_CALENTAMIENTO_HMI','Tag del Bio Reactor 40B',2,1,1);
+INSERT INTO ASSET VALUES(nextval('asset_seq'),'A','TIEMPO_ELECTRO','Tag del Bio Reactor 40B',2,1,1);
+INSERT INTO ASSET VALUES(nextval('asset_seq'),'A','TIEMPO_ENFRIAMIENTO_CICLO_HMI','Tag del Bio Reactor 40B',2,1,1);
+INSERT INTO ASSET VALUES(nextval('asset_seq'),'A','TIEMPO_ENFRIAMIENTO_HMI','Tag del Bio Reactor 40B',2,1,1);
+INSERT INTO ASSET VALUES(nextval('asset_seq'),'A','TIEMPO_FINAL_SANITIZACION','Tag del Bio Reactor 40B',2,1,1);
+INSERT INTO ASSET VALUES(nextval('asset_seq'),'A','VAPOR_TEMPE_TE101','Tag del Bio Reactor 40B',2,1,1);
+INSERT INTO ASSET VALUES(nextval('asset_seq'),'A','SAL_O2','Tag del Bio Reactor 40B',2,1,1);
+INSERT INTO ASSET VALUES(nextval('asset_seq'),'A','SAL_CO2','Tag del Bio Reactor 40B',2,1,1);
+INSERT INTO ASSET VALUES(nextval('asset_seq'),'A','Q_O2','Tag del Bio Reactor 40B',2,1,1);
+INSERT INTO ASSET VALUES(nextval('asset_seq'),'A','Q_CO2','Tag del Bio Reactor 40B',2,1,1);
+INSERT INTO ASSET VALUES(nextval('asset_seq'),'A','RQ','Tag del Bio Reactor 40B',2,1,1);
+
+INSERT INTO META_DATA VALUES(nextval('meta_data_seq'),'plc.ip','B40B','Dirección ip del bio reactor 40B',1);
+INSERT INTO META_DATA VALUES(nextval('meta_data_seq'),'plc.slot','0','Slot de conexión del bio reactor 40B',1);
+
+INSERT INTO PROCESS VALUES(nextval('process_seq'),'Proceso de Prueba','Proceso para probar la aplicación',1);
+INSERT INTO PROCESS_ASSET VALUES(1,1,30000);
+
+INSERT INTO INSTRUCTION VALUES(nextval('instruction_seq'),'Cambiar valor de agitador','cuando quiera (expression)',4);
+INSERT INTO INSTRUCTION_PROCESS VALUES(1,1);
+
+INSERT INTO ACTION VALUES(nextval('action_seq'),'SET_AGI','Cambiar valor agitador','colocar el agitador en X valor (expression)');
+INSERT INTO ACTION_INSTRUCTION VALUES(1,1);

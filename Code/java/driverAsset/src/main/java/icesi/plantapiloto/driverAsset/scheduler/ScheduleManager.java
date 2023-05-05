@@ -9,30 +9,33 @@ import java.util.concurrent.TimeUnit;
 
 import com.zeroc.Ice.Communicator;
 
-import icesi.plantapiloto.common.dtos.AssetDTO;
+import icesi.plantapiloto.common.dtos.output.AssetDTO;
 import icesi.plantapiloto.driverAsset.DriverAssetImp;
 import icesi.plantapiloto.driverAsset.concrete.DriverAssetConcrete;
 
 public class ScheduleManager {
+
+    public static final String PERIOD_KEY = "execution.asset.period";
+    public static final String EXECUTION_ID_KEY = "execution.id";
 
     private ScheduledExecutorService scheduler;
     private Map<Integer, TimerTask> process;
 
     public ScheduleManager() {
         Communicator communicator = DriverAssetImp.communicator;
-        String poolSize = communicator.getProperties().getProperty("driver.asset.threadpool.size");
+        String poolSize = communicator.getProperties().getProperty(DriverAssetImp.THREADPOOL_SIZE);
         int ps = poolSize != null ? Integer.parseInt(poolSize) : 5;
         scheduler = Executors.newScheduledThreadPool(ps);
         process = new HashMap<>();
     }
 
-    public void addProcess(AssetDTO[] asset, Map<String, String> config, DriverAssetConcrete concrete) {
-        TimerTask task = new Task(concrete, asset, config);
-        String period = config.get("execution.asset.period");
-        String execId = config.get("execution.id");
-        scheduler.scheduleAtFixedRate(task, 0, Long.parseLong(period),
+    public void addProcess(AssetDTO[] asset, int execId, long period, DriverAssetConcrete concrete,
+            String callback) {
+
+        TimerTask task = new Task(concrete, asset, execId, callback);
+        scheduler.scheduleAtFixedRate(task, 0, period,
                 TimeUnit.MILLISECONDS);
-        process.put(Integer.parseInt(execId), task);
+        process.put(execId, task);
     }
 
     public void stopProcess(int execId) {

@@ -22,6 +22,12 @@ subprojects{
             user = project.property("plcDriver.user")
             password = project.property("plcDriver.password")
         }
+        hgrid19 {
+            role 'plcDriver'
+            host = 'xhgrid19'
+            user = project.property("plcDriver.user")
+            password = project.property("plcDriver.password")
+        }
         hgrid20 {
             role 'managerServer'
             host = 'xhgrid20'
@@ -55,7 +61,7 @@ subprojects{
         doLast {
             def remoteFolder = "planta/${project.name}"
             def machines = remotes.role("$project.name")
-            def mainClass = "${application.mainClassName}"
+            def mainClass = "$mainClassName"
             if(!machines.isEmpty() && !mainClass.toString().equals('null')){
                 ssh.run {
                     session(machines) {

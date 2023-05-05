@@ -6,7 +6,7 @@ import java.util.HashMap;
 import com.zeroc.Ice.ObjectPrx;
 
 import icesi.plantapiloto.common.controllers.AssetManagerCallbackPrx;
-import icesi.plantapiloto.common.dtos.AssetValue;
+import icesi.plantapiloto.common.dtos.MeasurementDTO;
 import icesi.plantapiloto.driverAsset.DriverAssetImp;
 
 public class PublisherManager extends Thread {
@@ -26,13 +26,16 @@ public class PublisherManager extends Thread {
     }
 
     public static void addInstance(AssetManagerCallbackPrx proxy, String name) {
+        if (instances.containsKey(name)) {
+            return;
+        }
         PublisherManager ret = new PublisherManager(proxy);
         ret.start();
         instances.put(name, ret);
     }
 
     private AssetManagerCallbackPrx publisherI;
-    private ArrayDeque<AssetValue> messages;
+    private ArrayDeque<MeasurementDTO[]> messages;
     private boolean stop;
 
     /**
@@ -44,7 +47,7 @@ public class PublisherManager extends Thread {
         messages = new ArrayDeque<>();
     }
 
-    public void addMessage(AssetValue message) {
+    public void addMessage(MeasurementDTO[] message) {
         synchronized (messages) {
             messages.add(message);
         }
@@ -56,7 +59,7 @@ public class PublisherManager extends Thread {
 
     public void run() {
         while (!stop) {
-            AssetValue mesg = null;
+            MeasurementDTO[] mesg = null;
             try {
                 while (!messages.isEmpty()) {
                     mesg = messages.peek();

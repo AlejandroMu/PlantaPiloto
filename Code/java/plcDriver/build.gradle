@@ -1,3 +1,4 @@
+mainClassName ="icesi.plantapiloto.plcDriver.PlcDriver"
 dependencies {
 
     implementation project(":driverAsset")
@@ -6,6 +7,3 @@ dependencies {
 
 }
 
-application {
-    mainClassName = 'icesi.plantapiloto.plcDriver.PlcDriver'
-}

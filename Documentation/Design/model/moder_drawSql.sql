@@ -4,9 +4,8 @@ CREATE TABLE "process_asset"(
     "delay_read" BIGINT NOT NULL
 );
 ALTER TABLE
-    "process_asset" ADD PRIMARY KEY("asset_id");
-ALTER TABLE
-    "process_asset" ADD PRIMARY KEY("process_id");
+    "process_asset" ADD PRIMARY KEY("asset_id","process_id");
+
 CREATE TABLE "work_space"(
     "name" VARCHAR(255) NOT NULL,
     "id" INTEGER NOT NULL,
@@ -43,6 +42,9 @@ CREATE TABLE "action_instruction"(
     "action" VARCHAR(255) NOT NULL,
     "instruction" VARCHAR(255) NOT NULL
 );
+ALTER TABLE
+    "action_instruction" ADD PRIMARY KEY("action","instruction");
+
 CREATE TABLE "asset"(
     "id" INTEGER NOT NULL,
     "name" VARCHAR(255) NOT NULL,
@@ -77,6 +79,9 @@ CREATE TABLE "instruction_process"(
     "instruction" VARCHAR(255) NOT NULL,
     "process" INTEGER NOT NULL
 );
+ALTER TABLE
+    "instruction_process" ADD PRIMARY KEY("instruction","process");
+
 CREATE TABLE "driver"(
     "id" INTEGER NOT NULL,
     "name" VARCHAR(255) NOT NULL,
@@ -102,9 +107,8 @@ CREATE TABLE "execution_instruction"(
     "exc_time" TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL
 );
 ALTER TABLE
-    "execution_instruction" ADD PRIMARY KEY("execution");
-ALTER TABLE
-    "execution_instruction" ADD PRIMARY KEY("instruction");
+    "execution_instruction" ADD PRIMARY KEY("execution","instruction");
+
 CREATE TABLE "action"(
     "name_tech" VARCHAR(255) NOT NULL,
     "name_user" CHAR(255) NOT NULL,
