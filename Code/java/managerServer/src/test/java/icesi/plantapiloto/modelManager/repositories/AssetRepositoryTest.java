@@ -4,20 +4,28 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import icesi.plantapiloto.common.model.Asset;
 
 public class AssetRepositoryTest {
+    @BeforeClass
+    public static void setUp1() {
+        System.getProperties().forEach((k, v) -> {
+            System.out.println("Key: " + k + " Value: " + v);
+        });
+    }
 
     @Test
-    public void testGetType() {
-        AssetRepository repository = new AssetRepository();
-        List<Asset> assets = repository.findAll();
-        Class<?> type = repository.getType();
-        System.out.println("Elements: " + assets.size());
-        assertEquals("Test getType", Asset.class, type);
-        assertEquals("count assets: ", 58, assets.size());
+    public void testGetAssetByType() {
+        AssetRepository repository = AssetRepository.getInstance();
+        List<Asset> assets = repository.findByType(1);
+        assertEquals("getType PLC", 1, assets.size());
+        assertEquals("getType PLC Name", "B40B", assets.get(0).getName());
+
+        assets = repository.findByType(2);
+        assertEquals("getType TAG: ", 3, assets.size());
     }
 
 }

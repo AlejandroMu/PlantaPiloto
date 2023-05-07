@@ -12,9 +12,13 @@ public class AssetMapper {
 
     public static AssetMapper getInstance() {
         if (instance == null) {
-
+            instance = new AssetMapper();
         }
         return instance;
+    }
+
+    private AssetMapper() {
+
     }
 
     public AssetDTO asAssetDto(Asset asset) {

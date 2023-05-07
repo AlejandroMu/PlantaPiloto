@@ -20,11 +20,8 @@ import icesi.plantapiloto.common.mappers.AssetMapper;
 import icesi.plantapiloto.common.model.Asset;
 import icesi.plantapiloto.common.model.MetaData;
 import icesi.plantapiloto.common.model.Type;
-import icesi.plantapiloto.modelManager.Main;
 
 public class AssetController implements AssetManagerController {
-
-    public static final String DRIVER_ENDPOINT = "service.proxy";
 
     private AssetService service;
     private PublisherI publisher;
@@ -46,8 +43,14 @@ public class AssetController implements AssetManagerController {
 
     public AssetController() {
         service = new AssetService();
+    }
+
+    /**
+     * @param publisher the publisher to set
+     */
+    public void setPublisher(String host) {
         publisher = new Publisher();
-        publisher.setHost(Main.communicator.getProperties().getProperty("mqtt.host"));
+        publisher.setHost(host);
         publisher.setName("AssetController");
         publisher.setEncoder(new JsonEncoder());
         publisher.connect();
@@ -93,7 +96,7 @@ public class AssetController implements AssetManagerController {
     @Override
     public AssetDTO[] findByType(Type type, Current current) {
         List<Asset> asset = service.getAssetsByType(type);
-        return AssetMapper.getInstance().asAssetDto((Asset[]) asset.toArray());
+        return AssetMapper.getInstance().asAssetDto(asset.toArray(new Asset[asset.size()]));
     }
 
     @Override

@@ -16,12 +16,6 @@ subprojects{
     }
 
     remotes {
-        hgrid22 {
-            role 'plcDriver'
-            host = 'xhgrid22'
-            user = project.property("plcDriver.user")
-            password = project.property("plcDriver.password")
-        }
         hgrid19 {
             role 'plcDriver'
             host = 'xhgrid19'
@@ -62,6 +56,8 @@ subprojects{
             def remoteFolder = "planta/${project.name}"
             def machines = remotes.role("$project.name")
             def mainClass = "$mainClassName"
+            def env = System.getProperty("env")
+            println "env $env"
             if(!machines.isEmpty() && !mainClass.toString().equals('null')){
                 ssh.run {
                     session(machines) {
@@ -76,7 +72,12 @@ subprojects{
                         execute "mkdir -p $remoteFolder"
                         put from: "$rootDir/distributable/${project.name}.zip", into: "$remoteFolder/"
                         execute "cd $remoteFolder && unzip ${project.name}.zip"
-                        def nohupCommand = "nohup java -cp \"$remoteFolder/*\" $mainClass > $remoteFolder/${project.name}.out 2>&1 &"
+                        def fileprops = "application"
+                        if(!env.toString().equals("null")){
+                            fileprops = env
+                        }
+                        fileprops = "-props ${fileprops}.properties"
+                        def nohupCommand = "nohup java -cp \"$remoteFolder/*\" $mainClass ${fileprops} > $remoteFolder/${project.name}.out 2>&1 &"
                         println "nohupCommand: $nohupCommand"
                         def nohupOut = execute "$nohupCommand"
                         println "nohupCommandOut: $nohupOut"

@@ -19,6 +19,7 @@ public class DriverAssetImp implements DriverAsset {
     public static final String THREADPOOL_SIZE = "driver.asset.threadpool.size";
 
     public static void initServices(Class<? extends DriverAssetConcrete> clasz) {
+        System.out.println("Class dirver: " + clasz.getSimpleName());
         communicator = Util.initialize(null, "application.properties");
         DriverAsset driverAsset = new DriverAssetImp(clasz);
         String pr = communicator.getProperties().getProperty(ENDPOINT_STRING);

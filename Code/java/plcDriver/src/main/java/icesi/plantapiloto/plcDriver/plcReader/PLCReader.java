@@ -84,6 +84,7 @@ public class PLCReader implements DriverAssetConcrete {
         String value = data.toString().split("\\[")[1].split("\\]")[0];
         MeasurementDTO dto = new MeasurementDTO();
         dto.assetId = tag.assetId;
+        dto.assetName = tag.name;
         dto.value = Double.parseDouble(value);
         return dto;
     }

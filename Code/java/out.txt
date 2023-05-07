@@ -1,0 +1,26 @@
+> Task :common:compileSlice
+> Task :common:compileJava UP-TO-DATE
+> Task :common:processResources NO-SOURCE
+> Task :common:classes UP-TO-DATE
+> Task :common:jar UP-TO-DATE
+> Task :MQTT:compileJava UP-TO-DATE
+> Task :MQTT:processResources NO-SOURCE
+> Task :MQTT:classes UP-TO-DATE
+> Task :MQTT:jar UP-TO-DATE
+> Task :managerServer:compileJava UP-TO-DATE
+> Task :managerServer:processResources UP-TO-DATE
+> Task :managerServer:classes UP-TO-DATE
+> Task :managerServer:jar UP-TO-DATE
+> Task :managerServer:startScripts UP-TO-DATE
+> Task :managerServer:distTar UP-TO-DATE
+> Task :managerServer:distZip UP-TO-DATE
+> Task :managerServer:assemble UP-TO-DATE
+
+> Task :managerServer:loadProperties FAILED
+envi loaded: dev
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 8.0.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+See https://docs.gradle.org/7.4.2/userguide/command_line_interface.html#sec:command_line_warnings
+12 actionable tasks: 2 executed, 10 up-to-date

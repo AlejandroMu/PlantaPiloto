@@ -1,4 +1,4 @@
-mainClassName = "icesi.plantapiloto.Main"
+mainClassName = "icesi.plantapiloto.modelManager.Main"
 
 dependencies{
     implementation 'org.hibernate:hibernate-core:5.2.12.Final'
@@ -12,5 +12,13 @@ dependencies{
     implementation project(":MQTT")
 
 }
+test{
+    systemProperty 'database.url', 'jdbc:postgresql://localhost:5432/assets'
+    systemProperty 'database.user', 'ingswi40'
+    systemProperty 'database.password', 'IngSwI40PWD'
+    systemProperty 'database.schema', 'asset_manager'
+
+}
+
 
 

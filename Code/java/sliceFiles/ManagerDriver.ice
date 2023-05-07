@@ -35,6 +35,7 @@ module common{
     module dtos{
         class MeasurementDTO{
             int assetId;
+            string assetName;
             double value;
             int exeId;
             long timeStamp;

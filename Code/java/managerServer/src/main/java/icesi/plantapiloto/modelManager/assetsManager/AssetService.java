@@ -37,7 +37,7 @@ public class AssetService {
     private MetaDataRepository metaDataRepository;
 
     public AssetService() {
-        assetRepository = new AssetRepository();
+        assetRepository = AssetRepository.getInstance();
         measurementRepository = new MeasurementRepository();
     }
 
@@ -151,7 +151,7 @@ public class AssetService {
 
     public List<Asset> getAssetsByType(Type type) {
 
-        return assetRepository.findByType(type);
+        return assetRepository.findByType(type.getId());
     }
 
 }
