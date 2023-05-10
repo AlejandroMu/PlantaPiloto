@@ -19,6 +19,7 @@ public class AssetRepositoryTest {
 
     @Test
     public void testGetAssetByType() {
+
         AssetRepository repository = AssetRepository.getInstance();
         List<Asset> assets = repository.findByType(1);
         assertEquals("getType PLC", 1, assets.size());

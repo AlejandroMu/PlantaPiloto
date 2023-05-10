@@ -36,6 +36,8 @@ public class Main {
         AssetController asset = new AssetController();
         asset.setPublisher(System.getProperty("mqtt.host"));
 
+        System.out.println("\n\n\n Start Application \n\n\n");
+
         ObjectAdapter adapter = communicator.createObjectAdapterWithEndpoints("Model",
                 System.getProperty("Model.Endpoints"));
         ObjectPrx objectPrx = adapter.add(asset, Util.stringToIdentity("AssetManager"));

@@ -1,0 +1,7 @@
+mainClassName = "icesi.plantapiloto.cli.Main"
+
+dependencies{
+    implementation project(":common")
+    implementation 'org.jline:jline:3.21.0'
+
+}

@@ -2,13 +2,17 @@ package icesi.plantapiloto.modelManager.repositories;
 
 import java.util.List;
 
+import javax.persistence.EntityManager;
+
 import icesi.plantapiloto.common.model.Asset;
 
 public class AssetRepository implements Repository<Asset, Integer> {
 
     private static AssetRepository instance;
+    private EntityManager manager;
 
     private AssetRepository() {
+        manager = managerFactory.createEntityManager();
 
     }
 
@@ -19,10 +23,9 @@ public class AssetRepository implements Repository<Asset, Integer> {
         return instance;
     }
 
-    public List<Asset> findByType(Integer type) {
-        String query = "From Asset a Where a.typeBean.id = ?1";
-        List<Asset> result = executeQuery(query, new Object[] { type });
-        return result;
+    @Override
+    public EntityManager getManager() {
+        return manager;
     }
 
     @Override
@@ -30,4 +33,15 @@ public class AssetRepository implements Repository<Asset, Integer> {
         return Asset.class;
     }
 
+    public List<Asset> findByType(Integer type) {
+        String query = "From Asset a Where a.typeBean.id = ?1";
+        List<Asset> result = executeQuery(query, new Object[] { type });
+        return result;
+    }
+
+    public List<Asset> findByState(String state) {
+        String query = "From Asset a Where a.assetState = ?1";
+        List<Asset> result = executeQuery(query, new Object[] { state });
+        return result;
+    }
 }

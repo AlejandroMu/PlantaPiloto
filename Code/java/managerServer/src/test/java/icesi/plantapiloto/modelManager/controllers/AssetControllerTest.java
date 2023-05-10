@@ -10,7 +10,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import icesi.plantapiloto.common.dtos.output.AssetDTO;
-import icesi.plantapiloto.common.model.Type;
 import icesi.plantapiloto.modelManager.assetsManager.AssetController;
 
 public class AssetControllerTest {
@@ -24,9 +23,7 @@ public class AssetControllerTest {
 
     @Test
     public void findByType() {
-        Type t = new Type();
-        t.setId(2);
-        AssetDTO dtos[] = controller.findByType(t, null);
+        AssetDTO dtos[] = controller.findByType(2, null);
         List<String> names = Arrays.asList(new String[] { "ANTIESPUMANTE.ACC", "ENT_AGITADOR", "ENT_FCV101" });
         assertEquals("Request size", 3, dtos.length);
         for (AssetDTO assetDTO : dtos) {

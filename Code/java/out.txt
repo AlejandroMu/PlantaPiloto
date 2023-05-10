@@ -1,8 +1,23 @@
+
+> Configure project :managerServer
+--------
+
+
+ destination file: C:\Users\janus\Desktop\MI_Investigacion\PlantaPiloto\Code\java\managerServer\build\jacoco\test.exec
+
+
+---------
+
 > Task :common:compileSlice
 > Task :common:compileJava UP-TO-DATE
 > Task :common:processResources NO-SOURCE
 > Task :common:classes UP-TO-DATE
+> Task :common:jacocoTestReport SKIPPED
 > Task :common:jar UP-TO-DATE
+> Task :driverAsset:compileJava UP-TO-DATE
+> Task :driverAsset:processResources NO-SOURCE
+> Task :driverAsset:classes UP-TO-DATE
+> Task :driverAsset:jacocoTestReport SKIPPED
 > Task :MQTT:compileJava UP-TO-DATE
 > Task :MQTT:processResources NO-SOURCE
 > Task :MQTT:classes UP-TO-DATE
@@ -10,17 +25,23 @@
 > Task :managerServer:compileJava UP-TO-DATE
 > Task :managerServer:processResources UP-TO-DATE
 > Task :managerServer:classes UP-TO-DATE
-> Task :managerServer:jar UP-TO-DATE
-> Task :managerServer:startScripts UP-TO-DATE
-> Task :managerServer:distTar UP-TO-DATE
-> Task :managerServer:distZip UP-TO-DATE
-> Task :managerServer:assemble UP-TO-DATE
+> Task :managerServer:jacocoTestReport
+> Task :MQTT:jacocoTestReport SKIPPED
+> Task :opto22MMP:compileJava UP-TO-DATE
+> Task :opto22MMP:processResources NO-SOURCE
+> Task :opto22MMP:classes UP-TO-DATE
+> Task :opto22MMP:jacocoTestReport SKIPPED
+> Task :driverAsset:jar UP-TO-DATE
+> Task :plcDriver:compileJava UP-TO-DATE
+> Task :plcDriver:processResources UP-TO-DATE
+> Task :plcDriver:classes UP-TO-DATE
+> Task :plcDriver:jacocoTestReport SKIPPED
 
-> Task :managerServer:loadProperties FAILED
-envi loaded: dev
 Deprecated Gradle features were used in this build, making it incompatible with Gradle 8.0.
 
 You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
 
 See https://docs.gradle.org/7.4.2/userguide/command_line_interface.html#sec:command_line_warnings
-12 actionable tasks: 2 executed, 10 up-to-date
+
+BUILD SUCCESSFUL in 19s
+13 actionable tasks: 2 executed, 11 up-to-date

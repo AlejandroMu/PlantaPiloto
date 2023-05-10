@@ -5,7 +5,26 @@ subprojects{
     apply plugin: 'java'
     apply plugin: 'application'
     apply plugin: 'org.hidetake.ssh'
+    apply plugin: 'jacoco'
     sourceCompatibility = 1.8   
+
+    jacoco {
+        toolVersion = '0.8.7'
+    }
+
+    test{
+        finalizedBy jacocoTestReport
+    }
+
+    jacocoTestReport {
+        reports {
+            xml.enabled true // Habilitar generación de informe XML de cobertura
+            html.enabled true // Deshabilitar generación de informe HTML (opcional)
+            csv.enabled false // Deshabilitar generación de informe CSV (opcional)
+            xml.destination file("$buildDir/reports/jacoco/jacoco.xml")
+        }
+        // // Ruta y nombre del archivo XML de cobertura
+    }
 
     repositories {
         mavenCentral()
@@ -42,8 +61,8 @@ subprojects{
         into "${buildDir}/libs"
         from configurations.runtimeClasspath
         dependsOn build
-    }
 
+    }
     task comprimir(type: Zip){
         from "$buildDir/libs/"
         archiveName "${project.name}.zip"
@@ -57,6 +76,7 @@ subprojects{
             def machines = remotes.role("$project.name")
             def mainClass = "$mainClassName"
             def env = System.getProperty("env")
+
             println "env $env"
             if(!machines.isEmpty() && !mainClass.toString().equals('null')){
                 ssh.run {

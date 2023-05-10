@@ -9,35 +9,43 @@ import javax.persistence.Persistence;
 import javax.persistence.Query;
 
 public interface Repository<T, K> {
-    public static EntityManagerFactory managerFactory = Persistence.createEntityManagerFactory("planta");
+    public EntityManagerFactory managerFactory = Persistence.createEntityManagerFactory("planta");
 
     public default T save(T element) {
-        EntityManager manager = managerFactory.createEntityManager();
+
+        EntityManager manager = getManager();
         manager.getTransaction().begin();
         manager.persist(element);
         manager.getTransaction().commit();
-        manager.close();
+        manager.clear();
         return element;
     };
 
+    public default void deleteById(K id) {
+        EntityManager manager = getManager();
+        boolean isActive = manager.getTransaction().isActive();
+        if (!isActive) {
+            manager.getTransaction().begin();
+        }
+        manager.remove(findById(id).get());
+        manager.getTransaction().commit();
+        manager.clear();
+    }
+
     public default Optional<T> findById(K id) {
+        EntityManager manager = getManager();
         Class<T> type = getType();
-        EntityManager manager = managerFactory.createEntityManager();
         Optional<T> element = Optional.ofNullable(manager.find(type, id));
-        manager.close();
         return element;
     }
 
     public default List<T> findAll() {
+        EntityManager manager = getManager();
         Class<T> type = getType();
-
-        EntityManager manager = managerFactory.createEntityManager();
         String query = "From " + type.getSimpleName();
-        System.out.println(query);
         List<T> values = manager
                 .createQuery(query, type)
                 .getResultList();
-        manager.close();
         return values;
     }
 
@@ -47,7 +55,7 @@ public interface Repository<T, K> {
 
     @SuppressWarnings("unchecked")
     public default List<T> executeQuery(String query, boolean isNative, Object... params) {
-        EntityManager manager = managerFactory.createEntityManager();
+        EntityManager manager = getManager();
         Class<?> type = getType();
         Query queryMan = null;
         if (isNative) {
@@ -66,5 +74,7 @@ public interface Repository<T, K> {
     }
 
     public Class<T> getType();
+
+    public EntityManager getManager();
 
 }

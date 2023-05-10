@@ -2,6 +2,7 @@ package icesi.plantapiloto.modelManager.assetsManager;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -10,6 +11,7 @@ import icesi.plantapiloto.common.controllers.AssetManagerCallbackPrx;
 import icesi.plantapiloto.common.controllers.DriverAssetPrx;
 import icesi.plantapiloto.common.dtos.MeasurementDTO;
 import icesi.plantapiloto.common.dtos.output.AssetDTO;
+import icesi.plantapiloto.common.encoders.JsonEncoder;
 import icesi.plantapiloto.common.mappers.AssetMapper;
 import icesi.plantapiloto.common.model.Asset;
 import icesi.plantapiloto.common.model.Driver;
@@ -38,7 +40,11 @@ public class AssetService {
 
     public AssetService() {
         assetRepository = AssetRepository.getInstance();
-        measurementRepository = new MeasurementRepository();
+        measurementRepository = MeasurementRepository.getInstance();
+        executionRepository = ExecutionRepository.getInstance();
+        typeRepository = TypeRepository.getInstance();
+        driverRepository = DriverRepository.getInstance();
+        metaDataRepository = MetaDataRepository.getInstance();
     }
 
     public Asset createAsset(String name, String desc, Integer type, Integer driver, Integer parent, String state) {
@@ -75,6 +81,9 @@ public class AssetService {
             asset.setDriverBean(asset.getAsset().getDriverBean());
         }
         assetRepository.save(asset);
+        // if (asset.getMetaData() != null) {
+
+        // }
     }
 
     public void addMetadata(Asset asset, MetaData... metaDatas) {
@@ -82,9 +91,12 @@ public class AssetService {
             boolean isValid = metaData.getDescription() != null
                     && metaData.getName() != null
                     && metaData.getValue() != null;
+
             if (isValid) {
                 metaData.setAssetBean(asset);
                 metaDataRepository.save(metaData);
+            } else {
+                System.out.println("Metadata invalid: " + (new JsonEncoder()).encode(metaData));
             }
 
         }
@@ -106,11 +118,11 @@ public class AssetService {
 
     public void captureAssets(Asset[] assets, AssetManagerCallbackPrx callback,
             int execId, long period) {
-        AssetDTO[] dtos = AssetMapper.getInstance().asAssetDto(assets);
+        List<AssetDTO> dtos = AssetMapper.getInstance().asEntityDTO(Arrays.asList(assets));
         HashMap<Integer, DriverAssetPrx> proxies = new HashMap<>();
         HashMap<Integer, List<AssetDTO>> dtosDr = new HashMap<>();
 
-        for (int i = 0; i < dtos.length; i++) {
+        for (int i = 0; i < dtos.size(); i++) {
             Driver driver = assets[i].getDriverBean();
             DriverAssetPrx prx = proxies.get(driver.getId());
             if (prx == null) {
@@ -122,14 +134,15 @@ public class AssetService {
             if (d == null) {
                 d = new ArrayList<>();
             }
-            d.add(dtos[i]);
+            d.add(dtos.get(i));
             dtosDr.put(driver.getId(), d);
         }
         Iterator<Integer> keys = proxies.keySet().iterator();
         while (keys.hasNext()) {
             int key = keys.next();
             DriverAssetPrx prx = proxies.get(key);
-            prx.readAsset((AssetDTO[]) dtosDr.get(key).toArray(), callback, execId, period);
+            List<AssetDTO> d = dtosDr.get(key);
+            prx.readAsset(d.toArray(new AssetDTO[d.size()]), callback, execId, period);
         }
 
     }
@@ -138,7 +151,7 @@ public class AssetService {
         Asset asset = assetRepository.findById(assetDto.assetId).get();
         DriverAssetPrx prx = DriverAssetPrx
                 .checkedCast(Main.communicator.stringToProxy(asset.getDriverBean().getServiceProxy()));
-        prx.setPointAsset(AssetMapper.getInstance().asAssetDto(asset), value);
+        prx.setPointAsset(AssetMapper.getInstance().asEntityDTO(asset), value);
     }
 
     public void captureAssets(int[] assetsId, AssetManagerCallbackPrx callback, int execId, long period) {
@@ -152,6 +165,24 @@ public class AssetService {
     public List<Asset> getAssetsByType(Type type) {
 
         return assetRepository.findByType(type.getId());
+    }
+
+    public List<Asset> getAssets() {
+        return assetRepository.findAll();
+    }
+
+    public List<Asset> getAssetsByState(String state) {
+        return assetRepository.findByState(state);
+    }
+
+    public void deletById(int id) {
+        assetRepository.deleteById(id);
+    }
+
+    public List<Measurement> getMeasurements(AssetDTO assetDto, long initdata, long endDate) {
+        Asset asset = new Asset();
+        List<Measurement> measurements = measurementRepository.findByAssetAndDateBetween(asset, initdata, endDate);
+        return measurements;
     }
 
 }

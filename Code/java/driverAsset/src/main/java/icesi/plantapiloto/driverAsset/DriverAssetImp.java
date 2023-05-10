@@ -18,9 +18,9 @@ public class DriverAssetImp implements DriverAsset {
     public static final String ENDPOINT_STRING = "driver.asset.Endpoints";
     public static final String THREADPOOL_SIZE = "driver.asset.threadpool.size";
 
-    public static void initServices(Class<? extends DriverAssetConcrete> clasz) {
+    public static void initServices(Class<? extends DriverAssetConcrete> clasz, String filename) {
         System.out.println("Class dirver: " + clasz.getSimpleName());
-        communicator = Util.initialize(null, "application.properties");
+        communicator = Util.initialize(null, filename);
         DriverAsset driverAsset = new DriverAssetImp(clasz);
         String pr = communicator.getProperties().getProperty(ENDPOINT_STRING);
         if (pr == null) {

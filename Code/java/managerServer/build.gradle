@@ -17,6 +17,9 @@ test{
     systemProperty 'database.user', 'ingswi40'
     systemProperty 'database.password', 'IngSwI40PWD'
     systemProperty 'database.schema', 'asset_manager'
+    jacoco {
+        enabled = true
+    }
 
 }
 

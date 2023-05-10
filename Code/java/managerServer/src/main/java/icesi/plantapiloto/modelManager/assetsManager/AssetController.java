@@ -12,18 +12,28 @@ import com.zeroc.Ice.Current;
 import icesi.plantapiloto.MQTT.Publisher;
 import icesi.plantapiloto.common.controllers.AssetManagerCallbackPrx;
 import icesi.plantapiloto.common.controllers.AssetManagerController;
+import icesi.plantapiloto.common.dtos.DriverDTO;
 import icesi.plantapiloto.common.dtos.MeasurementDTO;
+import icesi.plantapiloto.common.dtos.TypeDTO;
 import icesi.plantapiloto.common.dtos.output.AssetDTO;
 import icesi.plantapiloto.common.encoders.JsonEncoder;
 import icesi.plantapiloto.common.envents.PublisherI;
 import icesi.plantapiloto.common.mappers.AssetMapper;
+import icesi.plantapiloto.common.mappers.DriverMapper;
+import icesi.plantapiloto.common.mappers.MeasurmentMapper;
+import icesi.plantapiloto.common.mappers.TypeMapper;
 import icesi.plantapiloto.common.model.Asset;
+import icesi.plantapiloto.common.model.Driver;
+import icesi.plantapiloto.common.model.Measurement;
 import icesi.plantapiloto.common.model.MetaData;
 import icesi.plantapiloto.common.model.Type;
 
 public class AssetController implements AssetManagerController {
 
     private AssetService service;
+    private TypeService typeService;
+    private DriverService driverService;
+
     private PublisherI publisher;
     private AssetManagerCallbackPrx callback;
 
@@ -43,6 +53,8 @@ public class AssetController implements AssetManagerController {
 
     public AssetController() {
         service = new AssetService();
+        typeService = new TypeService();
+        driverService = new DriverService();
     }
 
     /**
@@ -82,44 +94,76 @@ public class AssetController implements AssetManagerController {
 
     @Override
     public void saveAsset(Asset asset, Current current) {
-        asset = service.createAsset(asset.getName(), asset.getDescription(),
+        Asset assetN = service.createAsset(asset.getName(), asset.getDescription(),
                 asset.getTypeBean() == null ? null : asset.getTypeBean().getId(),
                 asset.getDriverBean() == null ? null : asset.getDriverBean().getId(),
                 asset.getAsset() == null ? null : asset.getAsset().getId(),
                 asset.getAssetState());
         List<MetaData> meta = asset.getMetaData();
+        System.out.println("Add Asset: metadata: " + meta.size());
         if (meta != null) {
-            service.addMetadata(asset, (MetaData[]) meta.toArray());
+            service.addMetadata(assetN, meta.toArray(new MetaData[meta.size()]));
         }
     }
 
     @Override
-    public AssetDTO[] findByType(Type type, Current current) {
-        List<Asset> asset = service.getAssetsByType(type);
-        return AssetMapper.getInstance().asAssetDto(asset.toArray(new Asset[asset.size()]));
+    public AssetDTO[] findByType(int type, Current current) {
+        Type t = new Type();
+        t.setId(type);
+        List<Asset> asset = service.getAssetsByType(t);
+        return AssetMapper.getInstance().asEntityDTO(asset).toArray(AssetDTO[]::new);
+    }
+
+    @Override
+    public AssetDTO[] findAll(Current current) {
+        List<Asset> assets = service.getAssets();
+        return AssetMapper.getInstance().asEntityDTO(assets).toArray(AssetDTO[]::new);
+
     }
 
     @Override
     public AssetDTO[] findByState(String state, Current current) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'findByState'");
+        List<Asset> assets = service.getAssetsByState(state);
+        return AssetMapper.getInstance().asEntityDTO(assets).toArray(AssetDTO[]::new);
+
     }
 
     @Override
     public void deletById(int id, Current current) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'deletById'");
+
+        service.deletById(id);
     }
 
     @Override
-    public MeasurementDTO[] getMeasurments(AssetDTO asset, int initdata, int endDate, Current current) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getMeasurments'");
+    public MeasurementDTO[] getMeasurments(AssetDTO asset, long initdata, long endDate, Current current) {
+
+        List<Measurement> measurements = service.getMeasurements(asset, initdata, endDate);
+        return MeasurmentMapper.getInstance().asEntityDTO(measurements).toArray(MeasurementDTO[]::new);
     }
 
     @Override
     public void captureAssetsId(int[] assets, int execId, long period, Current current) {
         service.captureAssets(assets, callback, execId, period);
+    }
+
+    @Override
+    public TypeDTO[] findAllTypes(Current current) {
+
+        List<Type> types = typeService.findAll();
+        return TypeMapper.getInstance().asEntityDTO(types).toArray(TypeDTO[]::new);
+    }
+
+    @Override
+    public DriverDTO[] findAllDrivers(Current current) {
+
+        List<Driver> drivers = driverService.findAll();
+        return DriverMapper.getInstance().asEntityDTO(drivers).toArray(DriverDTO[]::new);
+    }
+
+    @Override
+    public void stopCapture(int execId, Current current) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'stopCapture'");
     }
 
 }

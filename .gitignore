@@ -8,4 +8,5 @@
 **/tmp
 **.vpp.**
 gradle.properties
-
+**/distributable
+**.zip

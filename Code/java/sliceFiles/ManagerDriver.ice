@@ -40,16 +40,34 @@ module common{
             int exeId;
             long timeStamp;
         }
+        class TypeDTO{
+            int id;
+            string name;
+        	string description;
+        	string tableName;
+        }
+        class DriverDTO{
+            int id;
+	        string name;
+	        string serviceProxy;
+            int workSpaceId;
+        }
 
     }
     ["java:serializable:icesi.plantapiloto.common.dtos.MeasurementDTO"]
     sequence<byte> MeasurementDTO;
+    ["java:serializable:icesi.plantapiloto.common.dtos.TypeDTO"]
+    sequence<byte> TypeDTO;
+    ["java:serializable:icesi.plantapiloto.common.dtos.DriverDTO"]
+    sequence<byte> DriverDTO;
     module controllers{
 
         sequence<AssetDTO> AssetsDTO;
         sequence<Asset> Assets;
         sequence<MeasurementDTO> MeasurementsDTO;
         sequence<int> AssetsIds;
+        sequence<TypeDTO> TypesDTO;
+        sequence<DriverDTO> DriversDTO;
 
 
         interface AssetManagerCallback{
@@ -65,13 +83,18 @@ module common{
         interface AssetManagerController extends AssetManagerCallback{
            void captureAssets(Assets assets, int execId, long period);
            void captureAssetsId(AssetsIds assets, int execId, long period);
+           void stopCapture(int execId);
 
            void changeAssetValue(AssetDTO asset, double value);
            void saveAsset(Asset asset);
-           AssetsDTO findByType(Type type);
+           AssetsDTO findByType(int type);
            AssetsDTO findByState(string state);
+           AssetsDTO findAll();
            void deletById(int id);
-           MeasurementsDTO getMeasurments(AssetDTO asset,int initdata, int endDate);
+           MeasurementsDTO getMeasurments(AssetDTO asset,long initdata, long endDate);
+
+           TypesDTO findAllTypes();
+           DriversDTO findAllDrivers();
         }
     }
 }

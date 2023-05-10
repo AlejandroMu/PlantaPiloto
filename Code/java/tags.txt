@@ -55,3 +55,4 @@ SAL_CO2
 Q_O2
 Q_CO2
 RQ
+asset add -n SV101 -d desc -t 2 -dr 1 -s I -p 1 -m metaName metaValue metaDesc
