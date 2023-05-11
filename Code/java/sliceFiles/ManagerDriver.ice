@@ -65,24 +65,24 @@ module common{
         sequence<AssetDTO> AssetsDTO;
         sequence<Asset> Assets;
         sequence<MeasurementDTO> MeasurementsDTO;
-        sequence<int> AssetsIds;
         sequence<TypeDTO> TypesDTO;
         sequence<DriverDTO> DriversDTO;
 
 
-        interface AssetManagerCallback{
+        interface MeasurementManagerController{
             void saveAssetValue(MeasurementsDTO value);
+            MeasurementsDTO getMeasurments(AssetDTO asset,long initdata, long endDate);
+
         }
         
         interface DriverAsset{
-            void readAsset(AssetsDTO asset, AssetManagerCallback* server, int execId, long period);
+            void readAsset(AssetDTO asset, MeasurementManagerController* server, int execId, long period,bool newProcess);
             void stopRead(int exeId);
             void setPointAsset(AssetDTO asset, double value);
         }
 
-        interface AssetManagerController extends AssetManagerCallback{
-           void captureAssets(Assets assets, int execId, long period);
-           void captureAssetsId(AssetsIds assets, int execId, long period);
+        interface AssetManagerController{
+           void captureAssets(int execId);
            void stopCapture(int execId);
 
            void changeAssetValue(AssetDTO asset, double value);
@@ -91,7 +91,6 @@ module common{
            AssetsDTO findByState(string state);
            AssetsDTO findAll();
            void deletById(int id);
-           MeasurementsDTO getMeasurments(AssetDTO asset,long initdata, long endDate);
 
            TypesDTO findAllTypes();
            DriversDTO findAllDrivers();

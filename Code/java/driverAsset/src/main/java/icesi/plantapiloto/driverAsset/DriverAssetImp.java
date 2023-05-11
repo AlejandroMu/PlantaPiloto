@@ -5,8 +5,8 @@ import com.zeroc.Ice.Current;
 import com.zeroc.Ice.ObjectAdapter;
 import com.zeroc.Ice.Util;
 
-import icesi.plantapiloto.common.controllers.AssetManagerCallbackPrx;
 import icesi.plantapiloto.common.controllers.DriverAsset;
+import icesi.plantapiloto.common.controllers.MeasurementManagerControllerPrx;
 import icesi.plantapiloto.common.dtos.output.AssetDTO;
 import icesi.plantapiloto.driverAsset.RMSender.PublisherManager;
 import icesi.plantapiloto.driverAsset.concrete.DriverAssetConcrete;
@@ -42,11 +42,11 @@ public class DriverAssetImp implements DriverAsset {
     }
 
     @Override
-    public void readAsset(AssetDTO[] asset, AssetManagerCallbackPrx server, int execId, long period,
-            Current current) {
+    public void readAsset(AssetDTO asset, MeasurementManagerControllerPrx server, int execId, long period,
+            boolean newProcess, Current current) {
         String proxy = server.ice_getEndpoints()[0]._toString();
         PublisherManager.addInstance(server, proxy);
-        manager.addProcess(asset, execId, period, getConcreteInstance(), proxy);
+        manager.addProcess(asset, execId, period, getConcreteInstance(), proxy, newProcess);
 
     }
 

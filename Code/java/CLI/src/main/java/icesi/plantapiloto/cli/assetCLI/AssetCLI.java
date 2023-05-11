@@ -41,8 +41,9 @@ public class AssetCLI implements CommanLineInterface {
                 .append("   asset list ( | -t {typeId} | -s {state}): list assets \n")
                 .append("   asset types: list asset types\n")
                 .append("   asset drivers: list asset drivers\n")
-                .append("   asset remove {assetId}: remove asset por id\n")
-                .append("   asset capture -e {execId}* -p {period}* [-a {assetId}]+*: capture asset por id\n");
+                .append("   asset remove {assetId}*: remove asset by id\n")
+                .append("   asset run {execId}*: run capture asset by process exetion id\n")
+                .append("   asset stop {execId}*: stop capture asset by process exetion id\n");
 
         return builder.toString();
     }
@@ -65,14 +66,33 @@ public class AssetCLI implements CommanLineInterface {
         } else if (command.matches("asset\\s+remove.*")) {
             writer.write(assetRemoveControl(command));
 
-        } else if (command.matches("asset\\s+capture.*")) {
-            writer.write(capture(command));
+        } else if (command.matches("asset\\s+run.*")) {
+            writer.write(runCapture(command));
+
+        } else if (command.matches("asset\\s+stop.*")) {
+            writer.write(stopCapture(command));
 
         } else {
             writer.write(usage());
         }
         writer.flush();
 
+    }
+
+    private String stopCapture(String command) {
+        int execId = Integer.parseInt(command.split(" ")[2]);
+
+        prx.stopCapture(execId);
+
+        return "Process stoped\n";
+    }
+
+    private String runCapture(String command) {
+        int execId = Integer.parseInt(command.split(" ")[2]);
+
+        prx.captureAssets(execId);
+
+        return "Process runing\n";
     }
 
     public String assetAddControl(String command) {
@@ -194,33 +214,6 @@ public class AssetCLI implements CommanLineInterface {
     public String assetDriversControl(String command) {
         DriverDTO[] driverDTOs = prx.findAllDrivers();
         return encoderList(driverDTOs);
-    }
-
-    public String capture(String command) {
-        List<Integer> asseId = new ArrayList<>();
-        int execId = -1;
-        long period = -1;
-
-        String split[] = command.split(" ");
-        for (int i = 0; i < split.length; i++) {
-            if (split[i].equals("-a")) {
-                asseId.add(Integer.parseInt(split[++i]));
-            } else if (split[i].equals("-a")) {
-
-            } else if (split[i].equals("-e")) {
-                execId = Integer.parseInt(split[++i]);
-            } else if (split[i].equals("-p")) {
-                period = Long.parseLong(split[++i]);
-
-            }
-        }
-        int[] assetsids = new int[asseId.size()];
-        for (int i = 0; i < assetsids.length; i++) {
-            assetsids[i] = asseId.get(i);
-        }
-        prx.captureAssetsId(assetsids, execId, period);
-
-        return "";
     }
 
 }

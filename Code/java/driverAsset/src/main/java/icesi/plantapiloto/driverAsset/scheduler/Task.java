@@ -1,5 +1,7 @@
 package icesi.plantapiloto.driverAsset.scheduler;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.TimerTask;
 
 import icesi.plantapiloto.common.dtos.MeasurementDTO;
@@ -9,9 +11,10 @@ import icesi.plantapiloto.driverAsset.concrete.DriverAssetConcrete;
 
 public class Task extends TimerTask {
     private DriverAssetConcrete source;
-    private AssetDTO[] assets;
+    private List<AssetDTO> assets;
     private int exeId;
     private String callback;
+    private long period;
 
     /**
      * @param sender
@@ -19,17 +22,30 @@ public class Task extends TimerTask {
      * @param assets
      * @param configs
      */
-    public Task(DriverAssetConcrete source, AssetDTO[] assets,
-            int exeId, String callback) {
+    public Task(DriverAssetConcrete source, AssetDTO asset,
+            int exeId, String callback, long period) {
         this.source = source;
-        this.assets = assets;
+        this.assets = new ArrayList<>();
+        assets.add(asset);
         this.exeId = exeId;
         this.callback = callback;
+        this.period = period;
+    }
+
+    public void addAsset(AssetDTO dto) {
+        assets.add(dto);
+    }
+
+    /**
+     * @return the period
+     */
+    public long getPeriod() {
+        return period;
     }
 
     @Override
     public void run() {
-        MeasurementDTO[] measurementDTOs = source.readAsset(assets, exeId);
+        List<MeasurementDTO> measurementDTOs = source.readAsset(assets, exeId);
 
         PublisherManager sender = PublisherManager.getInstance(callback);
         sender.addMessage(measurementDTOs);

@@ -24,7 +24,7 @@ public class PLCReader implements DriverAssetConcrete {
     }
 
     @Override
-    public MeasurementDTO[] readAsset(AssetDTO[] asset, int execId) {
+    public List<MeasurementDTO> readAsset(List<AssetDTO> asset, int execId) {
         try {
             List<MeasurementDTO> values = new ArrayList<>();
             long timeStamp = new Date().getTime();
@@ -41,11 +41,10 @@ public class PLCReader implements DriverAssetConcrete {
                     values.addAll(tags);
                 }
             }
-            MeasurementDTO[] ret = new MeasurementDTO[values.size()];
-            return values.toArray(ret);
+            return values;
         } catch (Exception e) {
             e.printStackTrace();
-            throw new RuntimeException();
+            throw new RuntimeException(e);
         }
     }
 
@@ -108,8 +107,9 @@ public class PLCReader implements DriverAssetConcrete {
             return values;
         } catch (Exception e) {
             e.printStackTrace();
+            throw new RuntimeException(e);
+
         }
-        return null;
     }
 
 }

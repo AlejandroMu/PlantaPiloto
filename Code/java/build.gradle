@@ -101,6 +101,8 @@ subprojects{
                         println "nohupCommand: $nohupCommand"
                         def nohupOut = execute "$nohupCommand"
                         println "nohupCommandOut: $nohupOut"
+                        def outPutContent = "cat $remoteFolder/${project.name}.out"
+                        execute "$outPutContent"
 
                     }
                 }

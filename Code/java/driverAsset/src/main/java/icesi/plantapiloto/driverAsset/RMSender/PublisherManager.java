@@ -2,10 +2,11 @@ package icesi.plantapiloto.driverAsset.RMSender;
 
 import java.util.ArrayDeque;
 import java.util.HashMap;
+import java.util.List;
 
 import com.zeroc.Ice.ObjectPrx;
 
-import icesi.plantapiloto.common.controllers.AssetManagerCallbackPrx;
+import icesi.plantapiloto.common.controllers.MeasurementManagerControllerPrx;
 import icesi.plantapiloto.common.dtos.MeasurementDTO;
 import icesi.plantapiloto.driverAsset.DriverAssetImp;
 
@@ -16,7 +17,7 @@ public class PublisherManager extends Thread {
         PublisherManager ret = instances.get(proxy);
         if (ret == null) {
             ObjectPrx objectPrx = DriverAssetImp.communicator.stringToProxy(proxy);
-            AssetManagerCallbackPrx assetPrx = AssetManagerCallbackPrx.checkedCast(objectPrx);
+            MeasurementManagerControllerPrx assetPrx = MeasurementManagerControllerPrx.checkedCast(objectPrx);
             ret = new PublisherManager(assetPrx);
             ret.start();
             instances.put(proxy, ret);
@@ -25,7 +26,7 @@ public class PublisherManager extends Thread {
         return ret;
     }
 
-    public static void addInstance(AssetManagerCallbackPrx proxy, String name) {
+    public static void addInstance(MeasurementManagerControllerPrx proxy, String name) {
         if (instances.containsKey(name)) {
             return;
         }
@@ -34,20 +35,20 @@ public class PublisherManager extends Thread {
         instances.put(name, ret);
     }
 
-    private AssetManagerCallbackPrx publisherI;
-    private ArrayDeque<MeasurementDTO[]> messages;
+    private MeasurementManagerControllerPrx publisherI;
+    private ArrayDeque<List<MeasurementDTO>> messages;
     private boolean stop;
 
     /**
      * @param publisherI
      */
-    private PublisherManager(AssetManagerCallbackPrx publisherI) {
+    private PublisherManager(MeasurementManagerControllerPrx publisherI) {
         this.publisherI = publisherI;
 
         messages = new ArrayDeque<>();
     }
 
-    public void addMessage(MeasurementDTO[] message) {
+    public void addMessage(List<MeasurementDTO> message) {
         synchronized (messages) {
             messages.add(message);
         }
@@ -59,11 +60,11 @@ public class PublisherManager extends Thread {
 
     public void run() {
         while (!stop) {
-            MeasurementDTO[] mesg = null;
+            List<MeasurementDTO> mesg = null;
             try {
                 while (!messages.isEmpty()) {
                     mesg = messages.peek();
-                    publisherI.saveAssetValue(mesg);
+                    publisherI.saveAssetValue(mesg.toArray(MeasurementDTO[]::new));
                     messages.poll();
                 }
                 Thread.yield();

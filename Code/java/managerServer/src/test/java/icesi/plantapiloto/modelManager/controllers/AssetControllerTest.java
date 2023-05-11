@@ -10,7 +10,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import icesi.plantapiloto.common.dtos.output.AssetDTO;
-import icesi.plantapiloto.modelManager.assetsManager.AssetController;
 
 public class AssetControllerTest {
 

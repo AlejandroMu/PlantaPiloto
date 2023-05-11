@@ -9,8 +9,9 @@ import com.zeroc.Ice.ObjectAdapter;
 import com.zeroc.Ice.ObjectPrx;
 import com.zeroc.Ice.Util;
 
-import icesi.plantapiloto.common.controllers.AssetManagerCallbackPrx;
-import icesi.plantapiloto.modelManager.assetsManager.AssetController;
+import icesi.plantapiloto.common.controllers.MeasurementManagerControllerPrx;
+import icesi.plantapiloto.modelManager.controllers.AssetController;
+import icesi.plantapiloto.modelManager.controllers.MeasurementController;
 
 public class Main {
 
@@ -34,14 +35,15 @@ public class Main {
 
         communicator = Util.initialize();
         AssetController asset = new AssetController();
-        asset.setPublisher(System.getProperty("mqtt.host"));
-
-        System.out.println("\n\n\n Start Application \n\n\n");
+        MeasurementController measure = new MeasurementController();
+        measure.setPublisher(System.getProperty("mqtt.host"));
 
         ObjectAdapter adapter = communicator.createObjectAdapterWithEndpoints("Model",
                 System.getProperty("Model.Endpoints"));
-        ObjectPrx objectPrx = adapter.add(asset, Util.stringToIdentity("AssetManager"));
-        asset.setCallback(AssetManagerCallbackPrx.checkedCast(objectPrx));
+        adapter.add(asset, Util.stringToIdentity("AssetManager"));
+        ObjectPrx measurePrx = adapter.add(measure, Util.stringToIdentity("MeasureManager"));
+
+        asset.setCallback(MeasurementManagerControllerPrx.checkedCast(measurePrx));
         adapter.activate();
         communicator.waitForShutdown();
         communicator.close();
