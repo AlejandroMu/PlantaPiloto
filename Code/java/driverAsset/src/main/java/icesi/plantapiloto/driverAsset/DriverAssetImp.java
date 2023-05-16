@@ -71,4 +71,14 @@ public class DriverAssetImp implements DriverAsset {
         return obj;
     }
 
+    @Override
+    public void pauseReader(int execId, Current current) {
+        manager.pauseProcess(execId);
+    }
+
+    @Override
+    public void resumeReader(int execId, Current current) {
+        manager.resumeProcess(execId);
+    }
+
 }

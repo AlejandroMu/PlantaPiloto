@@ -17,4 +17,8 @@ public class TypeService {
         return repository.findAll();
     }
 
+    public List<Type> findByDriver(int driverId) {
+        return repository.findByDriver(driverId);
+    }
+
 }

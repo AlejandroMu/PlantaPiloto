@@ -27,10 +27,10 @@ public class Asset implements Serializable {
 	@JoinColumn(name = "type")
 	private Type typeBean;
 
-	// bi-directional many-to-one association to Driver
+	// bi-directional many-to-one association to WorkSpace
 	@ManyToOne
-	@JoinColumn(name = "driver")
-	private Driver driverBean;
+	@JoinColumn(name = "work_space")
+	private WorkSpace workSpace;
 
 	// bi-directional many-to-one association to Asset
 	@ManyToOne
@@ -121,12 +121,12 @@ public class Asset implements Serializable {
 		return asset;
 	}
 
-	public Driver getDriverBean() {
-		return this.driverBean;
+	public WorkSpace getWorkSpace() {
+		return this.workSpace;
 	}
 
-	public void setDriverBean(Driver driverBean) {
-		this.driverBean = driverBean;
+	public void setWorkSpace(WorkSpace driverBean) {
+		this.workSpace = driverBean;
 	}
 
 	public Type getTypeBean() {

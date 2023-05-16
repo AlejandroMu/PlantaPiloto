@@ -32,7 +32,7 @@ public class Process implements Serializable {
 	private List<Execution> executions;
 
 	// bi-directional many-to-many association to Instruction
-	@ManyToMany(mappedBy = "processes")
+	@ManyToMany(mappedBy = "processes", cascade = { CascadeType.MERGE, CascadeType.PERSIST })
 	private List<Instruction> instructions;
 
 	// bi-directional many-to-one association to ProcessAsset
@@ -94,6 +94,12 @@ public class Process implements Serializable {
 
 	public void setInstructions(List<Instruction> instructions) {
 		this.instructions = instructions;
+	}
+
+	public Instruction addInstruction(Instruction instruction) {
+		getInstructions().add(instruction);
+		instruction.addProcess(this);
+		return instruction;
 	}
 
 	public WorkSpace getWorkSpaceBean() {

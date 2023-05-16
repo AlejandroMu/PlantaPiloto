@@ -1,5 +1,7 @@
 package icesi.plantapiloto.modelManager.repositories;
 
+import java.util.List;
+
 import javax.persistence.EntityManager;
 
 import icesi.plantapiloto.common.model.Type;
@@ -27,5 +29,10 @@ public class TypeRepository implements Repository<Type, Integer> {
     @Override
     public Class<Type> getType() {
         return Type.class;
+    }
+
+    public List<Type> findByDriver(int driverId) {
+        String query = "From Type t Where t.driver.id = ?1";
+        return executeQuery(query, driverId);
     }
 }

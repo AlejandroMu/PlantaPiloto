@@ -12,7 +12,6 @@ import com.zeroc.Ice.Current;
 import icesi.plantapiloto.MQTT.Publisher;
 import icesi.plantapiloto.common.controllers.MeasurementManagerController;
 import icesi.plantapiloto.common.dtos.MeasurementDTO;
-import icesi.plantapiloto.common.dtos.output.AssetDTO;
 import icesi.plantapiloto.common.encoders.JsonEncoder;
 import icesi.plantapiloto.common.envents.PublisherI;
 import icesi.plantapiloto.common.mappers.MeasurmentMapper;
@@ -25,7 +24,13 @@ public class MeasurementController implements MeasurementManagerController {
     private MeasurementService service;
 
     public MeasurementController() {
-        service = new MeasurementService();
+    }
+
+    /**
+     * @param service the service to set
+     */
+    public void setService(MeasurementService service) {
+        this.service = service;
     }
 
     /**
@@ -54,10 +59,17 @@ public class MeasurementController implements MeasurementManagerController {
     }
 
     @Override
-    public MeasurementDTO[] getMeasurments(AssetDTO asset, long initdata, long endDate, Current current) {
+    public MeasurementDTO[] getMeasurments(int assetId, long initdata, long endDate, Current current) {
 
-        List<Measurement> measurements = service.getMeasurements(asset, initdata, endDate);
+        List<Measurement> measurements = service.getMeasurements(assetId, initdata, endDate);
         return MeasurmentMapper.getInstance().asEntityDTO(measurements).toArray(MeasurementDTO[]::new);
+    }
+
+    @Override
+    public MeasurementDTO[] getMeasurmentsByExecution(int execId, Current current) {
+        List<Measurement> measurements = service.getMeasurementsByExecution(execId);
+        return MeasurmentMapper.getInstance().asEntityDTO(measurements).toArray(MeasurementDTO[]::new);
+
     }
 
 }

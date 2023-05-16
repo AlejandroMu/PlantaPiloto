@@ -23,10 +23,10 @@ public class Instruction implements Serializable {
 
 	private String predicate;
 
-	private Integer type;
+	private String type;
 
 	// bi-directional many-to-many association to Action
-	@ManyToMany(mappedBy = "instructions")
+	@ManyToMany(mappedBy = "instructions", cascade = { CascadeType.PERSIST, CascadeType.MERGE })
 	private List<Action> actions;
 
 	// bi-directional many-to-one association to ExecutionInstruction
@@ -61,11 +61,11 @@ public class Instruction implements Serializable {
 		this.predicate = predicate;
 	}
 
-	public Integer getType() {
+	public String getType() {
 		return this.type;
 	}
 
-	public void setType(Integer type) {
+	public void setType(String type) {
 		this.type = type;
 	}
 
@@ -83,6 +83,12 @@ public class Instruction implements Serializable {
 
 	public void setActions(List<Action> actions) {
 		this.actions = actions;
+	}
+
+	public Action addAction(Action action) {
+		getActions().add(action);
+		action.addInstruction(this);
+		return action;
 	}
 
 	public List<ExecutionInstruction> getExecutionInstructions() {
@@ -113,6 +119,10 @@ public class Instruction implements Serializable {
 
 	public void setProcesses(List<Process> processes) {
 		this.processes = processes;
+	}
+
+	public void addProcess(Process process) {
+		getProcesses().add(process);
 	}
 
 }

@@ -5,64 +5,49 @@ import java.util.List;
 import com.zeroc.Ice.Current;
 
 import icesi.plantapiloto.common.controllers.AssetManagerController;
-import icesi.plantapiloto.common.controllers.MeasurementManagerControllerPrx;
-import icesi.plantapiloto.common.dtos.DriverDTO;
 import icesi.plantapiloto.common.dtos.TypeDTO;
 import icesi.plantapiloto.common.dtos.output.AssetDTO;
 import icesi.plantapiloto.common.mappers.AssetMapper;
-import icesi.plantapiloto.common.mappers.DriverMapper;
 import icesi.plantapiloto.common.mappers.TypeMapper;
 import icesi.plantapiloto.common.model.Asset;
-import icesi.plantapiloto.common.model.Driver;
 import icesi.plantapiloto.common.model.MetaData;
 import icesi.plantapiloto.common.model.Type;
 import icesi.plantapiloto.modelManager.services.AssetService;
-import icesi.plantapiloto.modelManager.services.DriverService;
 import icesi.plantapiloto.modelManager.services.TypeService;
 
 public class AssetController implements AssetManagerController {
 
     private AssetService service;
     private TypeService typeService;
-    private DriverService driverService;
-
-    private MeasurementManagerControllerPrx callback;
-
-    /**
-     * @return the callback
-     */
-    public MeasurementManagerControllerPrx getCallback() {
-        return callback;
-    }
-
-    /**
-     * @param callback the callback to set
-     */
-    public void setCallback(MeasurementManagerControllerPrx callback) {
-        this.callback = callback;
-    }
 
     public AssetController() {
-        service = new AssetService();
-        typeService = new TypeService();
-        driverService = new DriverService();
+
+    }
+
+    /**
+     * @param service the service to set
+     */
+    public void setService(AssetService service) {
+        this.service = service;
+    }
+
+    /**
+     * @param typeService the typeService to set
+     */
+    public void setTypeService(TypeService typeService) {
+        this.typeService = typeService;
     }
 
     @Override
-    public void captureAssets(int execId, Current current) {
-        service.captureAssets(callback, execId, false);
-    }
-
-    @Override
-    public void changeAssetValue(AssetDTO asset, double value, Current current) {
+    public void changeAssetValue(int asset, double value, Current current) {
         service.changeSetPoint(asset, value);
     }
 
     @Override
-    public void saveAsset(Asset asset, Current current) {
+    public int saveAsset(Asset asset, Current current) {
         Asset assetN = service.createAsset(asset.getName(), asset.getDescription(),
                 asset.getTypeBean() == null ? null : asset.getTypeBean().getId(),
-                asset.getDriverBean() == null ? null : asset.getDriverBean().getId(),
+                asset.getWorkSpace() == null ? null : asset.getWorkSpace().getId(),
                 asset.getAsset() == null ? null : asset.getAsset().getId(),
                 asset.getAssetState());
         List<MetaData> meta = asset.getMetaData();
@@ -70,6 +55,7 @@ public class AssetController implements AssetManagerController {
         if (meta != null) {
             service.addMetadata(assetN, meta.toArray(new MetaData[meta.size()]));
         }
+        return assetN.getId();
     }
 
     @Override
@@ -108,15 +94,15 @@ public class AssetController implements AssetManagerController {
     }
 
     @Override
-    public DriverDTO[] findAllDrivers(Current current) {
-
-        List<Driver> drivers = driverService.findAll();
-        return DriverMapper.getInstance().asEntityDTO(drivers).toArray(DriverDTO[]::new);
+    public AssetDTO[] findByWorkSpace(int workSpaceId, Current current) {
+        List<Asset> assets = service.getAssetsByWorkSpace(workSpaceId);
+        return AssetMapper.getInstance().asEntityDTO(assets).toArray(AssetDTO[]::new);
     }
 
     @Override
-    public void stopCapture(int execId, Current current) {
-        service.stopCapure(execId);
+    public TypeDTO[] findTypesByDriver(int driverId, Current current) {
+        List<Type> types = typeService.findByDriver(driverId);
+        return TypeMapper.getInstance().asEntityDTO(types).toArray(TypeDTO[]::new);
     }
 
 }

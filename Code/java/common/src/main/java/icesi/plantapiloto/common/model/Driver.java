@@ -23,9 +23,9 @@ public class Driver implements Serializable {
 	@Column(name = "service_proxy")
 	private String serviceProxy;
 
-	// bi-directional many-to-one association to Asset
-	@OneToMany(mappedBy = "driverBean")
-	private List<Asset> assets;
+	// bi-directional many-to-one association to Type
+	@OneToMany(mappedBy = "driver")
+	private List<Type> types;
 
 	// bi-directional many-to-one association to WorkSpace
 	@ManyToOne
@@ -59,26 +59,26 @@ public class Driver implements Serializable {
 		this.serviceProxy = serviceProxy;
 	}
 
-	public List<Asset> getAssets() {
-		return this.assets;
+	public List<Type> getTypes() {
+		return this.types;
 	}
 
-	public void setAssets(List<Asset> assets) {
-		this.assets = assets;
+	public void setTypes(List<Type> types) {
+		this.types = types;
 	}
 
-	public Asset addAsset(Asset asset) {
-		getAssets().add(asset);
-		asset.setDriverBean(this);
+	public Type addType(Type type) {
+		getTypes().add(type);
+		type.setDriver(this);
 
-		return asset;
+		return type;
 	}
 
-	public Asset removeAsset(Asset asset) {
-		getAssets().remove(asset);
-		asset.setDriverBean(null);
+	public Type removeType(Type type) {
+		getTypes().remove(type);
+		type.setDriver(null);
 
-		return asset;
+		return type;
 	}
 
 	public WorkSpace getWorkSpaceBean() {

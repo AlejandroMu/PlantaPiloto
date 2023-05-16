@@ -39,6 +39,20 @@ public class Action implements Serializable {
 	public Action() {
 	}
 
+	/**
+	 * @return the id
+	 */
+	public Integer getId() {
+		return id;
+	}
+
+	/**
+	 * @param id the id to set
+	 */
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
 	public String getNameTech() {
 		return this.nameTech;
 	}
@@ -69,6 +83,10 @@ public class Action implements Serializable {
 
 	public void setInstructions(List<Instruction> instructions) {
 		this.instructions = instructions;
+	}
+
+	public void addInstruction(Instruction instruction) {
+		getInstructions().add(instruction);
 	}
 
 }

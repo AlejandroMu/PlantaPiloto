@@ -3,7 +3,9 @@ package icesi.plantapiloto.cli;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import org.jline.keymap.KeyMap;
 import org.jline.reader.LineReader;
@@ -17,6 +19,8 @@ import com.zeroc.Ice.Communicator;
 import com.zeroc.Ice.Util;
 
 import icesi.plantapiloto.cli.assetCLI.AssetCLI;
+import icesi.plantapiloto.cli.measureCLI.MeasureCLI;
+import icesi.plantapiloto.cli.workSpaceCLI.WorkSpapceCLI;
 
 public class Main implements CommanLineInterface {
     public static void main(String[] args) throws Exception {
@@ -46,9 +50,18 @@ public class Main implements CommanLineInterface {
         }
         String proxy = "tcp -h " + host + " -p " + port;
         System.setProperty("asset", "AssetManager:" + proxy);
-        CommanLineInterface asset = new AssetCLI(com);
+        System.setProperty("measure", "MeasureManager:" + proxy);
+        System.setProperty("work", "WorkSpaceManager:" + proxy);
 
-        Main main = new Main(asset);
+        CommanLineInterface asset = new AssetCLI(com);
+        CommanLineInterface measur = new MeasureCLI(com);
+        CommanLineInterface work = new WorkSpapceCLI(com);
+
+        Main main = new Main();
+        main.addCommandLine(asset);
+        main.addCommandLine(measur);
+        main.addCommandLine(work);
+
         String line = "help";
         while (!line.equals("exit")) {
             main.consoleIteractive(line, writer);
@@ -58,37 +71,53 @@ public class Main implements CommanLineInterface {
         com.close();
     }
 
-    private CommanLineInterface asset;
+    private List<CommanLineInterface> commands;
 
-    public Main(CommanLineInterface asset) {
-        this.asset = asset;
+    public Main() {
+        this.commands = new ArrayList<>();
+    }
+
+    public void addCommandLine(CommanLineInterface commanLineInterface) {
+        commands.add(commanLineInterface);
     }
 
     @Override
-    public String usage() {
+    public String usage(String pad) {
         StringBuilder builder = new StringBuilder();
-        builder.append(asset.usage());
+        for (CommanLineInterface commanLineInterface : commands) {
+            builder.append(commanLineInterface.usage(pad + "    "));
+            builder.append("\n");
+        }
         return builder.toString();
     }
 
     @Override
-    public void consoleIteractive(String command, BufferedWriter writer) throws IOException {
+    public boolean consoleIteractive(String command, BufferedWriter writer) throws IOException {
         try {
 
             if (command.equals("help")) {
-                writer.write(usage());
-            } else if (command.matches("asset.*")) {
-                asset.consoleIteractive(command, writer);
+                writer.write(usage(""));
             } else {
-                writer.write("command not found: " + command);
-                writer.write(usage());
+                boolean valid = false;
+                for (CommanLineInterface commanLineInterface : commands) {
+                    valid = commanLineInterface.consoleIteractive(command, writer);
+                    if (valid) {
+                        break;
+                    }
+                }
+                if (!valid) {
+                    writer.append("Command not found: try again with \n");
+                    writer.append(usage(""));
+                }
             }
 
         } catch (Exception e) {
             e.printStackTrace();
             writer.append("Error : \n");
+            return false;
         }
         writer.flush();
+        return true;
 
     }
 }

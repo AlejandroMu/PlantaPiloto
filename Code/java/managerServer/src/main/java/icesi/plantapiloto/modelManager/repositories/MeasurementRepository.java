@@ -5,7 +5,6 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 
-import icesi.plantapiloto.common.model.Asset;
 import icesi.plantapiloto.common.model.Measurement;
 
 public class MeasurementRepository implements Repository<Measurement, Integer> {
@@ -33,9 +32,15 @@ public class MeasurementRepository implements Repository<Measurement, Integer> {
         return Measurement.class;
     }
 
-    public List<Measurement> findByAssetAndDateBetween(Asset asset, long initdata, long endDate) {
+    public List<Measurement> findByAssetAndDateBetween(int assetId, long initdata, long endDate) {
         String query = "From Measurement m WHERE m.assetBean.id=?1 AND m.time between ?2 AND ?3";
-        List<Measurement> values = executeQuery(query, asset.getId(), new Timestamp(initdata), new Timestamp(endDate));
+        List<Measurement> values = executeQuery(query, assetId, new Timestamp(initdata), new Timestamp(endDate));
+        return values;
+    }
+
+    public List<Measurement> findByExecution(int execId) {
+        String query = "From Measurement m WHERE m.executionBean.id=?1";
+        List<Measurement> values = executeQuery(query, execId);
         return values;
     }
 }

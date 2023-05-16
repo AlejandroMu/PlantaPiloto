@@ -21,6 +21,16 @@ public interface Repository<T, K> {
         return element;
     };
 
+    public default T update(T element) {
+
+        EntityManager manager = getManager();
+        manager.getTransaction().begin();
+        element = manager.merge(element);
+        manager.getTransaction().commit();
+        manager.clear();
+        return element;
+    };
+
     public default void deleteById(K id) {
         EntityManager manager = getManager();
         boolean isActive = manager.getTransaction().isActive();

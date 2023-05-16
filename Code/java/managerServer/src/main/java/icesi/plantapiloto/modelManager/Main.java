@@ -10,8 +10,20 @@ import com.zeroc.Ice.ObjectPrx;
 import com.zeroc.Ice.Util;
 
 import icesi.plantapiloto.common.controllers.MeasurementManagerControllerPrx;
+import icesi.plantapiloto.modelManager.controllers.ActionController;
 import icesi.plantapiloto.modelManager.controllers.AssetController;
+import icesi.plantapiloto.modelManager.controllers.InstructionController;
 import icesi.plantapiloto.modelManager.controllers.MeasurementController;
+import icesi.plantapiloto.modelManager.controllers.ProcessController;
+import icesi.plantapiloto.modelManager.controllers.WorkSpaceController;
+import icesi.plantapiloto.modelManager.services.ActionService;
+import icesi.plantapiloto.modelManager.services.AssetService;
+import icesi.plantapiloto.modelManager.services.DriverService;
+import icesi.plantapiloto.modelManager.services.InstructionService;
+import icesi.plantapiloto.modelManager.services.MeasurementService;
+import icesi.plantapiloto.modelManager.services.ProcessService;
+import icesi.plantapiloto.modelManager.services.TypeService;
+import icesi.plantapiloto.modelManager.services.WorkSpaceService;
 
 public class Main {
 
@@ -34,16 +46,58 @@ public class Main {
         System.setProperties(p);
 
         communicator = Util.initialize();
+
+        // Services
+
+        ProcessService processService = new ProcessService();
+        AssetService assetService = new AssetService();
+        TypeService typeService = new TypeService();
+        DriverService driverService = new DriverService();
+        MeasurementService measureService = new MeasurementService();
+        InstructionService instructionService = new InstructionService();
+        ActionService actionService = new ActionService();
+        WorkSpaceService workSpaceService = new WorkSpaceService();
+
+        // Controllers
         AssetController asset = new AssetController();
         MeasurementController measure = new MeasurementController();
+        ProcessController processController = new ProcessController();
+        ActionController actionController = new ActionController();
+        InstructionController instructionController = new InstructionController();
+        WorkSpaceController workSpaceController = new WorkSpaceController();
+
+        // dependencies
+        asset.setService(assetService);
+        asset.setTypeService(typeService);
+
+        measure.setService(measureService);
         measure.setPublisher(System.getProperty("mqtt.host"));
+
+        instructionService.setActionService(actionService);
+
+        processService.setInstructionService(instructionService);
+        processController.setService(processService);
+
+        actionController.setService(actionService);
+
+        instructionController.setService(instructionService);
+
+        workSpaceController.setService(workSpaceService);
+
+        driverService.setWorkSpaceService(workSpaceService);
 
         ObjectAdapter adapter = communicator.createObjectAdapterWithEndpoints("Model",
                 System.getProperty("Model.Endpoints"));
+
         adapter.add(asset, Util.stringToIdentity("AssetManager"));
+        adapter.add(processController, Util.stringToIdentity("ProcessManager"));
+        adapter.add(actionController, Util.stringToIdentity("ActionManager"));
+        adapter.add(instructionController, Util.stringToIdentity("InstructionManager"));
+        adapter.add(workSpaceController, Util.stringToIdentity("WorkSpaceManager"));
+
         ObjectPrx measurePrx = adapter.add(measure, Util.stringToIdentity("MeasureManager"));
 
-        asset.setCallback(MeasurementManagerControllerPrx.checkedCast(measurePrx));
+        processService.setCallback(MeasurementManagerControllerPrx.uncheckedCast(measurePrx));
         adapter.activate();
         communicator.waitForShutdown();
         communicator.close();

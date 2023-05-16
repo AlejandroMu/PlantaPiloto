@@ -1,10 +1,12 @@
 package icesi.plantapiloto.modelManager.repositories;
 
+import java.util.List;
+
 import javax.persistence.EntityManager;
 
 import icesi.plantapiloto.common.model.Action;
 
-public class ActionRepository implements Repository<Action, String> {
+public class ActionRepository implements Repository<Action, Integer> {
     private static ActionRepository instance;
     private EntityManager manager;
 
@@ -27,6 +29,11 @@ public class ActionRepository implements Repository<Action, String> {
     @Override
     public Class<Action> getType() {
         return Action.class;
+    }
+
+    public List<Action> findByNameMatch(String namepattern) {
+        String query = "From Action a Where a.nameTech Like CONCAT('%', ?1, '%') OR a.nameUser Like CONCAT('%', ?1, '%')";
+        return executeQuery(query, namepattern);
     }
 
 }

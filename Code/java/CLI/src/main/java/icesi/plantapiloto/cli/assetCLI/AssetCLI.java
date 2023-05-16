@@ -10,13 +10,12 @@ import com.zeroc.Ice.Communicator;
 
 import icesi.plantapiloto.cli.CommanLineInterface;
 import icesi.plantapiloto.common.controllers.AssetManagerControllerPrx;
-import icesi.plantapiloto.common.dtos.DriverDTO;
 import icesi.plantapiloto.common.dtos.TypeDTO;
 import icesi.plantapiloto.common.dtos.output.AssetDTO;
 import icesi.plantapiloto.common.model.Asset;
-import icesi.plantapiloto.common.model.Driver;
 import icesi.plantapiloto.common.model.MetaData;
 import icesi.plantapiloto.common.model.Type;
+import icesi.plantapiloto.common.model.WorkSpace;
 
 public class AssetCLI implements CommanLineInterface {
 
@@ -27,31 +26,29 @@ public class AssetCLI implements CommanLineInterface {
     }
 
     @Override
-    public String usage() {
+    public String usage(String pad) {
         StringBuilder builder = new StringBuilder();
-        builder.append(" usage: asset help || asset command\n")
-                .append("  commands: * required\n")
-                .append("   asset add -n {name}*"
+        builder.append(pad + "usage: asset help || asset command\n")
+                .append(pad + "commands: * required\n")
+                .append(pad + " asset add -n {name}*"
                         + " -d {desc}*"
                         + " -t {typeId}*"
-                        + " -dr {drivenID}"
+                        + " -w {workSpaceId}"
                         + " -s {state}*"
                         + " -p {parenId}"
                         + " [-m {metadataProp} {metadataValue} {metadataDesc}]+\n")
-                .append("   asset list ( | -t {typeId} | -s {state}): list assets \n")
-                .append("   asset types: list asset types\n")
-                .append("   asset drivers: list asset drivers\n")
-                .append("   asset remove {assetId}*: remove asset by id\n")
-                .append("   asset run {execId}*: run capture asset by process exetion id\n")
-                .append("   asset stop {execId}*: stop capture asset by process exetion id\n");
+                .append(pad + " asset setpoint {assetId}* {value}*: set asset actuator value\n")
+                .append(pad + " asset list ( | -t {typeId} | -s {state} | -w {workSpace}): list assets \n")
+                .append(pad + " asset types (-d {driverId}): list asset types\n")
+                .append(pad + " asset remove {assetId}*: remove asset by id\n");
 
         return builder.toString();
     }
 
     @Override
-    public void consoleIteractive(String command, BufferedWriter writer) throws IOException {
-        if (command.matches("asset\\s+help.*")) {
-            writer.write(usage());
+    public boolean consoleIteractive(String command, BufferedWriter writer) throws IOException {
+        if (command.matches("\\s+asset\\s+help.*")) {
+            writer.write(usage("    "));
         } else if (command.matches("asset\\s+add.*")) {
             writer.write(assetAddControl(command));
         } else if (command.matches("asset\\s+list.*")) {
@@ -60,39 +57,26 @@ public class AssetCLI implements CommanLineInterface {
         } else if (command.matches("asset\\s+types.*")) {
             writer.write(assetTypesControl(command));
 
-        } else if (command.matches("asset\\s+drivers.*")) {
-            writer.write(assetDriversControl(command));
-
         } else if (command.matches("asset\\s+remove.*")) {
             writer.write(assetRemoveControl(command));
 
-        } else if (command.matches("asset\\s+run.*")) {
-            writer.write(runCapture(command));
-
-        } else if (command.matches("asset\\s+stop.*")) {
-            writer.write(stopCapture(command));
+        } else if (command.matches("asset\\s+setpoint.*")) {
+            writer.write(assetSetPoint(command));
 
         } else {
-            writer.write(usage());
+            return false;
         }
         writer.flush();
+        return true;
 
     }
 
-    private String stopCapture(String command) {
-        int execId = Integer.parseInt(command.split(" ")[2]);
-
-        prx.stopCapture(execId);
-
-        return "Process stoped\n";
-    }
-
-    private String runCapture(String command) {
-        int execId = Integer.parseInt(command.split(" ")[2]);
-
-        prx.captureAssets(execId);
-
-        return "Process runing\n";
+    public String assetSetPoint(String command) {
+        String split[] = command.split(" ");
+        int assetId = Integer.parseInt(split[2]);
+        double value = Double.parseDouble(split[3]);
+        prx.changeAssetValue(assetId, value);
+        return "success";
     }
 
     public String assetAddControl(String command) {
@@ -100,7 +84,7 @@ public class AssetCLI implements CommanLineInterface {
         String name = null;
         String desc = null;
         int typeId = -1;
-        int drId = -1;
+        int workId = -1;
         String state = null;
         int parentId = -1;
         List<MetaData> metaDatas = new ArrayList<>();
@@ -112,8 +96,8 @@ public class AssetCLI implements CommanLineInterface {
                 desc = split[++i];
             } else if (split[i].equals("-t")) {
                 typeId = Integer.parseInt(split[++i]);
-            } else if (split[i].equals("-dr")) {
-                drId = Integer.parseInt(split[++i]);
+            } else if (split[i].equals("-w")) {
+                workId = Integer.parseInt(split[++i]);
             } else if (split[i].equals("-s")) {
                 state = split[++i];
             } else if (split[i].equals("-p")) {
@@ -129,10 +113,10 @@ public class AssetCLI implements CommanLineInterface {
         boolean isValid = name != null
                 && desc != null
                 && typeId != -1
-                && drId != -1
+                && workId != -1
                 && state != null;
         if (!isValid) {
-            return "failed save, one or more fields are wrongs\n" + usage();
+            return "failed save, one or more fields are wrongs\n" + usage(" ");
         }
         Asset asset = new Asset();
 
@@ -141,9 +125,9 @@ public class AssetCLI implements CommanLineInterface {
         Type t = new Type();
         t.setId(typeId);
         asset.setTypeBean(t);
-        Driver d = new Driver();
-        d.setId(drId);
-        asset.setDriverBean(d);
+        WorkSpace d = new WorkSpace();
+        d.setId(workId);
+        asset.setWorkSpace(d);
         asset.setAssetState(state);
         if (parentId != -1) {
             Asset paren = new Asset();
@@ -184,11 +168,14 @@ public class AssetCLI implements CommanLineInterface {
         } else {
             String type = null;
             String state = null;
+            String work = null;
             for (int i = 2; i < parse.length; i++) {
                 if (parse[i].equals("-t")) {
                     type = parse[++i];
                 } else if (parse[i].equals("-s")) {
                     state = parse[++i];
+                } else if (parse[i].equals("-w")) {
+                    work = parse[++i];
                 }
             }
             if (type != null) {
@@ -202,18 +189,33 @@ public class AssetCLI implements CommanLineInterface {
                     values = prx.findByState(state);
                 }
             }
+            if (work != null) {
+                final int s = Integer.parseInt(work);
+                if (values != null) {
+                    values = Arrays.asList(values).stream().filter(v -> v.workId == s).toArray(AssetDTO[]::new);
+                } else {
+                    values = prx.findByWorkSpace(s);
+                }
+            }
         }
         return encoderList(values);
     }
 
     public String assetTypesControl(String command) {
-        TypeDTO[] types = prx.findAllTypes();
+        String split[] = command.split(" ");
+        String driver = null;
+        for (int i = 0; i < split.length; i++) {
+            if (split[i].equals("-d")) {
+                driver = split[++i];
+            }
+        }
+        TypeDTO[] types = null;
+        if (driver != null) {
+            types = prx.findTypesByDriver(Integer.parseInt(driver));
+        } else {
+            types = prx.findAllTypes();
+        }
         return encoderList(types);
-    }
-
-    public String assetDriversControl(String command) {
-        DriverDTO[] driverDTOs = prx.findAllDrivers();
-        return encoderList(driverDTOs);
     }
 
 }

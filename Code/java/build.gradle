@@ -6,8 +6,7 @@ subprojects{
     apply plugin: 'application'
     apply plugin: 'org.hidetake.ssh'
     apply plugin: 'jacoco'
-    sourceCompatibility = 1.8   
-
+   
     jacoco {
         toolVersion = '0.8.7'
     }

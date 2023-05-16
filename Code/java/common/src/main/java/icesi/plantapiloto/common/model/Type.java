@@ -9,6 +9,7 @@ import java.util.List;
  * 
  */
 @Entity
+@Table(name = "asset_type")
 @NamedQuery(name = "Type.findAll", query = "SELECT t FROM Type t")
 public class Type implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -24,6 +25,11 @@ public class Type implements Serializable {
 
 	@Column(name = "table_name")
 	private String tableName;
+
+	// bi-directional many-to-one association to Driver
+	@ManyToOne
+	@JoinColumn(name = "driver")
+	private Driver driver;
 
 	// bi-directional many-to-one association to Asset
 	@OneToMany(mappedBy = "typeBean")
@@ -62,6 +68,20 @@ public class Type implements Serializable {
 
 	public void setTableName(String tableName) {
 		this.tableName = tableName;
+	}
+
+	/**
+	 * @return the driver
+	 */
+	public Driver getDriver() {
+		return driver;
+	}
+
+	/**
+	 * @param driver the driver to set
+	 */
+	public void setDriver(Driver driver) {
+		this.driver = driver;
 	}
 
 	public List<Asset> getAssets() {

@@ -10,6 +10,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import icesi.plantapiloto.common.dtos.output.AssetDTO;
+import icesi.plantapiloto.modelManager.services.AssetService;
+import icesi.plantapiloto.modelManager.services.TypeService;
 
 public class AssetControllerTest {
 
@@ -18,6 +20,10 @@ public class AssetControllerTest {
     @Before
     public void setup() {
         controller = new AssetController();
+        AssetService assetService = new AssetService();
+        TypeService typeService = new TypeService();
+        controller.setService(assetService);
+        controller.setTypeService(typeService);
     }
 
     @Test

@@ -1,5 +1,7 @@
 package icesi.plantapiloto.modelManager.repositories;
 
+import java.util.List;
+
 import javax.persistence.EntityManager;
 
 import icesi.plantapiloto.common.model.Driver;
@@ -27,5 +29,10 @@ public class DriverRepository implements Repository<Driver, Integer> {
     @Override
     public Class<Driver> getType() {
         return Driver.class;
+    }
+
+    public List<Driver> findByWorkSpace(int workSpaceId) {
+        String query = "From Driver d Where d.workSpaceBean.id = ?1";
+        return executeQuery(query, workSpaceId);
     }
 }

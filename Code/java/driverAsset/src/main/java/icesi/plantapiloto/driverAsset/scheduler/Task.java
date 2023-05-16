@@ -2,19 +2,19 @@ package icesi.plantapiloto.driverAsset.scheduler;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.TimerTask;
 
 import icesi.plantapiloto.common.dtos.MeasurementDTO;
 import icesi.plantapiloto.common.dtos.output.AssetDTO;
 import icesi.plantapiloto.driverAsset.RMSender.PublisherManager;
 import icesi.plantapiloto.driverAsset.concrete.DriverAssetConcrete;
 
-public class Task extends TimerTask {
+public class Task implements Runnable {
     private DriverAssetConcrete source;
     private List<AssetDTO> assets;
     private int exeId;
     private String callback;
     private long period;
+    private boolean isRunning;
 
     /**
      * @param sender
@@ -30,6 +30,7 @@ public class Task extends TimerTask {
         this.exeId = exeId;
         this.callback = callback;
         this.period = period;
+        isRunning = true;
     }
 
     public void addAsset(AssetDTO dto) {
@@ -43,12 +44,20 @@ public class Task extends TimerTask {
         return period;
     }
 
+    /**
+     * @param isRunning the isRunning to set
+     */
+    public void setRunning(boolean isRunning) {
+        this.isRunning = isRunning;
+    }
+
     @Override
     public void run() {
-        List<MeasurementDTO> measurementDTOs = source.readAsset(assets, exeId);
-
-        PublisherManager sender = PublisherManager.getInstance(callback);
-        sender.addMessage(measurementDTOs);
+        if (isRunning) {
+            List<MeasurementDTO> measurementDTOs = source.readAsset(assets, exeId);
+            PublisherManager sender = PublisherManager.getInstance(callback);
+            sender.addMessage(measurementDTOs);
+        }
     }
 
 }

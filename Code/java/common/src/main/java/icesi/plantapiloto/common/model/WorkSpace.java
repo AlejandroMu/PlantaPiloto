@@ -31,6 +31,10 @@ public class WorkSpace implements Serializable {
 	@OneToMany(mappedBy = "workSpaceBean")
 	private List<Process> processes;
 
+	// bi-directional many-to-one association to Process
+	@OneToMany(mappedBy = "workSpace")
+	private List<Asset> assets;
+
 	// bi-directional many-to-one association to WorkSpace
 	@ManyToOne
 	@JoinColumn(name = "department")
@@ -87,6 +91,28 @@ public class WorkSpace implements Serializable {
 		driver.setWorkSpaceBean(null);
 
 		return driver;
+	}
+
+	public List<Asset> getAssets() {
+		return this.assets;
+	}
+
+	public void setAssets(List<Asset> assets) {
+		this.assets = assets;
+	}
+
+	public Asset addDriver(Asset asset) {
+		getAssets().add(asset);
+		asset.setWorkSpace(this);
+
+		return asset;
+	}
+
+	public Asset removeDriver(Asset asset) {
+		getAssets().remove(asset);
+		asset.setWorkSpace(null);
+
+		return asset;
 	}
 
 	public List<Process> getProcesses() {

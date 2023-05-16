@@ -18,9 +18,6 @@ import icesi.plantapiloto.driverAsset.concrete.DriverAssetConcrete;
 
 public class ScheduleManager {
 
-    public static final String PERIOD_KEY = "execution.asset.period";
-    public static final String EXECUTION_ID_KEY = "execution.id";
-
     private ScheduledExecutorService scheduler;
     private Map<Integer, List<Task>> process;
     private Map<Integer, List<ScheduledFuture<?>>> futures;
@@ -59,7 +56,6 @@ public class ScheduleManager {
         futs.add(future);
         futures.put(execId, futs);
         tasks.add(task);
-
         process.put(execId, tasks);
 
     }
@@ -70,9 +66,25 @@ public class ScheduleManager {
         if (futs != null) {
             System.out.println("Stop process not null: " + execId);
 
-            futs.stream().forEach(t -> t.cancel(true));
+            futs.stream().forEach(t -> t.cancel(false));
             process.remove(execId);
             futures.remove(execId);
+        }
+    }
+
+    public void pauseProcess(int execId) {
+        System.out.println("pause process: " + execId);
+        List<Task> futs = process.get(execId);
+        if (futs != null) {
+            futs.stream().forEach(t -> t.setRunning(false));
+        }
+    }
+
+    public void resumeProcess(int execId) {
+        System.out.println("resume process: " + execId);
+        List<Task> futs = process.get(execId);
+        if (futs != null) {
+            futs.stream().forEach(t -> t.setRunning(true));
         }
     }
 

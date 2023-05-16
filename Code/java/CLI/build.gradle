@@ -5,3 +5,10 @@ dependencies{
     implementation 'org.jline:jline:3.21.0'
 
 }
+jar{
+    manifest {
+        // Especifica la clase principal que se ejecutará al iniciar el JAR
+        attributes 'Main-Class': mainClassName,
+                   'Class-Path': configurations.runtimeClasspath.resolve().collect {it.toURI() }.join(' ')
+    }
+}

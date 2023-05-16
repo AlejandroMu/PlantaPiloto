@@ -23,7 +23,7 @@ public class AssetMapper implements Maper<Asset, AssetDTO> {
 
     public AssetDTO asEntityDTO(Asset asset) {
         AssetDTO dto = new AssetDTO(asset.getId(), asset.getName(), asset.getTypeBean().getName(),
-                asset.getAssetState(), null, null, null);
+                asset.getAssetState(), null, null, asset.getWorkSpace().getId(), null);
         List<MetaData> metaDatas = asset.getMetaData();
         HashMap<String, String> props = new HashMap<>();
         if (metaDatas != null) {
@@ -50,7 +50,8 @@ public class AssetMapper implements Maper<Asset, AssetDTO> {
             return null;
         }
         AssetDTO parent = new AssetDTO(assetPar.getId(), assetPar.getName(),
-                assetPar.getTypeBean().getName(), assetPar.getAssetState(), null, null, null);
+                assetPar.getTypeBean().getName(), assetPar.getAssetState(), null, null, assetPar.getWorkSpace().getId(),
+                null);
         HashMap<String, String> props = new HashMap<>();
         List<MetaData> metaDatas = assetPar.getMetaData();
 

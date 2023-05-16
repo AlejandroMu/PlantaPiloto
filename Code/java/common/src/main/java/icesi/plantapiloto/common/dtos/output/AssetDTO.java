@@ -8,6 +8,7 @@ public class AssetDTO implements Serializable {
     public String name;
     public String typeName;
     public String state;
+    public int workId;
     public AssetDTO[] childrens;
     public Map<String, String> props;
     public AssetDTO parent;
@@ -20,7 +21,7 @@ public class AssetDTO implements Serializable {
      * @param childrens
      */
     public AssetDTO(int assetId, String name, String typeName, String state, AssetDTO[] childrens,
-            AssetDTO par, Map<String, String> props) {
+            AssetDTO par, int workId, Map<String, String> props) {
         this.assetId = assetId;
         this.name = name;
         this.typeName = typeName;
@@ -28,6 +29,7 @@ public class AssetDTO implements Serializable {
         this.childrens = childrens;
         this.props = props;
         this.parent = par;
+        this.workId = workId;
     }
 
     public AssetDTO() {

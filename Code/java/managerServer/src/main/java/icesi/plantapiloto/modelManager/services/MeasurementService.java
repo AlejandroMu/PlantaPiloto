@@ -4,7 +4,6 @@ import java.sql.Timestamp;
 import java.util.List;
 
 import icesi.plantapiloto.common.dtos.MeasurementDTO;
-import icesi.plantapiloto.common.dtos.output.AssetDTO;
 import icesi.plantapiloto.common.model.Asset;
 import icesi.plantapiloto.common.model.Execution;
 import icesi.plantapiloto.common.model.Measurement;
@@ -13,6 +12,7 @@ import icesi.plantapiloto.modelManager.repositories.ExecutionRepository;
 import icesi.plantapiloto.modelManager.repositories.MeasurementRepository;
 
 public class MeasurementService {
+
     private AssetRepository assetRepository;
     private MeasurementRepository measurementRepository;
     private ExecutionRepository executionRepository;
@@ -37,9 +37,14 @@ public class MeasurementService {
         }
     }
 
-    public List<Measurement> getMeasurements(AssetDTO assetDto, long initdata, long endDate) {
-        Asset asset = new Asset();
-        List<Measurement> measurements = measurementRepository.findByAssetAndDateBetween(asset, initdata, endDate);
+    public List<Measurement> getMeasurements(int assetId, long initdata, long endDate) {
+        List<Measurement> measurements = measurementRepository.findByAssetAndDateBetween(assetId, initdata, endDate);
+        return measurements;
+    }
+
+    public List<Measurement> getMeasurementsByExecution(int execId) {
+        List<Measurement> measurements = measurementRepository.findByExecution(execId);
+
         return measurements;
     }
 }

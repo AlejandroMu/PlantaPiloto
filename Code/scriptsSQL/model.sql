@@ -27,7 +27,7 @@ CREATE TABLE asset (
     name character varying(255),
     description character varying(255),
     type integer,
-    driver integer,
+    work_space integer,
     asset_sup integer
 );
 
@@ -86,7 +86,7 @@ CREATE TABLE instruction (
     id integer NOT NULL,
     name_tech character varying(255),
     predicate character varying(255),
-    type integer
+    type character varying(255)
 );
 
 CREATE TABLE instruction_process (
@@ -151,11 +151,11 @@ CREATE SEQUENCE process_seq
     NO MAXVALUE
     CACHE 1;
 
-CREATE TABLE type (
+CREATE TABLE asset_type (
     id integer NOT NULL,
     name character varying(255),
     description character varying(255),
-    table_name character varying(255)
+    driver integer
 );
 
 CREATE SEQUENCE type_seq
@@ -209,7 +209,7 @@ ALTER TABLE process_asset
 ALTER TABLE process
     ADD CONSTRAINT process_pkey PRIMARY KEY (id);
 
-ALTER TABLE type
+ALTER TABLE asset_type
     ADD CONSTRAINT type_pkey PRIMARY KEY (id);
 
 ALTER TABLE work_space
@@ -222,7 +222,7 @@ ALTER TABLE instruction_process
     ADD CONSTRAINT process_process_id FOREIGN KEY (process) REFERENCES process(id);
 
 ALTER TABLE asset
-    ADD CONSTRAINT driver_id FOREIGN KEY (driver) REFERENCES driver(id);
+    ADD CONSTRAINT worker_space_id FOREIGN KEY (work_space) REFERENCES work_space(id);
 
 ALTER TABLE measurement
     ADD CONSTRAINT execution_id FOREIGN KEY (execution) REFERENCES execution(id);
@@ -261,13 +261,16 @@ ALTER TABLE execution_instruction
     ADD CONSTRAINT instruction_id FOREIGN KEY (instruction) REFERENCES instruction(id);
 
 ALTER TABLE asset
-    ADD CONSTRAINT type_id FOREIGN KEY (type) REFERENCES type(id);
+    ADD CONSTRAINT type_id FOREIGN KEY (type) REFERENCES asset_type(id);
 
 ALTER TABLE action_instruction
     ADD CONSTRAINT instruction_id FOREIGN KEY (instruction) REFERENCES instruction(id);
 
 ALTER TABLE measurement
     ADD CONSTRAINT asset_id FOREIGN KEY (asset) REFERENCES asset(id);
+
+ALTER TABLE asset_type
+    ADD CONSTRAINT driver_id FOREIGN KEY (driver) REFERENCES driver(id);
 
 
 
