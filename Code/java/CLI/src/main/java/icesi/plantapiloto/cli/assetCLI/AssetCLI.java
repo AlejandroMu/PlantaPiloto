@@ -10,7 +10,6 @@ import com.zeroc.Ice.Communicator;
 
 import icesi.plantapiloto.cli.CommanLineInterface;
 import icesi.plantapiloto.common.controllers.AssetManagerControllerPrx;
-import icesi.plantapiloto.common.dtos.TypeDTO;
 import icesi.plantapiloto.common.dtos.output.AssetDTO;
 import icesi.plantapiloto.common.model.Asset;
 import icesi.plantapiloto.common.model.MetaData;
@@ -39,7 +38,6 @@ public class AssetCLI implements CommanLineInterface {
                         + " [-m {metadataProp} {metadataValue} {metadataDesc}]+\n")
                 .append(pad + " asset setpoint {assetId}* {value}*: set asset actuator value\n")
                 .append(pad + " asset list ( | -t {typeId} | -s {state} | -w {workSpace}): list assets \n")
-                .append(pad + " asset types (-d {driverId}): list asset types\n")
                 .append(pad + " asset remove {assetId}*: remove asset by id\n");
 
         return builder.toString();
@@ -47,15 +45,12 @@ public class AssetCLI implements CommanLineInterface {
 
     @Override
     public boolean consoleIteractive(String command, BufferedWriter writer) throws IOException {
-        if (command.matches("\\s+asset\\s+help.*")) {
+        if (command.matches("asset\\s+help.*")) {
             writer.write(usage("    "));
         } else if (command.matches("asset\\s+add.*")) {
             writer.write(assetAddControl(command));
         } else if (command.matches("asset\\s+list.*")) {
             writer.write(assetListControl(command));
-
-        } else if (command.matches("asset\\s+types.*")) {
-            writer.write(assetTypesControl(command));
 
         } else if (command.matches("asset\\s+remove.*")) {
             writer.write(assetRemoveControl(command));
@@ -199,23 +194,6 @@ public class AssetCLI implements CommanLineInterface {
             }
         }
         return encoderList(values);
-    }
-
-    public String assetTypesControl(String command) {
-        String split[] = command.split(" ");
-        String driver = null;
-        for (int i = 0; i < split.length; i++) {
-            if (split[i].equals("-d")) {
-                driver = split[++i];
-            }
-        }
-        TypeDTO[] types = null;
-        if (driver != null) {
-            types = prx.findTypesByDriver(Integer.parseInt(driver));
-        } else {
-            types = prx.findAllTypes();
-        }
-        return encoderList(types);
     }
 
 }

@@ -5,37 +5,22 @@ import java.util.List;
 import com.zeroc.Ice.Current;
 
 import icesi.plantapiloto.common.controllers.AssetManagerController;
-import icesi.plantapiloto.common.dtos.TypeDTO;
 import icesi.plantapiloto.common.dtos.output.AssetDTO;
 import icesi.plantapiloto.common.mappers.AssetMapper;
-import icesi.plantapiloto.common.mappers.TypeMapper;
 import icesi.plantapiloto.common.model.Asset;
 import icesi.plantapiloto.common.model.MetaData;
 import icesi.plantapiloto.common.model.Type;
 import icesi.plantapiloto.modelManager.services.AssetService;
-import icesi.plantapiloto.modelManager.services.TypeService;
 
 public class AssetController implements AssetManagerController {
 
     private AssetService service;
-    private TypeService typeService;
-
-    public AssetController() {
-
-    }
 
     /**
      * @param service the service to set
      */
     public void setService(AssetService service) {
         this.service = service;
-    }
-
-    /**
-     * @param typeService the typeService to set
-     */
-    public void setTypeService(TypeService typeService) {
-        this.typeService = typeService;
     }
 
     @Override
@@ -87,22 +72,9 @@ public class AssetController implements AssetManagerController {
     }
 
     @Override
-    public TypeDTO[] findAllTypes(Current current) {
-
-        List<Type> types = typeService.findAll();
-        return TypeMapper.getInstance().asEntityDTO(types).toArray(TypeDTO[]::new);
-    }
-
-    @Override
     public AssetDTO[] findByWorkSpace(int workSpaceId, Current current) {
         List<Asset> assets = service.getAssetsByWorkSpace(workSpaceId);
         return AssetMapper.getInstance().asEntityDTO(assets).toArray(AssetDTO[]::new);
-    }
-
-    @Override
-    public TypeDTO[] findTypesByDriver(int driverId, Current current) {
-        List<Type> types = typeService.findByDriver(driverId);
-        return TypeMapper.getInstance().asEntityDTO(types).toArray(TypeDTO[]::new);
     }
 
 }

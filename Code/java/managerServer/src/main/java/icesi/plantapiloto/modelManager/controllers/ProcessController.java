@@ -68,7 +68,7 @@ public class ProcessController implements ProcessManagerController {
 
     @Override
     public ExecutionDTO[] findExecutions(int processId, long startDate, long endDate, Current current) {
-        List<Execution> executions = service.getExecutionByProcessIdAndDate(processId, startDate, endDate);
+        List<Execution> executions = service.getExecutionByProcessIdAndDateStartBetween(processId, startDate, endDate);
         return ExecutionMapper.getInstance().asEntityDTO(executions).toArray(ExecutionDTO[]::new);
     }
 

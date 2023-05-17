@@ -40,11 +40,11 @@ public class MeasureCLI implements CommanLineInterface {
     @Override
     public boolean consoleIteractive(String command, BufferedWriter writer) throws IOException {
 
-        if (command.matches("\\s+measure\\s+help.*")) {
+        if (command.matches("measure\\s+help.*")) {
             writer.append(usage("   "));
-        } else if (command.matches("\\s+measure\\s+add.*")) {
+        } else if (command.matches("measure\\s+add.*")) {
             writer.append(addMeasureControl(command));
-        } else if (command.matches("\\s+measure\\s+list.*")) {
+        } else if (command.matches("measure\\s+list.*")) {
             writer.append(listMeasureControl(command));
         } else {
             return false;
@@ -88,7 +88,7 @@ public class MeasureCLI implements CommanLineInterface {
             }
         }
         if (values == null) {
-            return "Failed: verify data required:\n" + usage("   ");
+            return "Failed: verify data required:\n" + usage(" ");
         }
 
         return encoderList(values);

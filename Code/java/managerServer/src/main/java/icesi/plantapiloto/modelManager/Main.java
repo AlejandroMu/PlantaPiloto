@@ -68,7 +68,6 @@ public class Main {
 
         // dependencies
         asset.setService(assetService);
-        asset.setTypeService(typeService);
 
         measure.setService(measureService);
         measure.setPublisher(System.getProperty("mqtt.host"));
@@ -83,6 +82,7 @@ public class Main {
         instructionController.setService(instructionService);
 
         workSpaceController.setService(workSpaceService);
+        workSpaceController.setTypeService(typeService);
 
         driverService.setWorkSpaceService(workSpaceService);
 

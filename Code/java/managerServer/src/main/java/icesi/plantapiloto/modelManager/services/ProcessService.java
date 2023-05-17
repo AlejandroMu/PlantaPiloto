@@ -191,8 +191,8 @@ public class ProcessService {
         return processRepository.findByWorkSpace(workSpaceId);
     }
 
-    public List<Execution> getExecutionByProcessIdAndDate(int processId, long startDate, long endDate) {
-        return null;
+    public List<Execution> getExecutionByProcessIdAndDateStartBetween(int processId, long startDate, long endDate) {
+        return executionRepository.findByProcessAndStartDateBetween(processId, startDate, endDate);
     }
 
 }

@@ -153,9 +153,6 @@ module common{
 
            void deletById(int id);
 
-           TypesDTO findAllTypes();
-           TypesDTO findTypesByDriver(int driverId);
-
         }
 
         interface ProcessManagerController{        
@@ -180,7 +177,7 @@ module common{
            void addActionToInstruction(int actionId, int instId);
            InstructionsDTO findInstructions();
            InstructionsDTO findInstructionsByNameMatch(string namepattern);
-
+           ActionsDTO findActions(int instId);
         }
 
         interface ActionManagerController{
@@ -198,7 +195,9 @@ module common{
             DriversDTO findAllDrivers();
             DriversDTO findDriversByWorkSpace(int workSpaceId);
 
-
+            int saveAssetType(string name, string desc, int driver);
+            TypesDTO findAllTypes();
+            TypesDTO findTypesByDriver(int driverId);
 
         }
     }

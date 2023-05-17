@@ -18,8 +18,11 @@ import org.jline.terminal.TerminalBuilder;
 import com.zeroc.Ice.Communicator;
 import com.zeroc.Ice.Util;
 
+import icesi.plantapiloto.cli.actionCLI.ActionCLI;
 import icesi.plantapiloto.cli.assetCLI.AssetCLI;
+import icesi.plantapiloto.cli.instructionCLI.InstructionCLI;
 import icesi.plantapiloto.cli.measureCLI.MeasureCLI;
+import icesi.plantapiloto.cli.processCLI.ProcessCLI;
 import icesi.plantapiloto.cli.workSpaceCLI.WorkSpapceCLI;
 
 public class Main implements CommanLineInterface {
@@ -52,15 +55,24 @@ public class Main implements CommanLineInterface {
         System.setProperty("asset", "AssetManager:" + proxy);
         System.setProperty("measure", "MeasureManager:" + proxy);
         System.setProperty("work", "WorkSpaceManager:" + proxy);
+        System.setProperty("action", "ActionManager:" + proxy);
+        System.setProperty("instruction", "InstructionManager:" + proxy);
+        System.setProperty("process", "ProcessManager:" + proxy);
 
         CommanLineInterface asset = new AssetCLI(com);
         CommanLineInterface measur = new MeasureCLI(com);
         CommanLineInterface work = new WorkSpapceCLI(com);
+        CommanLineInterface action = new ActionCLI(com);
+        CommanLineInterface instruction = new InstructionCLI(com);
+        CommanLineInterface process = new ProcessCLI(com);
 
         Main main = new Main();
         main.addCommandLine(asset);
         main.addCommandLine(measur);
         main.addCommandLine(work);
+        main.addCommandLine(action);
+        main.addCommandLine(instruction);
+        main.addCommandLine(process);
 
         String line = "help";
         while (!line.equals("exit")) {
@@ -85,7 +97,7 @@ public class Main implements CommanLineInterface {
     public String usage(String pad) {
         StringBuilder builder = new StringBuilder();
         for (CommanLineInterface commanLineInterface : commands) {
-            builder.append(commanLineInterface.usage(pad + "    "));
+            builder.append(commanLineInterface.usage(pad + "  "));
             builder.append("\n");
         }
         return builder.toString();

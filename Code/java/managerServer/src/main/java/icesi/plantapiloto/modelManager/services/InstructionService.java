@@ -51,4 +51,9 @@ public class InstructionService {
         return instructionRepository.findByNameMatch(namepattern);
     }
 
+    public List<Action> getActions(int intructionId) {
+        Instruction instruction = instructionRepository.findById(intructionId).get();
+        return instruction.getActions();
+    }
+
 }

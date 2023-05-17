@@ -6,18 +6,30 @@ import com.zeroc.Ice.Current;
 
 import icesi.plantapiloto.common.controllers.WorkSpaceManagerController;
 import icesi.plantapiloto.common.dtos.DriverDTO;
+import icesi.plantapiloto.common.dtos.TypeDTO;
 import icesi.plantapiloto.common.dtos.WorkSpaceDTO;
 import icesi.plantapiloto.common.mappers.DriverMapper;
+import icesi.plantapiloto.common.mappers.TypeMapper;
 import icesi.plantapiloto.common.mappers.WorkSpaceMapper;
 import icesi.plantapiloto.common.model.Driver;
+import icesi.plantapiloto.common.model.Type;
 import icesi.plantapiloto.common.model.WorkSpace;
 import icesi.plantapiloto.modelManager.services.DriverService;
+import icesi.plantapiloto.modelManager.services.TypeService;
 import icesi.plantapiloto.modelManager.services.WorkSpaceService;
 
 public class WorkSpaceController implements WorkSpaceManagerController {
 
     private WorkSpaceService service;
     private DriverService driverService;
+    private TypeService typeService;
+
+    /**
+     * @param typeService the typeService to set
+     */
+    public void setTypeService(TypeService typeService) {
+        this.typeService = typeService;
+    }
 
     /**
      * @param service the service to set
@@ -69,4 +81,21 @@ public class WorkSpaceController implements WorkSpaceManagerController {
         return DriverMapper.getInstance().asEntityDTO(drivers).toArray(DriverDTO[]::new);
     }
 
+    @Override
+    public TypeDTO[] findTypesByDriver(int driverId, Current current) {
+        List<Type> types = typeService.findByDriver(driverId);
+        return TypeMapper.getInstance().asEntityDTO(types).toArray(TypeDTO[]::new);
+    }
+
+    @Override
+    public TypeDTO[] findAllTypes(Current current) {
+
+        List<Type> types = typeService.findAll();
+        return TypeMapper.getInstance().asEntityDTO(types).toArray(TypeDTO[]::new);
+    }
+
+    @Override
+    public int saveAssetType(String name, String desc, int driver, Current current) {
+        return typeService.saveType(name, desc, driverService.findById(driver));
+    }
 }
