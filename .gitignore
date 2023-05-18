@@ -1,12 +1,14 @@
 **/db
-**.jar
 **/build
 **/bin
+**/distributable
+**/tmp
+
+**.jar
 **.class
 .**
 !eth*.jar
-**/tmp
 **.vpp.**
 gradle.properties
-**/distributable
+
 **.zip

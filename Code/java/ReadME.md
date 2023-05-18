@@ -2,14 +2,23 @@
 
 System that be able manage the IIoT assets and the data generate for these infrastucture.  
 
+## System specifications.
 
+1. **Database schema.**
+
+    ![modelo](../../Documentation/images/AssetsModel.png)
+
+2. **Deployment diagram**
+
+    ![Deployment](../../Documentation/images/AssetsDeployment.jpg)
+    
 ## Installation
 
 ### Pre-requirements
 
 1. **Apache Artemis.**
 
-    if you dont have any artemis version, you can running broker.sh for linux or broker.cmd in windows.
+    if you dont have any artemis version, you can running broker.sh for linux or broker.cmd in windows, these scripts are in [scripts folder](./scripts) .
 
     ```bash
     ./broker.sh
@@ -31,7 +40,7 @@ System that be able manage the IIoT assets and the data generate for these infra
     you need install postgres database, for that you can visit <a href="https://www.postgresql.org/download/">oficial page for downloads.</a> 
     <br>
 
-    **Nota:** *Remember modify "pg_hba.conf" file, add a line to enable access to the hosts where you will be deploying. **Restart postgres service.***
+    **Note:** *Remember modify "pg_hba.conf" file, add a line to enable access to the hosts where you will be deploying. **Restart postgres service.***
     <br>
 
     when you have postgres installed, run follow scrips:
@@ -64,26 +73,22 @@ System that be able manage the IIoT assets and the data generate for these infra
 
     Also you can use gradlew script into folder.
 
-### System specifications.
-
-1. **Database schema.**
-
-    ![modelo](../../Documentation/Design/model/model.png)
- 
 ### Build and deployment.
+
+For this example, we are deploying a driver called ["plcDriver"](./plcDriver/ReadME.md) that allows reading and writing tags from Allen-Bradley PLCs. If you wish to develop your own custom driver, you can refer to the [Driver Asset](./driverAsset/ReadME.md) for guidance and reference.
 
 Before build artifacts rewiew next properties.
 
 - [plcDriver.properties](./plcDriver/src/main/resources/application.properties)
     ```properties
-    driver.asset.Endpoints = tcp -h * -p 5431
+    driver.asset.Endpoints = tcp -h * -p 1804
     driver.asset.threadpool.size = 5
     ```
 
 - [managerServer.properties](./managerServer/src/main/resources/application.properties)
 
     ```properties
-    Model.Endpoints = tcp -h * -p 12345
+    Model.Endpoints = tcp -h * -p 1704
     mqtt.host=localhost
     database.url=jdbc:postgresql://localhost:5432/assets
     database.schema=asset_manager
@@ -91,7 +96,9 @@ Before build artifacts rewiew next properties.
     database.password=IngSwI40PWD
     ```
 
-When you have verified thar properties are right, run:
+    **Note:** *The default ports for the system are 1804 for drivers and 1704 for managerServer. Before proceeding, please verify that the system firewall allows traffic for these ports.*
+
+    When you have verified thar properties are right, run:
 
 * Local
     ```bash

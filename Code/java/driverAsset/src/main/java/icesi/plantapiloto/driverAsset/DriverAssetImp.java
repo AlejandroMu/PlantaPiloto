@@ -24,7 +24,7 @@ public class DriverAssetImp implements DriverAsset {
         DriverAsset driverAsset = new DriverAssetImp(clasz);
         String pr = communicator.getProperties().getProperty(ENDPOINT_STRING);
         if (pr == null) {
-            pr = "tcp -h * -p 8041";
+            pr = "tcp -h * -p 1804";
         }
         ObjectAdapter adapter = communicator.createObjectAdapterWithEndpoints("DriverService", pr);
         adapter.add(driverAsset, Util.stringToIdentity("DriverAsset"));
