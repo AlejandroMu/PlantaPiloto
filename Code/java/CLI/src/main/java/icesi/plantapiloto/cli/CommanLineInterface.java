@@ -2,7 +2,6 @@ package icesi.plantapiloto.cli;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,8 +15,7 @@ public interface CommanLineInterface {
     public boolean consoleIteractive(String command, BufferedWriter writer) throws IOException;
 
     public default <T> String encoderList(T[] elemenTs) {
-        return Arrays.asList(elemenTs).stream().map(v -> ">> " + encoder.encodePretty(v) + "\n")
-                .reduce("", (a, c) -> a + c).toString();
+        return encoder.encodePretty(elemenTs) + "\n";
     }
 
     public default Map<String, String> parseOptions(String command) {
