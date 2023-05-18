@@ -76,7 +76,6 @@ subprojects{
             def mainClass = "$mainClassName"
             def env = System.getProperty("env")
 
-            println "env $env"
             if(!machines.isEmpty() && !mainClass.toString().equals('null')){
                 ssh.run {
                     session(machines) {
