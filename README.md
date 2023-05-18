@@ -153,7 +153,7 @@ When you have verified thar properties are right, go to [source folder](./Code/j
 
     * [managerServer prod.properties](./Code/java/managerServer/src/main/resources/prod.properties)
     ```properties
-    Model.Endpoints = tcp -h * -p 12345
+    Model.Endpoints = tcp -h * -p 1704
     mqtt.host=remoteArtemis
     database.url=jdbc:postgresql://remoteHost:5432/assets
     database.schema=asset_manager
