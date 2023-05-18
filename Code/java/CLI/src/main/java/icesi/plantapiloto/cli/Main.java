@@ -42,7 +42,7 @@ public class Main implements CommanLineInterface {
         Communicator com = Util.initialize(args);
         System.out.println("args: " + Arrays.toString(args));
         String host = "localhost";
-        String port = "12345";
+        String port = "1704";
         for (int i = 0; i < args.length; i++) {
             if (args[i].equals("-h")) {
                 host = args[++i];

@@ -3,6 +3,7 @@ package icesi.plantapiloto.cli.measureCLI;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Map;
 
 import com.zeroc.Ice.Communicator;
 
@@ -54,22 +55,11 @@ public class MeasureCLI implements CommanLineInterface {
     }
 
     private String listMeasureControl(String command) {
-        String split[] = command.split(" ");
-        Integer e = null;
-        Integer a = null;
-        Long i = null;
-        Long f = System.currentTimeMillis();
-        for (int j = 0; j < split.length; j++) {
-            if (split[j].equals("-e")) {
-                e = Integer.parseInt(split[++j]);
-            } else if (split[j].equals("-a")) {
-                a = Integer.parseInt(split[++j]);
-            } else if (split[j].equals("-i")) {
-                i = Long.parseLong(split[++j]);
-            } else if (split[j].equals("-f")) {
-                f = Long.parseLong(split[++j]);
-            }
-        }
+        Map<String, String> props = parseOptions(command);
+        Integer e = Integer.parseInt(props.get("-e"));
+        Integer a = Integer.parseInt(props.get("-a"));
+        Long i = Long.parseLong(props.get("-i"));
+        Long f = props.get("-f") == null ? System.currentTimeMillis() : Long.parseLong(props.get("-f"));
         MeasurementDTO[] values = null;
         if (e != null) {
             values = prx.getMeasurmentsByExecution(e);
@@ -87,36 +77,27 @@ public class MeasureCLI implements CommanLineInterface {
             }
         }
         if (values == null) {
-            return "Failed: verify data required:\n" + usage(" ");
+            return errorMessage();
         }
 
         return encoderList(values);
     }
 
     private String addMeasureControl(String command) {
-        MeasurementDTO dto = new MeasurementDTO();
-        dto.timeStamp = System.currentTimeMillis();
-        int count = 0;
-        String split[] = command.split(" ");
-        for (int i = 0; i < split.length; i++) {
-            if (split[i].equals("-a")) {
-                count++;
-                dto.assetId = Integer.parseInt(split[++i]);
-            } else if (split[i].equals("-v")) {
-                count++;
-                dto.value = Double.parseDouble(split[++i]);
-            } else if (split[i].equals("-e")) {
-                count++;
-                dto.exeId = Integer.parseInt(split[++i]);
-            } else if (split[i].equals("-t")) {
-                dto.timeStamp = Long.parseLong(split[++i]);
-            }
+        try {
+            Map<String, String> props = parseOptions(command);
+            MeasurementDTO dto = new MeasurementDTO();
+            dto.assetId = Integer.parseInt(props.get("-a"));
+            dto.value = Double.parseDouble(props.get("-v"));
+            dto.exeId = Integer.parseInt(props.get("-e"));
+
+            dto.timeStamp = props.get("-t") == null ? System.currentTimeMillis() : Long.parseLong(props.get("-e"));
+
+            prx.saveAssetValue(new MeasurementDTO[] { dto });
+            return "Succed!!\n";
+        } catch (NumberFormatException e) {
+            return errorMessage();
         }
-        if (count != 3) {
-            return "Failed: verify data required:\n" + usage("   ");
-        }
-        prx.saveAssetValue(new MeasurementDTO[] { dto });
-        return "Succed!!\n";
     }
 
 }

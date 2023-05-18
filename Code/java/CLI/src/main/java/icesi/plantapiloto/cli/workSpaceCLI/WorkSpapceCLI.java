@@ -2,6 +2,7 @@ package icesi.plantapiloto.cli.workSpaceCLI;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.util.Map;
 
 import com.zeroc.Ice.Communicator;
 
@@ -55,63 +56,41 @@ public class WorkSpapceCLI implements CommanLineInterface {
     }
 
     private String workSpaceTypesAddControl(String command) {
-        String name = null;
-        String desc = null;
-        Integer driId = null;
+        Map<String, String> props = parseOptions(command);
 
-        String split[] = command.split(" ");
-        for (int i = 0; i < split.length; i++) {
-            if (split[i].equals("-n")) {
-                name = split[++i];
-            } else if (split[i].equals("-d")) {
-                desc = split[++i];
-            } else if (split[i].equals("-dr")) {
-                driId = Integer.parseInt(split[++i]);
-            }
-        }
+        String name = props.get("-n");
+        String desc = props.get("-d");
+        String driId = props.get("-dr");
 
-        if (name != null && desc != null && driId != null) {
-            int di = prx.saveAssetType(name, desc, driId);
+        if (!anyNull(name, desc, driId)) {
+            int di = prx.saveAssetType(name, desc, Integer.parseInt(driId));
             return "Seccesfull type's id: " + di + "\n";
         }
 
-        return "Failed data incomplete or is wrong: " + usage(" ");
+        return errorMessage();
     }
 
     private String workSpaceDriversAddControl(String command) {
-        String name = null;
-        String service = null;
-        Integer workId = null;
+        Map<String, String> props = parseOptions(command);
 
-        String split[] = command.split(" ");
-        for (int i = 0; i < split.length; i++) {
-            if (split[i].equals("-n")) {
-                name = split[++i];
-            } else if (split[i].equals("-s")) {
-                service = split[++i];
-            } else if (split[i].equals("-w")) {
-                workId = Integer.parseInt(split[++i]);
-            }
-        }
+        String name = props.get("-n");
+        String service = props.get("-s");
+        String workId = props.get("-w");
 
-        if (name != null && service != null && workId != null) {
-            int di = prx.saveDriver(name, service, workId);
+        if (!anyNull(name, service, workId)) {
+            int di = prx.saveDriver(name, service, Integer.parseInt(workId));
             return "Seccesfull driver's id: " + di + "\n";
         }
 
-        return "Failed data incomplete or is wrong: " + usage(" ");
+        return errorMessage();
     }
 
     public String workSpaceListControl(String command) {
-        String split[] = command.split(" ");
-        Integer idDep = null;
-        for (int i = 0; i < split.length; i++) {
-            if (split[i].equals("-w")) {
-                idDep = Integer.parseInt(split[++i]);
-            }
-        }
+        Map<String, String> props = parseOptions(command);
+        String dep = props.get("-w");
         WorkSpaceDTO[] values = null;
-        if (idDep != null) {
+        if (dep != null) {
+            Integer idDep = Integer.parseInt(dep);
             values = prx.findWorkSpacesByDepartment(idDep);
         } else {
             values = prx.findWorkSpaces();
@@ -121,36 +100,25 @@ public class WorkSpapceCLI implements CommanLineInterface {
     }
 
     public String workSpaceAddControl(String command) {
-        String split[] = command.split(" ");
-        String name = null;
-        String desc = null;
-        Integer depart = -1;
+        final Map<String, String> props = parseOptions(command);
 
-        for (int i = 0; i < split.length; i++) {
-            if (split[i].equals("-n")) {
-                name = split[++i];
-            } else if (split[i].equals("-d")) {
-                desc = split[++i];
-            } else if (split[i].equals("-dep")) {
-                depart = Integer.parseInt(split[++i]);
-            }
-        }
-        if (name != null && desc != null) {
-            int id = prx.saveWorkSpace(name, desc, depart);
+        String name = props.get("-n");
+        String desc = props.get("-d");
+        String depart = props.get("-dep");
+        if (!anyNull(name, desc)) {
+            int depId = depart == null ? -1 : Integer.parseInt(depart);
+            int id = prx.saveWorkSpace(name, desc, depId);
             return "Add succesfull Id: " + id + "\n";
         } else {
-            return "Failed data incomplete or is wrong: " + usage(" ");
+            return errorMessage() + " props: \n "
+                    + props.keySet().stream().reduce("", (a, k) -> a + "k: " + k + " Value:" + props.get(k) + "\n");
         }
     }
 
     public String assetDriversControl(String command) {
-        String split[] = command.split(" ");
-        String work = null;
-        for (int i = 0; i < split.length; i++) {
-            if (split[i].equals("-w")) {
-                work = split[++i];
-            }
-        }
+        Map<String, String> props = parseOptions(command);
+        String work = props.get("-w");
+
         DriverDTO[] driverDTOs = null;
         if (work != null) {
             driverDTOs = prx.findDriversByWorkSpace(Integer.parseInt(work));
@@ -162,13 +130,8 @@ public class WorkSpapceCLI implements CommanLineInterface {
     }
 
     public String assetTypesControl(String command) {
-        String split[] = command.split(" ");
-        String driver = null;
-        for (int i = 0; i < split.length; i++) {
-            if (split[i].equals("-d")) {
-                driver = split[++i];
-            }
-        }
+        Map<String, String> props = parseOptions(command);
+        String driver = props.get("-d");
         TypeDTO[] types = null;
         if (driver != null) {
             types = prx.findTypesByDriver(Integer.parseInt(driver));

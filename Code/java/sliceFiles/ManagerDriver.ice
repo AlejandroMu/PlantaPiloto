@@ -127,6 +127,7 @@ module common{
         sequence<ActionDTO> ActionsDTO;
         sequence<ExecutionDTO> ExecutionsDTO;
         sequence<WorkSpaceDTO> WorkSpacesDTO;
+        sequence<MetaData> MetaDatas;
 
 
         interface MeasurementManagerController{
@@ -145,8 +146,8 @@ module common{
         
         interface AssetManagerController{
            
+           int saveAsset(string name,string desc, int typeId, int workId, int assetP,string state,MetaDatas metaData);
            void changeAssetValue(int assetId, double value);
-           int saveAsset(Asset asset);
 
            AssetsDTO findByType(int type);
            AssetsDTO findByWorkSpace(int workSpaceId);

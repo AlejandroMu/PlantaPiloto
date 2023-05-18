@@ -1,8 +1,8 @@
-package icesi.plantapiloto.plcDriver;
+package icesi.plantapiloto.dummyDriver;
 
 import icesi.plantapiloto.driverAsset.DriverAssetImp;
 import icesi.plantapiloto.driverAsset.concrete.DriverAssetConcrete;
-import icesi.plantapiloto.plcDriver.plcReader.PLCReaderDummy;
+import icesi.plantapiloto.dummyDriver.dummyReader.PLCReaderDummy;
 
 public class DummyDriver {
     public static void main(String[] args) {

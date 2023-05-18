@@ -32,13 +32,28 @@ public class DriverService {
     }
 
     public int save(String name, String serviceProxy, int workSpaceId) {
-        Driver driver = new Driver();
-        driver.setName(name);
-        driver.setServiceProxy(serviceProxy);
-        WorkSpace workSpace = workSpaceService.getById(workSpaceId);
-        driver.setWorkSpaceBean(workSpace);
-        repository.save(driver);
-        return driver.getId();
+        String[] split = serviceProxy.split(" ");
+        String host = null;
+        String port = "1804";
+        for (int i = 0; i < split.length; i++) {
+            if (split[i].equals("-h")) {
+                host = split[++i];
+            } else if (split[i].equals("-p")) {
+                port = split[++i];
+            }
+        }
+        if (host != null) {
+            Driver driver = new Driver();
+            driver.setName(name);
+            driver.setServiceProxy("DriverAsset:tcp -h " + host + " -p " + port);
+            WorkSpace workSpace = workSpaceService.getById(workSpaceId);
+            driver.setWorkSpaceBean(workSpace);
+            repository.save(driver);
+            return driver.getId();
+
+        } else {
+            return -1;
+        }
     }
 
     public Driver findById(int driver) {

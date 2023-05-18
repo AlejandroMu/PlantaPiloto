@@ -23,7 +23,27 @@ public interface CommanLineInterface {
         String split[] = command.split(" ");
         for (int i = 0; i < split.length; i++) {
             if (split[i].startsWith("-")) {
-                map.put(split[i], split[++i]);
+                String key = split[i];
+                String value = split[++i];
+                if (value.startsWith("'")) {
+
+                    String v = value.length() <= 1 ? "" : value.substring(1);
+                    if (!v.endsWith("'")) {
+                        for (int j = i + 1; j < split.length; j++) {
+                            if (!split[j].endsWith("'")) {
+                                v += " " + split[j];
+                            } else {
+                                v += " " + split[j].substring(0, split[j].length() - 1);
+                                i = j;
+                                break;
+                            }
+                        }
+                    } else {
+                        v = v.length() <= 1 ? "" : v.substring(0, v.length() - 1);
+                    }
+                    value = v.trim();
+                }
+                map.put(key, value);
             }
         }
         return map;

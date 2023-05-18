@@ -1,3 +1,5 @@
-create user ingswi40 password 'IngSwI40PWD';
-create database assets owner ingswi40;
-grant connect on database assets to ingswi40;
+DROP DATABASE IF EXISTS assets;
+drop user if exists :user;
+create user :user password :'password';
+create database assets owner :user;
+grant connect on database assets to :user;

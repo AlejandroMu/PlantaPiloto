@@ -29,21 +29,6 @@ public class AssetController implements AssetManagerController {
     }
 
     @Override
-    public int saveAsset(Asset asset, Current current) {
-        Asset assetN = service.createAsset(asset.getName(), asset.getDescription(),
-                asset.getTypeBean() == null ? null : asset.getTypeBean().getId(),
-                asset.getWorkSpace() == null ? null : asset.getWorkSpace().getId(),
-                asset.getAsset() == null ? null : asset.getAsset().getId(),
-                asset.getAssetState());
-        List<MetaData> meta = asset.getMetaData();
-        System.out.println("Add Asset: metadata: " + meta.size());
-        if (meta != null) {
-            service.addMetadata(assetN, meta.toArray(new MetaData[meta.size()]));
-        }
-        return assetN.getId();
-    }
-
-    @Override
     public AssetDTO[] findByType(int type, Current current) {
         Type t = new Type();
         t.setId(type);
@@ -75,6 +60,16 @@ public class AssetController implements AssetManagerController {
     public AssetDTO[] findByWorkSpace(int workSpaceId, Current current) {
         List<Asset> assets = service.getAssetsByWorkSpace(workSpaceId);
         return AssetMapper.getInstance().asEntityDTO(assets).toArray(AssetDTO[]::new);
+    }
+
+    @Override
+    public int saveAsset(String name, String desc, int typeId, int workId, int assetP, String state,
+            MetaData[] metaDatas, Current current) {
+        Asset assetN = service.createAsset(name, desc, typeId, workId, assetP, state);
+        if (metaDatas != null) {
+            service.addMetadata(assetN, metaDatas);
+        }
+        return assetN.getId();
     }
 
 }

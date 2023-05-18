@@ -15,7 +15,7 @@ import icesi.plantapiloto.driverAsset.scheduler.ScheduleManager;
 public class DriverAssetImp implements DriverAsset {
 
     public static Communicator communicator;
-    public static final String ENDPOINT_STRING = "driver.asset.Endpoints";
+    public static final String ENDPOINT_STRING = "driver.asset.port";
     public static final String THREADPOOL_SIZE = "driver.asset.threadpool.size";
 
     public static void initServices(Class<? extends DriverAssetConcrete> clasz, String filename) {
@@ -23,10 +23,11 @@ public class DriverAssetImp implements DriverAsset {
         communicator = Util.initialize(null, filename);
         DriverAsset driverAsset = new DriverAssetImp(clasz);
         String pr = communicator.getProperties().getProperty(ENDPOINT_STRING);
-        if (pr == null) {
-            pr = "tcp -h * -p 1804";
+        String port = "1804";
+        if (pr != null) {
+            port = pr;
         }
-        ObjectAdapter adapter = communicator.createObjectAdapterWithEndpoints("DriverService", pr);
+        ObjectAdapter adapter = communicator.createObjectAdapterWithEndpoints("DriverService", "tcp -h * -p " + port);
         adapter.add(driverAsset, Util.stringToIdentity("DriverAsset"));
         adapter.activate();
         communicator.waitForShutdown();

@@ -53,10 +53,11 @@ System that be able manage the IIoT assets and the data generate for these infra
     you can use psql like this, run commands in the script's folder.
 
     ```bash
-    psql -U postgres -h {host} -c "\i user-db.sql"
-    psql -U ingswi40 -h {host} -d assets -c "\i model.sql"
-    psql -U ingswi40 -h {host} -d assets -c "\i model_inserts.sql"
+    psql -U postgres -h {host} -v user=userName -v password=password -f user-db.sql
+    psql -U userName -h {host} -d assets -f model.sql
+    psql -U userName -h {host} -d assets -f model_inserts.sql
     ```
+    **Note:** *For this guide, we will use the following credentials: user=**ingswi40** and password=**IngSwI40PWD**. If you change these credentials to personalized ones, remember to update them in the configuration files later on.*
     <br>    
 
 3. **Java**.
@@ -92,7 +93,7 @@ Before building the artifacts, please review the following properties:
 
 - [plcDriver.properties](./Code/java/plcDriver/src/main/resources/application.properties)
     ```properties
-    driver.asset.Endpoints = tcp -h * -p 1804
+    driver.asset.port = 1804
     driver.asset.threadpool.size = 5
     ```
 
@@ -113,7 +114,7 @@ When you have verified thar properties are right, go to [source folder](./Code/j
 
 * Local
     ```bash
-    gradle clean
+    gradle clean build
     gradle :plcDriver:run
     ```
     open new terminal.

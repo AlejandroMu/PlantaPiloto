@@ -1,4 +1,4 @@
-package icesi.plantapiloto.plcDriver.plcReader;
+package icesi.plantapiloto.dummyDriver.dummyReader;
 
 import java.util.ArrayList;
 import java.util.Date;

@@ -5,16 +5,14 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import com.zeroc.Ice.Communicator;
 
 import icesi.plantapiloto.cli.CommanLineInterface;
 import icesi.plantapiloto.common.controllers.AssetManagerControllerPrx;
 import icesi.plantapiloto.common.dtos.output.AssetDTO;
-import icesi.plantapiloto.common.model.Asset;
 import icesi.plantapiloto.common.model.MetaData;
-import icesi.plantapiloto.common.model.Type;
-import icesi.plantapiloto.common.model.WorkSpace;
 
 public class AssetCLI implements CommanLineInterface {
 
@@ -75,28 +73,17 @@ public class AssetCLI implements CommanLineInterface {
 
     public String assetAddControl(String command) {
         String split[] = command.split(" ");
-        String name = null;
-        String desc = null;
-        int typeId = -1;
-        int workId = -1;
-        String state = null;
-        int parentId = -1;
+        Map<String, String> props = parseOptions(command);
+        String name = props.get("-n");
+        String desc = props.get("-d");
+        Integer typeId = Integer.parseInt(props.get("-t"));
+        Integer workId = Integer.parseInt(props.get("-w"));
+        String state = props.get("-s");
+        Integer parentId = Integer.parseInt(props.get("-p"));
         List<MetaData> metaDatas = new ArrayList<>();
 
         for (int i = 0; i < split.length; i++) {
-            if (split[i].equals("-n")) {
-                name = split[++i];
-            } else if (split[i].equals("-d")) {
-                desc = split[++i];
-            } else if (split[i].equals("-t")) {
-                typeId = Integer.parseInt(split[++i]);
-            } else if (split[i].equals("-w")) {
-                workId = Integer.parseInt(split[++i]);
-            } else if (split[i].equals("-s")) {
-                state = split[++i];
-            } else if (split[i].equals("-p")) {
-                parentId = Integer.parseInt(split[++i]);
-            } else if (split[i].equals("-m")) {
+            if (split[i].equals("-m")) {
                 MetaData metaData = new MetaData();
                 metaData.setName(split[++i]);
                 metaData.setValue(split[++i]);
@@ -104,38 +91,13 @@ public class AssetCLI implements CommanLineInterface {
                 metaDatas.add(metaData);
             }
         }
-        boolean isValid = name != null
-                && desc != null
-                && typeId != -1
-                && workId != -1
-                && state != null;
+        boolean isValid = !anyNull(name, desc, typeId, workId, state);
         if (!isValid) {
-            return "failed save, one or more fields are wrongs\n" + usage(" ");
-        }
-        Asset asset = new Asset();
-
-        asset.setName(name);
-        asset.setDescription(desc);
-        Type t = new Type();
-        t.setId(typeId);
-        asset.setTypeBean(t);
-        WorkSpace d = new WorkSpace();
-        d.setId(workId);
-        asset.setWorkSpace(d);
-        asset.setAssetState(state);
-        if (parentId != -1) {
-            Asset paren = new Asset();
-            paren.setId(parentId);
-            asset.setAsset(paren);
-
-        }
-        if (metaDatas.size() > 0) {
-
-            asset.setMetaData(metaDatas);
+            return errorMessage();
         }
 
         if (isValid) {
-            prx.saveAsset(asset);
+            prx.saveAsset(name, desc, typeId, workId, parentId, state, metaDatas.toArray(MetaData[]::new));
         }
 
         return "Saved\n";
@@ -159,18 +121,10 @@ public class AssetCLI implements CommanLineInterface {
         if (parse.length == 2) {
             values = prx.findAll();
         } else {
-            String type = null;
-            String state = null;
-            String work = null;
-            for (int i = 2; i < parse.length; i++) {
-                if (parse[i].equals("-t")) {
-                    type = parse[++i];
-                } else if (parse[i].equals("-s")) {
-                    state = parse[++i];
-                } else if (parse[i].equals("-w")) {
-                    work = parse[++i];
-                }
-            }
+            Map<String, String> props = parseOptions(command);
+            String type = props.get("-t");
+            String state = props.get("-s");
+            String work = props.get("-w");
             if (type != null) {
                 values = prx.findByType(Integer.parseInt(type));
             }
