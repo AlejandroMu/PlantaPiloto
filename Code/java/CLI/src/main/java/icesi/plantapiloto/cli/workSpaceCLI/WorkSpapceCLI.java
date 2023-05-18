@@ -110,8 +110,7 @@ public class WorkSpapceCLI implements CommanLineInterface {
             int id = prx.saveWorkSpace(name, desc, depId);
             return "Add succesfull Id: " + id + "\n";
         } else {
-            return errorMessage() + " props: \n "
-                    + props.keySet().stream().reduce("", (a, k) -> a + "k: " + k + " Value:" + props.get(k) + "\n");
+            return errorMessage();
         }
     }
 
