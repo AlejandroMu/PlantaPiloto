@@ -17,6 +17,7 @@ import icesi.plantapiloto.common.model.ProcessAsset;
 import icesi.plantapiloto.modelManager.Main;
 import icesi.plantapiloto.modelManager.repositories.ExecutionInstructionRepository;
 import icesi.plantapiloto.modelManager.repositories.ExecutionRepository;
+import icesi.plantapiloto.modelManager.repositories.ProcessAssetRepository;
 import icesi.plantapiloto.modelManager.repositories.ProcessRepository;
 import icesi.plantapiloto.modelManager.repositories.WorkSpaceRepository;
 
@@ -28,14 +29,17 @@ public class ProcessService {
     private ProcessRepository processRepository;
     private WorkSpaceRepository workSpaceRepository;
     private ExecutionInstructionRepository executionInstructionRepository;
+    private ProcessAssetRepository processAssetRepository;
 
     private InstructionService instructionService;
+    private AssetService assetService;
 
     public ProcessService() {
         executionRepository = ExecutionRepository.getInstance();
         processRepository = ProcessRepository.getInstance();
         workSpaceRepository = WorkSpaceRepository.getInstance();
         executionInstructionRepository = ExecutionInstructionRepository.getInstance();
+        processAssetRepository = ProcessAssetRepository.getInstance();
     }
 
     /**
@@ -43,6 +47,13 @@ public class ProcessService {
      */
     public void setInstructionService(InstructionService instructionService) {
         this.instructionService = instructionService;
+    }
+
+    /**
+     * @param assetService the assetService to set
+     */
+    public void setAssetService(AssetService assetService) {
+        this.assetService = assetService;
     }
 
     /**
@@ -76,6 +87,7 @@ public class ProcessService {
 
         for (ProcessAsset processAsset : Procesassets) {
             Asset asset = processAsset.getAsset();
+            // TODO: VERIFY ASSET STATE, BUSY?
             long period = processAsset.getDelayRead();
             Driver driver = asset.getTypeBean().getDriver();
             DriverAssetPrx prx = DriverAssetPrx
@@ -193,6 +205,16 @@ public class ProcessService {
 
     public List<Execution> getExecutionByProcessIdAndDateStartBetween(int processId, long startDate, long endDate) {
         return executionRepository.findByProcessAndStartDateBetween(processId, startDate, endDate);
+    }
+
+    public void addAssetToProcess(int asset, int processId, long period) {
+        Asset asset2 = assetService.getAssetById(asset);
+        Process process = processRepository.findById(processId).get();
+        ProcessAsset v = new ProcessAsset();
+        v.setAsset(asset2);
+        v.setDelayRead(period);
+        v.setProcess(process);
+        processAssetRepository.save(v);
     }
 
 }

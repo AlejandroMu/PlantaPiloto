@@ -40,7 +40,7 @@ public class ActionCLI implements CommanLineInterface {
         return true;
     }
 
-    private String actionListControl(String command) {
+    private String actionAddControl(String command) {
         Map<String, String> props = parseOptions(command);
         String n = props.get("-n");
         String d = props.get("-d");
@@ -48,13 +48,13 @@ public class ActionCLI implements CommanLineInterface {
 
         if (n != null && d != null && e != null) {
             int id = prx.saveAction(n, d, e);
-            return "Succesfull, action's Id: " + id;
+            return "Succesfull, action's Id: " + id + "\n";
         }
 
         return errorMessage();
     }
 
-    private String actionAddControl(String command) {
+    private String actionListControl(String command) {
         Map<String, String> props = parseOptions(command);
         String n = props.get("-n");
         ActionDTO[] values = null;

@@ -2,16 +2,12 @@ package icesi.plantapiloto.modelManager.repositories;
 
 import java.util.List;
 
-import javax.persistence.EntityManager;
-
 import icesi.plantapiloto.common.model.Action;
 
 public class ActionRepository implements Repository<Action, Integer> {
     private static ActionRepository instance;
-    private EntityManager manager;
 
     private ActionRepository() {
-        manager = managerFactory.createEntityManager();
     }
 
     public static ActionRepository getInstance() {
@@ -19,11 +15,6 @@ public class ActionRepository implements Repository<Action, Integer> {
             instance = new ActionRepository();
         }
         return instance;
-    }
-
-    @Override
-    public EntityManager getManager() {
-        return manager;
     }
 
     @Override

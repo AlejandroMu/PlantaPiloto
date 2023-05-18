@@ -11,6 +11,10 @@ import javax.persistence.Query;
 public interface Repository<T, K> {
     public EntityManagerFactory managerFactory = Persistence.createEntityManagerFactory("planta");
 
+    public default EntityManager getManager() {
+        return managerFactory.createEntityManager();
+    }
+
     public default T save(T element) {
 
         EntityManager manager = getManager();
@@ -84,7 +88,5 @@ public interface Repository<T, K> {
     }
 
     public Class<T> getType();
-
-    public EntityManager getManager();
 
 }

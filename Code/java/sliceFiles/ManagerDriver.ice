@@ -52,12 +52,6 @@ module common{
 	        string serviceProxy;
             int workSpaceId;
         }
-        class ProcessDTO{
-            int id;
-            string name;
-            string description;
-            int workSpaceId;
-        }
         class ActionDTO{
             int id;
             string nameTech;
@@ -71,6 +65,14 @@ module common{
             string predicate;
             string type;
             ActionsDTO actions;
+        }
+        sequence<InstructionDTO> InstructionsDTO;
+        class ProcessDTO{
+            int id;
+            string name;
+            string description;
+            int workSpaceId;
+            InstructionsDTO instructions;
         }
         class ExecutionInstructionDTO{
             int id;
@@ -163,6 +165,7 @@ module common{
 
            int saveProcess(string name, string desc, int workSpaceId);
 
+           void addAssetToProcess(int asset, int processId,long period);
            void addInstructionToProcess(int instId, int processId);
 
            void applyIntructionToExecution(int instId, int execId);

@@ -1,13 +1,21 @@
 package icesi.plantapiloto.common.encoders;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 public class JsonEncoder implements ObjectEncoder {
 
     private Gson parser;
 
     public JsonEncoder() {
+
         parser = new Gson();
+    }
+
+    public <T> String encodePretty(T message) {
+        GsonBuilder builder = new GsonBuilder();
+        String ret = builder.setPrettyPrinting().create().toJson(message);
+        return ret;
     }
 
     @Override

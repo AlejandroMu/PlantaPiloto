@@ -1,15 +1,11 @@
 package icesi.plantapiloto.modelManager.repositories;
 
-import javax.persistence.EntityManager;
-
 import icesi.plantapiloto.common.model.MetaData;
 
 public class MetaDataRepository implements Repository<MetaData, Integer> {
     private static MetaDataRepository instance;
-    private EntityManager manager;
 
     private MetaDataRepository() {
-        manager = managerFactory.createEntityManager();
     }
 
     public static MetaDataRepository getInstance() {
@@ -17,11 +13,6 @@ public class MetaDataRepository implements Repository<MetaData, Integer> {
             instance = new MetaDataRepository();
         }
         return instance;
-    }
-
-    @Override
-    public EntityManager getManager() {
-        return manager;
     }
 
     @Override

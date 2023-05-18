@@ -73,8 +73,8 @@ public class Main implements CommanLineInterface {
         main.addCommandLine(action);
         main.addCommandLine(instruction);
         main.addCommandLine(process);
-
-        String line = "help";
+        System.out.println("write: help | command help for more information");
+        String line = lineReader.readLine(">> ");
         while (!line.equals("exit")) {
             main.consoleIteractive(line, writer);
             line = lineReader.readLine(">> ");
@@ -100,6 +100,7 @@ public class Main implements CommanLineInterface {
             builder.append(commanLineInterface.usage(pad + "  "));
             builder.append("\n");
         }
+        builder.append("write: exit for end \n");
         return builder.toString();
     }
 

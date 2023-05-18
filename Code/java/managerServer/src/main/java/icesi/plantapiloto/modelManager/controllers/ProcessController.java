@@ -72,4 +72,9 @@ public class ProcessController implements ProcessManagerController {
         return ExecutionMapper.getInstance().asEntityDTO(executions).toArray(ExecutionDTO[]::new);
     }
 
+    @Override
+    public void addAssetToProcess(int asset, int processId, long period, Current current) {
+        service.addAssetToProcess(asset, processId, period);
+    }
+
 }

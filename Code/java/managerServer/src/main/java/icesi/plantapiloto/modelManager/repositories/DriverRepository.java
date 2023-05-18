@@ -2,16 +2,12 @@ package icesi.plantapiloto.modelManager.repositories;
 
 import java.util.List;
 
-import javax.persistence.EntityManager;
-
 import icesi.plantapiloto.common.model.Driver;
 
 public class DriverRepository implements Repository<Driver, Integer> {
     private static DriverRepository instance;
-    private EntityManager manager;
 
     private DriverRepository() {
-        manager = managerFactory.createEntityManager();
     }
 
     public static DriverRepository getInstance() {
@@ -19,11 +15,6 @@ public class DriverRepository implements Repository<Driver, Integer> {
             instance = new DriverRepository();
         }
         return instance;
-    }
-
-    @Override
-    public EntityManager getManager() {
-        return manager;
     }
 
     @Override

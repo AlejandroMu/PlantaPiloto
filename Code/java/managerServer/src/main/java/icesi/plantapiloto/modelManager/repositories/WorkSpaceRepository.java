@@ -2,16 +2,12 @@ package icesi.plantapiloto.modelManager.repositories;
 
 import java.util.List;
 
-import javax.persistence.EntityManager;
-
 import icesi.plantapiloto.common.model.WorkSpace;
 
 public class WorkSpaceRepository implements Repository<WorkSpace, Integer> {
     private static WorkSpaceRepository instance;
-    private EntityManager manager;
 
     private WorkSpaceRepository() {
-        manager = managerFactory.createEntityManager();
     }
 
     public static WorkSpaceRepository getInstance() {
@@ -19,11 +15,6 @@ public class WorkSpaceRepository implements Repository<WorkSpace, Integer> {
             instance = new WorkSpaceRepository();
         }
         return instance;
-    }
-
-    @Override
-    public EntityManager getManager() {
-        return manager;
     }
 
     @Override

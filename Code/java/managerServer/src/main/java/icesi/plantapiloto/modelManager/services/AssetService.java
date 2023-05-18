@@ -111,4 +111,8 @@ public class AssetService {
     public List<Asset> getAssetsByWorkSpace(int workSpaceId) {
         return assetRepository.findByWorkSpace(workSpaceId);
     }
+
+    public Asset getAssetById(int asset) {
+        return assetRepository.findById(asset).get();
+    }
 }

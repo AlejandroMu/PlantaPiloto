@@ -61,7 +61,6 @@ public class AssetCLI implements CommanLineInterface {
         } else {
             return false;
         }
-        writer.flush();
         return true;
 
     }
@@ -71,7 +70,7 @@ public class AssetCLI implements CommanLineInterface {
         int assetId = Integer.parseInt(split[2]);
         double value = Double.parseDouble(split[3]);
         prx.changeAssetValue(assetId, value);
-        return "success";
+        return "success\n";
     }
 
     public String assetAddControl(String command) {
@@ -131,7 +130,6 @@ public class AssetCLI implements CommanLineInterface {
 
         }
         if (metaDatas.size() > 0) {
-            System.out.println("Metadatas: " + metaDatas.size());
 
             asset.setMetaData(metaDatas);
         }

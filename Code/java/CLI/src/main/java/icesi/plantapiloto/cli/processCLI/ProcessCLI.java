@@ -26,6 +26,7 @@ public class ProcessCLI implements CommanLineInterface {
                 .append(pading + " process pause -e {execId}*\n")
                 .append(pading + " process continue -e {execId}*\n")
                 .append(pading + " process execution list -p {processId}* -s {startD}* -e {endDate}\n")
+                .append(pading + " process asset add -p {processId}* -a {assetId}* -d {delay}*\n")
                 .append(pading + " process instruction add -p {processId}* -i {instId}*\n")
                 .append(pading + " process instruction apply -e {execId}* -i {instId}*\n");
         return builder.toString();
@@ -33,7 +34,7 @@ public class ProcessCLI implements CommanLineInterface {
 
     @Override
     public boolean consoleIteractive(String command, BufferedWriter writer) throws IOException {
-        if (command.matches("\\s+process\\s+help.*")) {
+        if (command.matches("process\\s+help.*")) {
             writer.write(usage(" "));
         } else if (command.matches("process\\s+add.*")) {
             writer.write(processAddController(command));
@@ -53,10 +54,24 @@ public class ProcessCLI implements CommanLineInterface {
             writer.write(processInstAddController(command));
         } else if (command.matches("process\\s+instruction\\s+apply.*")) {
             writer.write(processInstApplyController(command));
+        } else if (command.matches("process\\s+asset\\s+add.*")) {
+            writer.write(processAssetAddController(command));
         } else {
             return false;
         }
         return true;
+    }
+
+    private String processAssetAddController(String command) {
+        Map<String, String> props = parseOptions(command);
+        String p = props.get("-p");
+        String a = props.get("-a");
+        String period = props.get("-d");
+        if (!anyNull(p, a, period)) {
+            prx.addAssetToProcess(Integer.parseInt(a), Integer.parseInt(p), Long.parseLong(period));
+            return "Successfull, added asset to process\n";
+        }
+        return errorMessage();
     }
 
     private String processInstApplyController(String command) {
@@ -65,7 +80,7 @@ public class ProcessCLI implements CommanLineInterface {
         String i = props.get("-i");
         if (!anyNull(e, i)) {
             prx.applyIntructionToExecution(Integer.parseInt(i), Integer.parseInt(e));
-            return "Successfull, added instruction to execution";
+            return "Successfull, added instruction to execution\n";
 
         }
         return errorMessage();
@@ -77,7 +92,7 @@ public class ProcessCLI implements CommanLineInterface {
         String i = props.get("-i");
         if (!anyNull(p, i)) {
             prx.addInstructionToProcess(Integer.parseInt(i), Integer.parseInt(p));
-            return "Successfull, added instruction to process";
+            return "Successfull, added instruction to process\n";
         }
         return errorMessage();
     }
@@ -108,7 +123,7 @@ public class ProcessCLI implements CommanLineInterface {
         String e = props.get("-e");
         if (e != null) {
             prx.continueExecutionProcess(Integer.parseInt(e));
-            return "Successfull continue execution";
+            return "Successfull continue execution\n";
         }
         return errorMessage();
     }
@@ -118,7 +133,7 @@ public class ProcessCLI implements CommanLineInterface {
         String e = props.get("-e");
         if (e != null) {
             prx.pauseExecutionProcess(Integer.parseInt(e));
-            return "Successfull pause execution";
+            return "Successfull pause execution\n";
         }
         return errorMessage();
     }
@@ -128,7 +143,7 @@ public class ProcessCLI implements CommanLineInterface {
         String e = props.get("-e");
         if (e != null) {
             prx.stopExecutionProcess(Integer.parseInt(e));
-            return "Successfull stop execution";
+            return "Successfull stop execution\n";
         }
         return errorMessage();
     }
@@ -139,7 +154,7 @@ public class ProcessCLI implements CommanLineInterface {
         String o = props.get("-o");
         if (!anyNull(p, o)) {
             int execId = prx.startProcess(Integer.parseInt(p), o);
-            return "Seccessfull process init with execution's id: " + execId;
+            return "Seccessfull process init with execution's id: " + execId + "\n";
         }
         return errorMessage();
     }
@@ -151,7 +166,7 @@ public class ProcessCLI implements CommanLineInterface {
         String w = props.get("-w");
         if (!anyNull(n, d, w)) {
             int id = prx.saveProcess(n, d, Integer.parseInt(w));
-            return "Sucessfull process'id: " + id;
+            return "Sucessfull process'id: " + id + "\n";
         }
         return errorMessage();
     }

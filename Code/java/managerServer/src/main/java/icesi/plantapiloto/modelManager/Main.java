@@ -75,6 +75,7 @@ public class Main {
         instructionService.setActionService(actionService);
 
         processService.setInstructionService(instructionService);
+        processService.setAssetService(assetService);
         processController.setService(processService);
 
         actionController.setService(actionService);
@@ -83,6 +84,7 @@ public class Main {
 
         workSpaceController.setService(workSpaceService);
         workSpaceController.setTypeService(typeService);
+        workSpaceController.setDriverService(driverService);
 
         driverService.setWorkSpaceService(workSpaceService);
 

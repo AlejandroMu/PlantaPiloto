@@ -50,7 +50,7 @@ public class InstructionCLI implements CommanLineInterface {
         String i = props.get("-i");
         if (!anyNull(a, i)) {
             prx.addActionToInstruction(Integer.parseInt(a), Integer.parseInt(i));
-            return "Succesfull, action addded to Instruction";
+            return "Succesfull, action addded to Instruction\n";
         }
         return errorMessage();
     }
@@ -74,7 +74,7 @@ public class InstructionCLI implements CommanLineInterface {
         String t = props.get("-t");
         if (!anyNull(n, p, t)) {
             int id = prx.saveInstruction(n, p, t);
-            return "Successful intruction's id: " + id;
+            return "Successful intruction's id: " + id + "\n";
         }
         return errorMessage();
     }

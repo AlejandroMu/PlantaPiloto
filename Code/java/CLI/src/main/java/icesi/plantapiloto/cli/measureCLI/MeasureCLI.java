@@ -50,7 +50,6 @@ public class MeasureCLI implements CommanLineInterface {
             return false;
         }
 
-        writer.flush();
         return true;
     }
 
@@ -117,7 +116,7 @@ public class MeasureCLI implements CommanLineInterface {
             return "Failed: verify data required:\n" + usage("   ");
         }
         prx.saveAssetValue(new MeasurementDTO[] { dto });
-        return "Succed!!";
+        return "Succed!!\n";
     }
 
 }

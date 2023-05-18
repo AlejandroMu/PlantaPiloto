@@ -16,7 +16,7 @@ public interface CommanLineInterface {
     public boolean consoleIteractive(String command, BufferedWriter writer) throws IOException;
 
     public default <T> String encoderList(T[] elemenTs) {
-        return Arrays.asList(elemenTs).stream().map(v -> ">> " + encoder.encode(v) + "\n")
+        return Arrays.asList(elemenTs).stream().map(v -> ">> " + encoder.encodePretty(v) + "\n")
                 .reduce("", (a, c) -> a + c).toString();
     }
 

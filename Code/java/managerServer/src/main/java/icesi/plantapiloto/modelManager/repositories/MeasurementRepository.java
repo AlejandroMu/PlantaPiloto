@@ -3,16 +3,12 @@ package icesi.plantapiloto.modelManager.repositories;
 import java.sql.Timestamp;
 import java.util.List;
 
-import javax.persistence.EntityManager;
-
 import icesi.plantapiloto.common.model.Measurement;
 
 public class MeasurementRepository implements Repository<Measurement, Integer> {
     private static MeasurementRepository instance;
-    private EntityManager manager;
 
     private MeasurementRepository() {
-        manager = managerFactory.createEntityManager();
     }
 
     public static MeasurementRepository getInstance() {
@@ -20,11 +16,6 @@ public class MeasurementRepository implements Repository<Measurement, Integer> {
             instance = new MeasurementRepository();
         }
         return instance;
-    }
-
-    @Override
-    public EntityManager getManager() {
-        return manager;
     }
 
     @Override

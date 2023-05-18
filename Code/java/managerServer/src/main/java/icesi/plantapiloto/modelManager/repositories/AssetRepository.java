@@ -2,18 +2,14 @@ package icesi.plantapiloto.modelManager.repositories;
 
 import java.util.List;
 
-import javax.persistence.EntityManager;
-
 import icesi.plantapiloto.common.model.Asset;
 import icesi.plantapiloto.modelManager.services.AssetService;
 
 public class AssetRepository implements Repository<Asset, Integer> {
 
     private static AssetRepository instance;
-    private EntityManager manager;
 
     private AssetRepository() {
-        manager = managerFactory.createEntityManager();
 
     }
 
@@ -22,11 +18,6 @@ public class AssetRepository implements Repository<Asset, Integer> {
             instance = new AssetRepository();
         }
         return instance;
-    }
-
-    @Override
-    public EntityManager getManager() {
-        return manager;
     }
 
     @Override

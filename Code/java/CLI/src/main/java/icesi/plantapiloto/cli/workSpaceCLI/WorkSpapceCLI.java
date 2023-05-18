@@ -26,7 +26,7 @@ public class WorkSpapceCLI implements CommanLineInterface {
                 .append(pading + " workspace drivers ls -w {workSpace}: list drivers\n")
                 .append(pading
                         + " workspace drivers add -n {name}* -s {serviceProxy}* -w {workSpace}*: create drivers\n")
-                .append(pading + " workspace types add -n {name}* -d {desc} -dr {driverId}*: create types\n")
+                .append(pading + " workspace types add -n {name}* -d {desc}* -dr {driverId}*: create types\n")
                 .append(pading + " workspace types ls -d {driverId}: list types\n");
 
         return builder.toString();
@@ -63,16 +63,16 @@ public class WorkSpapceCLI implements CommanLineInterface {
         for (int i = 0; i < split.length; i++) {
             if (split[i].equals("-n")) {
                 name = split[++i];
-            } else if (split[i].equals("-s")) {
+            } else if (split[i].equals("-d")) {
                 desc = split[++i];
-            } else if (split[i].equals("-w")) {
+            } else if (split[i].equals("-dr")) {
                 driId = Integer.parseInt(split[++i]);
             }
         }
 
         if (name != null && desc != null && driId != null) {
             int di = prx.saveAssetType(name, desc, driId);
-            return "Seccesfull type's id: " + di;
+            return "Seccesfull type's id: " + di + "\n";
         }
 
         return "Failed data incomplete or is wrong: " + usage(" ");
@@ -96,7 +96,7 @@ public class WorkSpapceCLI implements CommanLineInterface {
 
         if (name != null && service != null && workId != null) {
             int di = prx.saveDriver(name, service, workId);
-            return "Seccesfull driver's id: " + di;
+            return "Seccesfull driver's id: " + di + "\n";
         }
 
         return "Failed data incomplete or is wrong: " + usage(" ");
@@ -124,7 +124,7 @@ public class WorkSpapceCLI implements CommanLineInterface {
         String split[] = command.split(" ");
         String name = null;
         String desc = null;
-        Integer depart = null;
+        Integer depart = -1;
 
         for (int i = 0; i < split.length; i++) {
             if (split[i].equals("-n")) {
@@ -135,9 +135,9 @@ public class WorkSpapceCLI implements CommanLineInterface {
                 depart = Integer.parseInt(split[++i]);
             }
         }
-        if (name != null && desc != null && depart != null) {
+        if (name != null && desc != null) {
             int id = prx.saveWorkSpace(name, desc, depart);
-            return "Add succesfull Id: " + id;
+            return "Add succesfull Id: " + id + "\n";
         } else {
             return "Failed data incomplete or is wrong: " + usage(" ");
         }
