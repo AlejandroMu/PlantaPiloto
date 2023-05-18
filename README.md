@@ -149,7 +149,7 @@ When you have verified thar properties are right, go to [source folder](./Code/j
     managerServer.user=
     managerServer.password=
     ```
-    **if these file doesn't exist, make it.**
+    **if that file doesn't exist, make it.**
 
     * [managerServer prod.properties](./Code/java/managerServer/src/main/resources/prod.properties)
     ```properties
