@@ -18,12 +18,13 @@ System that be able manage the IIoT assets and the data generate for these infra
 
 1. **Apache Artemis.**
 
-    if you dont have any artemis version, you can running broker.sh for linux or broker.cmd in windows, these scripts are in [scripts folder](./Code/java/scripts) .
+    If you dont have any artemis version, you can running ***broker.sh*** for linux or ***broker.cmd*** in windows, these scripts are in [scripts folder](./Code/java/scripts). In order to run these scripts, you should have the **unzip** and **wget** commands available in your system.
 
     ```bash
     ./broker.sh
     ```
-    In windows you'll need running cmd console like administrator.
+    In Windows, you will need to run the Command Prompt (CMD) console as an administrator. This will grant you the necessary permissions to execute certain commands or perform system-level actions.
+
     ```bash
     broker.cmd
     ```
@@ -54,7 +55,7 @@ System that be able manage the IIoT assets and the data generate for these infra
     ```bash
     psql -U postgres -h {host} -c "\i user-db.sql"
     psql -U ingswi40 -h {host} -d assets -c "\i model.sql"
-    psql -U ingswi40 -h {host} -d assets -c "\i model_ddl.sql"
+    psql -U ingswi40 -h {host} -d assets -c "\i model_inserts.sql"
     ```
     <br>    
 
@@ -64,7 +65,9 @@ System that be able manage the IIoT assets and the data generate for these infra
     you need install java jdk 11 LTS, for that you can visit <a href="https://www.oracle.com/co/java/technologies/downloads/">oficial page for downloads.</a>
     <br>    
 
-4. **ICE: Internet communication engine.**<br>
+4. **ICE: Internet communication engine.**
+    <br>
+
     This system used ICE middleware for communications. This middleware enables easy remote procedure calls. more information about ICE <a href="https://zeroc.com/products/ice">here.</a>    <br>
     you need install ICE compiler for java, for that you can visit <a href="https://zeroc.com/downloads/ice/3.7/java">oficial page for downloads.</a> 
     <br>    
@@ -76,9 +79,16 @@ System that be able manage the IIoT assets and the data generate for these infra
 ### Build and deployment.
 <br>
 
-For this example, we are deploying a driver called ["plcDriver"](./Code/java/plcDriver/ReadME.md) that allows reading and writing tags from Allen-Bradley PLCs. If you wish to develop your own custom driver, you can refer to the [Driver Asset](./Code/java/driverAsset/ReadME.md) for guidance and reference.
+For this example, we are deploying a driver called [plcDriver](./Code/java/plcDriver/ReadME.md) that allows reading and writing tags from Allen-Bradley PLCs. 
 
-Before build artifacts rewiew next properties.
+If you don't have a PLC available, you can use the [dummyDriver](./Code/java/dummyDriver) instead. The **dummyDriver** generates random numbers for the PLC's tags, allowing you to simulate PLC behavior without an actual PLC device.
+
+On the other hand, if you wish to develop your own custom driver, you can refer to the [Driver Asset](./Code/java/driverAsset/ReadME.md) for guidance and reference. The *Driver Asset* provides information and resources to help you create a custom driver tailored to your specific needs.
+
+Whether you choose to use the "dummyDriver" or develop your own custom driver, both options offer flexibility and the ability to interact with the system.
+
+
+Before building the artifacts, please review the following properties:
 
 - [plcDriver.properties](./Code/java/plcDriver/src/main/resources/application.properties)
     ```properties
@@ -153,7 +163,7 @@ When you have verified thar properties are right, go to [source folder](./Code/j
     Change properties values as appropiate, finally run:
 
     ```bash
-    gradle :plcDriver:deploy -Denv=prod
+    gradle :plcDriver:deploy
     gradle :managerServer:deploy -Denv=prod
     ```
 

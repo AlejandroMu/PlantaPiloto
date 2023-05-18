@@ -1,0 +1,8 @@
+mainClassName ="icesi.plantapiloto.dummyDriver.DummyDriver"
+dependencies {
+
+    implementation project(":driverAsset")
+    implementation project(":common")
+
+}
+

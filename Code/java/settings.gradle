@@ -14,5 +14,6 @@ include ':managerServer'
 include ':driverAsset'
 include ':MQTT'
 include ':plcDriver'
+include ':dummyDriver'
 include ':CLI'
 

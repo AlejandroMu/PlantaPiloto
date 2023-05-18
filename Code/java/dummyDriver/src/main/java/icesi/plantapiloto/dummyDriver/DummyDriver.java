@@ -2,13 +2,13 @@ package icesi.plantapiloto.plcDriver;
 
 import icesi.plantapiloto.driverAsset.DriverAssetImp;
 import icesi.plantapiloto.driverAsset.concrete.DriverAssetConcrete;
-import icesi.plantapiloto.plcDriver.plcReader.PLCReader;
+import icesi.plantapiloto.plcDriver.plcReader.PLCReaderDummy;
 
-public class PlcDriver {
+public class DummyDriver {
     public static void main(String[] args) {
-        System.out.println("PlcDriver running");
+        System.out.println("DummyDriver running");
         String propName = "application.properties";
-        Class<? extends DriverAssetConcrete> concrete = PLCReader.class;
+        Class<? extends DriverAssetConcrete> concrete = PLCReaderDummy.class;
         DriverAssetImp.initServices(concrete, propName);
     }
 }
