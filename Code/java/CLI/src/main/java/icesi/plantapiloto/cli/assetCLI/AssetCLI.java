@@ -30,7 +30,7 @@ public class AssetCLI implements CommanLineInterface {
                 .append(pad + " asset add -n {name}*"
                         + " -d {desc}*"
                         + " -t {typeId}*"
-                        + " -w {workSpaceId}"
+                        + " -w {workSpaceId}*"
                         + " -s {state}*"
                         + " -p {parenId}"
                         + " [-m {metadataProp} {metadataValue} {metadataDesc}]+\n")
@@ -79,7 +79,7 @@ public class AssetCLI implements CommanLineInterface {
         Integer typeId = Integer.parseInt(props.get("-t"));
         Integer workId = Integer.parseInt(props.get("-w"));
         String state = props.get("-s");
-        Integer parentId = Integer.parseInt(props.get("-p"));
+        Integer parentId = props.get("-p") == null ? -1 : Integer.parseInt(props.get("-p"));
         List<MetaData> metaDatas = new ArrayList<>();
 
         for (int i = 0; i < split.length; i++) {

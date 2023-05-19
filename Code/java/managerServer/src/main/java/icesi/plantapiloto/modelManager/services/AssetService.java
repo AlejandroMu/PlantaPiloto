@@ -59,7 +59,7 @@ public class AssetService {
         if (asset.getAssetState() == null) {
             asset.setAssetState(ASSET_ACTIVE_STATE);
         }
-        if (asset.getAsset() == null && assetParent != null) {
+        if (asset.getAsset() == null && assetParent != null && assetParent != -1) {
             Asset parent = assetRepository.findById(assetParent).get();
             asset.setAsset(parent);
         }

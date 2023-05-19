@@ -191,11 +191,17 @@ public class ProcessService {
     }
 
     public void applyIntructionToExecution(Instruction instId, Execution execId) {
-        ExecutionInstruction exeIns = new ExecutionInstruction();
-        exeIns.setExcTime(new Timestamp(System.currentTimeMillis()));
-        exeIns.setExecutionBean(execId);
-        exeIns.setInstructionBean(instId);
-        executionInstructionRepository.save(exeIns);
+        boolean contains = instId.getProcesses().stream().anyMatch(p -> p.getId() == execId.getProcessBean().getId());
+        if (contains) {
+            ExecutionInstruction exeIns = new ExecutionInstruction();
+            exeIns.setExcTime(new Timestamp(System.currentTimeMillis()));
+            exeIns.setExecutionBean(execId);
+            exeIns.setInstructionBean(instId);
+            executionInstructionRepository.save(exeIns);
+        } else {
+            System.out.println("La instrucción no es aplicable a la ejecución, no pertenecen al mismo proceso");
+            // TODO: error report
+        }
     }
 
     public List<Process> getProcessesByWorkSpace(int workSpaceId) {
@@ -210,11 +216,16 @@ public class ProcessService {
     public void addAssetToProcess(int asset, int processId, long period) {
         Asset asset2 = assetService.getAssetById(asset);
         Process process = processRepository.findById(processId).get();
-        ProcessAsset v = new ProcessAsset();
-        v.setAsset(asset2);
-        v.setDelayRead(period);
-        v.setProcess(process);
-        processAssetRepository.save(v);
+        if (asset2.getWorkSpace().getId() == process.getWorkSpaceBean().getId()) {
+            ProcessAsset v = new ProcessAsset();
+            v.setAsset(asset2);
+            v.setDelayRead(period);
+            v.setProcess(process);
+            processAssetRepository.save(v);
+        } else {
+            System.out.println("el asset no es añadible al proceso, no pertenecen al mismo workspace");
+            // TODO: error report
+        }
     }
 
 }
