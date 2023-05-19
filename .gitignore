@@ -8,6 +8,7 @@
 **.class
 .**
 !eth*.jar
+!gradle-wrapper.jar
 **.vpp.**
 gradle.properties
 
