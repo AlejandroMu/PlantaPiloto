@@ -3,6 +3,7 @@ package icesi.plantapiloto.modelManager.services;
 import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import icesi.plantapiloto.common.controllers.DriverAssetPrx;
 import icesi.plantapiloto.common.controllers.MeasurementManagerControllerPrx;
@@ -226,6 +227,16 @@ public class ProcessService {
             System.out.println("el asset no es añadible al proceso, no pertenecen al mismo workspace");
             // TODO: error report
         }
+    }
+
+    public List<Asset> getAssetsOfProcess(int processId) {
+        Process process = processRepository.findById(processId).get();
+        List<Asset> assets = process.getProcessAssets().stream().map(pa -> pa.getAsset()).collect(Collectors.toList());
+        return assets;
+    }
+
+    public List<Execution> findExecutionsRunning(int processId) {
+        return executionRepository.findExecutionsRunning(processId);
     }
 
 }

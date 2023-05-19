@@ -3,6 +3,7 @@ package icesi.plantapiloto.modelManager.services;
 import java.util.List;
 
 import icesi.plantapiloto.common.controllers.DriverAssetPrx;
+import icesi.plantapiloto.common.dtos.MeasurementDTO;
 import icesi.plantapiloto.common.encoders.JsonEncoder;
 import icesi.plantapiloto.common.mappers.AssetMapper;
 import icesi.plantapiloto.common.model.Asset;
@@ -26,11 +27,20 @@ public class AssetService {
     private MetaDataRepository metaDataRepository;
     private WorkSpaceRepository workSpaceRepository;
 
+    private MeasurementService measurementService;
+
     public AssetService() {
         assetRepository = AssetRepository.getInstance();
         typeRepository = TypeRepository.getInstance();
         metaDataRepository = MetaDataRepository.getInstance();
         workSpaceRepository = WorkSpaceRepository.getInstance();
+    }
+
+    /**
+     * @param measurementService the measurementService to set
+     */
+    public void setMeasurementService(MeasurementService measurementService) {
+        this.measurementService = measurementService;
     }
 
     public Asset createAsset(String name, String desc, Integer type, Integer workSpace, Integer parent, String state) {
@@ -66,6 +76,11 @@ public class AssetService {
         assetRepository.save(asset);
     }
 
+    public void addMetadata(int asset, MetaData... metaDatas) {
+        Asset as = assetRepository.findById(asset).get();
+        addMetadata(as, metaDatas);
+    }
+
     public void addMetadata(Asset asset, MetaData... metaDatas) {
         for (MetaData metaData : metaDatas) {
             boolean isValid = metaData.getDescription() != null
@@ -86,7 +101,9 @@ public class AssetService {
         Asset asset = assetRepository.findById(assetDto).get();
         DriverAssetPrx prx = DriverAssetPrx
                 .checkedCast(Main.communicator.stringToProxy(asset.getTypeBean().getDriver().getServiceProxy()));
-        prx.setPointAsset(AssetMapper.getInstance().asEntityDTO(asset), value);
+        int execId = prx.setPointAsset(AssetMapper.getInstance().asEntityDTO(asset), value);
+        MeasurementDTO dto = new MeasurementDTO(assetDto, asset.getName(), value, execId, System.currentTimeMillis());
+        measurementService.saveMeasurements(new MeasurementDTO[] { dto });
     }
 
     public List<Asset> getAssetsByType(Type type) {

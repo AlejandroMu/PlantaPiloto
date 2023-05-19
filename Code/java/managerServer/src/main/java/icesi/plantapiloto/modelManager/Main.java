@@ -67,6 +67,7 @@ public class Main {
         WorkSpaceController workSpaceController = new WorkSpaceController();
 
         // dependencies
+        assetService.setMeasurementService(measureService);
         asset.setService(assetService);
 
         measure.setService(measureService);

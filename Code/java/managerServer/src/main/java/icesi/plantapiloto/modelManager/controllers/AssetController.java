@@ -72,4 +72,9 @@ public class AssetController implements AssetManagerController {
         return assetN.getId();
     }
 
+    @Override
+    public void addMetadataToAsset(MetaData[] metaDatas, int assetId, Current current) {
+        service.addMetadata(assetId, metaDatas);
+    }
+
 }

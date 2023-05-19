@@ -7,8 +7,11 @@ import com.zeroc.Ice.Current;
 import icesi.plantapiloto.common.controllers.ProcessManagerController;
 import icesi.plantapiloto.common.dtos.ExecutionDTO;
 import icesi.plantapiloto.common.dtos.ProcessDTO;
+import icesi.plantapiloto.common.dtos.output.AssetDTO;
+import icesi.plantapiloto.common.mappers.AssetMapper;
 import icesi.plantapiloto.common.mappers.ExecutionMapper;
 import icesi.plantapiloto.common.mappers.ProcessMaper;
+import icesi.plantapiloto.common.model.Asset;
 import icesi.plantapiloto.common.model.Execution;
 import icesi.plantapiloto.common.model.Process;
 import icesi.plantapiloto.modelManager.services.ProcessService;
@@ -75,6 +78,18 @@ public class ProcessController implements ProcessManagerController {
     @Override
     public void addAssetToProcess(int asset, int processId, long period, Current current) {
         service.addAssetToProcess(asset, processId, period);
+    }
+
+    @Override
+    public AssetDTO[] getAssetOfProcess(int processId, Current current) {
+        List<Asset> assets = service.getAssetsOfProcess(processId);
+        return AssetMapper.getInstance().asEntityDTO(assets).toArray(AssetDTO[]::new);
+    }
+
+    @Override
+    public ExecutionDTO[] findExecutionsRunning(int processId, Current current) {
+        List<Execution> executions = service.findExecutionsRunning(processId);
+        return ExecutionMapper.getInstance().asEntityDTO(executions).toArray(ExecutionDTO[]::new);
     }
 
 }

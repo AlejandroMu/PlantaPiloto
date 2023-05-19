@@ -2,6 +2,7 @@ package icesi.plantapiloto.driverAsset.scheduler;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -86,6 +87,19 @@ public class ScheduleManager {
         if (futs != null) {
             futs.stream().forEach(t -> t.setRunning(true));
         }
+    }
+
+    public int getExecutionOf(AssetDTO asset) {
+        Iterator<Integer> execIds = process.keySet().iterator();
+        while (execIds.hasNext()) {
+            int execId = execIds.next();
+            List<Task> tasks = process.get(execId);
+            boolean contains = tasks.stream().anyMatch(t -> t.contains(asset));
+            if (contains) {
+                return execId;
+            }
+        }
+        return -1;
     }
 
 }

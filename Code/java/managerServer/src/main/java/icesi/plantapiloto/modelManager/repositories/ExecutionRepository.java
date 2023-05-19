@@ -28,4 +28,10 @@ public class ExecutionRepository implements Repository<Execution, Integer> {
                 + "AND e.startDate between ?2 AND ?3 ";
         return executeQuery(query, processId, new Timestamp(startDate), new Timestamp(endDate));
     }
+
+    public List<Execution> findExecutionsRunning(int processId) {
+        String query = "From Execution e Where e.processBean.id = ?1 "
+                + "AND e.endDate IS NULL ";
+        return executeQuery(query, processId);
+    }
 }

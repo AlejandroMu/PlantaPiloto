@@ -57,9 +57,11 @@ public class DriverAssetImp implements DriverAsset {
     }
 
     @Override
-    public void setPointAsset(AssetDTO asset, double value, Current current) {
+    public int setPointAsset(AssetDTO asset, double value, Current current) {
         DriverAssetConcrete obj = getConcreteInstance();
         obj.setPointAsset(asset, value);
+        int execId = manager.getExecutionOf(asset);
+        return execId;
     }
 
     public DriverAssetConcrete getConcreteInstance() {

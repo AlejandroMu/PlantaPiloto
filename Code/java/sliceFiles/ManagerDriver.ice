@@ -139,7 +139,7 @@ module common{
         interface DriverAsset{
             void readAsset(AssetDTO asset, MeasurementManagerController* server, int execId, long period,bool newProcess);
             void stopRead(int exeId);
-            void setPointAsset(AssetDTO asset, double value);
+            int setPointAsset(AssetDTO asset, double value);
             void pauseReader(int execId);
             void resumeReader(int execId);
         }
@@ -147,6 +147,8 @@ module common{
         interface AssetManagerController{
            
            int saveAsset(string name,string desc, int typeId, int workId, int assetP,string state,MetaDatas metaData);
+           void addMetadataToAsset(MetaDatas metaDatas, int assetId);
+
            void changeAssetValue(int assetId, double value);
 
            AssetsDTO findByType(int type);
@@ -167,6 +169,8 @@ module common{
            int saveProcess(string name, string desc, int workSpaceId);
 
            void addAssetToProcess(int asset, int processId,long period);
+           AssetsDTO getAssetOfProcess(int processId);
+
            void addInstructionToProcess(int instId, int processId);
 
            void applyIntructionToExecution(int instId, int execId);
@@ -174,6 +178,8 @@ module common{
            ProcessesDTO findProcessByWorkSpace(int workSpaceId);
 
            ExecutionsDTO findExecutions(int processId, long startDate, long endDate);
+           ExecutionsDTO findExecutionsRunning(int processId);
+
         }
 
         interface InstructionManagerController{

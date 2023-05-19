@@ -37,6 +37,10 @@ public class Task implements Runnable {
         assets.add(dto);
     }
 
+    public boolean contains(AssetDTO asset) {
+        return assets.stream().anyMatch(a -> a.assetId == asset.assetId);
+    }
+
     /**
      * @return the period
      */
