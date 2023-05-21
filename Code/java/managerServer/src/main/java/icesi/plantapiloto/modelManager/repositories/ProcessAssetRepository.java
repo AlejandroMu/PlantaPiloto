@@ -1,8 +1,9 @@
 package icesi.plantapiloto.modelManager.repositories;
 
 import icesi.plantapiloto.common.model.ProcessAsset;
+import icesi.plantapiloto.common.model.ProcessAssetPK;
 
-public class ProcessAssetRepository implements Repository<ProcessAsset, Integer> {
+public class ProcessAssetRepository implements Repository<ProcessAsset, ProcessAssetPK> {
     private static ProcessAssetRepository instance;
 
     private ProcessAssetRepository() {

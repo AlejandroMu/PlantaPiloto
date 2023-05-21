@@ -37,7 +37,7 @@ module common{
             int assetId;
             string assetName;
             double value;
-            int exeId;
+            int execId;
             long timeStamp;
         }
         class TypeDTO{
@@ -97,6 +97,11 @@ module common{
             string desc;
             int departmentId;
         }
+        class ProcessAssetDTO{
+            int processId;
+            AssetDTO asset;
+            long period;
+        }
 
     }
     ["java:serializable:icesi.plantapiloto.common.dtos.MeasurementDTO"]
@@ -115,6 +120,8 @@ module common{
     sequence<byte> ExecutionDTO;
     ["java:serializable:icesi.plantapiloto.common.dtos.WorkSpaceDTO"]
     sequence<byte> WorkSpaceDTO;
+    ["java:serializable:icesi.plantapiloto.common.dtos.ProcessAssetDTO"]
+    sequence<byte> ProcessAssetDTO;
     module controllers{
 
         sequence<AssetDTO> AssetsDTO;
@@ -128,6 +135,7 @@ module common{
         sequence<ExecutionDTO> ExecutionsDTO;
         sequence<WorkSpaceDTO> WorkSpacesDTO;
         sequence<MetaData> MetaDatas;
+        sequence<ProcessAssetDTO> ProcessAssetsDTO;
 
 
         interface MeasurementManagerController{
@@ -169,7 +177,8 @@ module common{
            int saveProcess(string name, string desc, int workSpaceId);
 
            void addAssetToProcess(int asset, int processId,long period);
-           AssetsDTO getAssetOfProcess(int processId);
+           void updateAssetToProcess(int asset, int processId,long period);
+           ProcessAssetsDTO getAssetOfProcess(int processId);
 
            void addInstructionToProcess(int instId, int processId);
 
@@ -177,8 +186,7 @@ module common{
 
            ProcessesDTO findProcessByWorkSpace(int workSpaceId);
 
-           ExecutionsDTO findExecutions(int processId, long startDate, long endDate);
-           ExecutionsDTO findExecutionsRunning(int processId);
+           ExecutionsDTO findExecutions(int processId, long startDate, long endDate,bool running);
 
         }
 

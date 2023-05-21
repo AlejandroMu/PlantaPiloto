@@ -3,7 +3,6 @@ package icesi.plantapiloto.modelManager.services;
 import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import icesi.plantapiloto.common.controllers.DriverAssetPrx;
 import icesi.plantapiloto.common.controllers.MeasurementManagerControllerPrx;
@@ -15,6 +14,7 @@ import icesi.plantapiloto.common.model.ExecutionInstruction;
 import icesi.plantapiloto.common.model.Instruction;
 import icesi.plantapiloto.common.model.Process;
 import icesi.plantapiloto.common.model.ProcessAsset;
+import icesi.plantapiloto.common.model.ProcessAssetPK;
 import icesi.plantapiloto.modelManager.Main;
 import icesi.plantapiloto.modelManager.repositories.ExecutionInstructionRepository;
 import icesi.plantapiloto.modelManager.repositories.ExecutionRepository;
@@ -210,8 +210,9 @@ public class ProcessService {
         return processRepository.findByWorkSpace(workSpaceId);
     }
 
-    public List<Execution> getExecutionByProcessIdAndDateStartBetween(int processId, long startDate, long endDate) {
-        return executionRepository.findByProcessAndStartDateBetween(processId, startDate, endDate);
+    public List<Execution> getExecutionByProcessIdAndDateStartBetween(int processId, long startDate, long endDate,
+            boolean run) {
+        return executionRepository.findByProcessAndStartDateBetween(processId, startDate, endDate, run);
     }
 
     public void addAssetToProcess(int asset, int processId, long period) {
@@ -229,14 +230,23 @@ public class ProcessService {
         }
     }
 
-    public List<Asset> getAssetsOfProcess(int processId) {
+    public List<ProcessAsset> getAssetsOfProcess(int processId) {
         Process process = processRepository.findById(processId).get();
-        List<Asset> assets = process.getProcessAssets().stream().map(pa -> pa.getAsset()).collect(Collectors.toList());
-        return assets;
+        return process.getProcessAssets();
     }
 
     public List<Execution> findExecutionsRunning(int processId) {
         return executionRepository.findExecutionsRunning(processId);
+    }
+
+    public void updateAssetToProcess(int asset, int processId, long period) {
+        ProcessAssetPK pk = new ProcessAssetPK();
+        pk.setAssetId(asset);
+        pk.setProcessId(processId);
+        ProcessAsset pa = processAssetRepository.findById(pk).get();
+        pa.setDelayRead(period);
+        processAssetRepository.update(pa);
+
     }
 
 }

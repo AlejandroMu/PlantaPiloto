@@ -38,7 +38,7 @@ public class Task implements Runnable {
     }
 
     public boolean contains(AssetDTO asset) {
-        return assets.stream().anyMatch(a -> a.assetId == asset.assetId);
+        return assets.stream().anyMatch(a -> a.contains(asset));
     }
 
     /**

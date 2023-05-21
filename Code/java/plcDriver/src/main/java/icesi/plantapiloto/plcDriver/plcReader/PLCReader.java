@@ -32,7 +32,7 @@ public class PLCReader implements DriverAssetConcrete {
                 if (assetDTO.typeName.equals(TYPE_NAMES[0])) {
                     EtherNetIP connection = connectPlc(assetDTO.parent.props);
                     MeasurementDTO value = readTag(assetDTO, connection);
-                    value.exeId = execId;
+                    value.execId = execId;
                     value.timeStamp = timeStamp;
                     connection.close();
                     values.add(value);
@@ -98,7 +98,7 @@ public class PLCReader implements DriverAssetConcrete {
             for (int i = 0; i < tags.length; i++) {
                 if (tags[i].state.equals(STATE_ENABLE_ID)) {
                     MeasurementDTO dto = readTag(tags[i], connection);
-                    dto.exeId = execId;
+                    dto.execId = execId;
                     dto.timeStamp = timestamp;
                     values.add(dto);
                 }

@@ -56,9 +56,9 @@ public class MeasureCLI implements CommanLineInterface {
 
     private String listMeasureControl(String command) {
         Map<String, String> props = parseOptions(command);
-        Integer e = Integer.parseInt(props.get("-e"));
-        Integer a = Integer.parseInt(props.get("-a"));
-        Long i = Long.parseLong(props.get("-i"));
+        Integer e = props.get("-e") == null ? null : Integer.parseInt(props.get("-e"));
+        Integer a = props.get("-a") == null ? null : Integer.parseInt(props.get("-a"));
+        Long i = props.get("-a") == null ? null : Long.parseLong(props.get("-i"));
         Long f = props.get("-f") == null ? System.currentTimeMillis() : Long.parseLong(props.get("-f"));
         MeasurementDTO[] values = null;
         if (e != null) {
@@ -89,7 +89,7 @@ public class MeasureCLI implements CommanLineInterface {
             MeasurementDTO dto = new MeasurementDTO();
             dto.assetId = Integer.parseInt(props.get("-a"));
             dto.value = Double.parseDouble(props.get("-v"));
-            dto.exeId = Integer.parseInt(props.get("-e"));
+            dto.execId = Integer.parseInt(props.get("-e"));
 
             dto.timeStamp = props.get("-t") == null ? System.currentTimeMillis() : Long.parseLong(props.get("-e"));
 

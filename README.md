@@ -69,7 +69,7 @@ System that be able manage the IIoT assets and the data generate for these infra
 4. **ICE: Internet communication engine.**
     <br>
 
-    This system used ICE middleware for communications. This middleware enables easy remote procedure calls. more information about ICE <a href="https://zeroc.com/products/ice">here.</a>    <br>
+    This system used ICE middleware for communications version 3.7.9. This middleware enables easy remote procedure calls. more information about ICE <a href="https://zeroc.com/products/ice">here.</a>    <br>
     you need install ICE compiler for java, for that you can visit <a href="https://zeroc.com/downloads/ice/3.7/java">oficial page for downloads.</a> 
     <br>    
 5. **Gradle.**    <br>        

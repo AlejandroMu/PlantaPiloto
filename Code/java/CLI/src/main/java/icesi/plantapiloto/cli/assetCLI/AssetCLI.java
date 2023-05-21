@@ -34,9 +34,11 @@ public class AssetCLI implements CommanLineInterface {
                         + " -s {state}*"
                         + " -p {parenId}"
                         + " [-m {metadataProp} {metadataValue} {metadataDesc}]+\n")
-                .append(pad + " asset setpoint {assetId}* {value}*: set asset actuator value\n")
-                .append(pad + " asset list ( | -t {typeId} | -s {state} | -w {workSpace}): list assets \n")
-                .append(pad + " asset remove {assetId}*: remove asset by id\n");
+                .append(pad + " asset setpoint {assetId}* {value}*\n")
+                .append(pad
+                        + " asset metadata add -a {assetId}* [-m {metadataProp}* {metadataValue}* {metadataDesc}*]+\n")
+                .append(pad + " asset list ( | -t {typeId} | -s {state} | -w {workSpace})\n")
+                .append(pad + " asset remove {assetId}*\n");
 
         return builder.toString();
     }
@@ -49,18 +51,42 @@ public class AssetCLI implements CommanLineInterface {
             writer.write(assetAddControl(command));
         } else if (command.matches("asset\\s+list.*")) {
             writer.write(assetListControl(command));
-
         } else if (command.matches("asset\\s+remove.*")) {
             writer.write(assetRemoveControl(command));
-
         } else if (command.matches("asset\\s+setpoint.*")) {
             writer.write(assetSetPoint(command));
-
+        } else if (command.matches("asset\\s+metadata.*")) {
+            writer.write(assetMetadataAddControl(command));
         } else {
             return false;
         }
         return true;
 
+    }
+
+    private String assetMetadataAddControl(String command) {
+        String split[] = command.split(" ");
+        List<MetaData> metaDatas = new ArrayList<>();
+        String asset = null;
+
+        for (int i = 0; i < split.length; i++) {
+            if (split[i].equals("-m")) {
+                MetaData metaData = new MetaData();
+                metaData.setName(split[++i]);
+                metaData.setValue(split[++i]);
+                metaData.setDescription(split[++i]);
+                metaDatas.add(metaData);
+            } else if (split[i].equals("-a")) {
+                asset = split[++i];
+            }
+        }
+        if (asset != null && metaDatas.size() > 0) {
+            prx.addMetadataToAsset(metaDatas.toArray(MetaData[]::new), Integer.parseInt(asset));
+            return "Successfull";
+        } else {
+            return errorMessage();
+
+        }
     }
 
     public String assetSetPoint(String command) {

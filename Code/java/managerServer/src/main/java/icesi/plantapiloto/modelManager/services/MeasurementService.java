@@ -26,7 +26,7 @@ public class MeasurementService {
     public void saveMeasurements(MeasurementDTO[] dto) {
         for (MeasurementDTO measurementDTO : dto) {
             Timestamp timestamp = new Timestamp(measurementDTO.timeStamp);
-            Execution execution = executionRepository.findById(measurementDTO.exeId).get();
+            Execution execution = executionRepository.findById(measurementDTO.execId).get();
             Asset asset = assetRepository.findById(measurementDTO.assetId).get();
             Measurement measurement = new Measurement();
             measurement.setAssetBean(asset);

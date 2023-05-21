@@ -6,14 +6,14 @@ import com.zeroc.Ice.Current;
 
 import icesi.plantapiloto.common.controllers.ProcessManagerController;
 import icesi.plantapiloto.common.dtos.ExecutionDTO;
+import icesi.plantapiloto.common.dtos.ProcessAssetDTO;
 import icesi.plantapiloto.common.dtos.ProcessDTO;
-import icesi.plantapiloto.common.dtos.output.AssetDTO;
 import icesi.plantapiloto.common.mappers.AssetMapper;
 import icesi.plantapiloto.common.mappers.ExecutionMapper;
 import icesi.plantapiloto.common.mappers.ProcessMaper;
-import icesi.plantapiloto.common.model.Asset;
 import icesi.plantapiloto.common.model.Execution;
 import icesi.plantapiloto.common.model.Process;
+import icesi.plantapiloto.common.model.ProcessAsset;
 import icesi.plantapiloto.modelManager.services.ProcessService;
 
 public class ProcessController implements ProcessManagerController {
@@ -70,8 +70,10 @@ public class ProcessController implements ProcessManagerController {
     }
 
     @Override
-    public ExecutionDTO[] findExecutions(int processId, long startDate, long endDate, Current current) {
-        List<Execution> executions = service.getExecutionByProcessIdAndDateStartBetween(processId, startDate, endDate);
+    public ExecutionDTO[] findExecutions(int processId, long startDate, long endDate, boolean running,
+            Current current) {
+        List<Execution> executions = service.getExecutionByProcessIdAndDateStartBetween(processId, startDate, endDate,
+                running);
         return ExecutionMapper.getInstance().asEntityDTO(executions).toArray(ExecutionDTO[]::new);
     }
 
@@ -81,15 +83,18 @@ public class ProcessController implements ProcessManagerController {
     }
 
     @Override
-    public AssetDTO[] getAssetOfProcess(int processId, Current current) {
-        List<Asset> assets = service.getAssetsOfProcess(processId);
-        return AssetMapper.getInstance().asEntityDTO(assets).toArray(AssetDTO[]::new);
+    public void updateAssetToProcess(int asset, int processId, long period, Current current) {
+        service.updateAssetToProcess(asset, processId, period);
     }
 
     @Override
-    public ExecutionDTO[] findExecutionsRunning(int processId, Current current) {
-        List<Execution> executions = service.findExecutionsRunning(processId);
-        return ExecutionMapper.getInstance().asEntityDTO(executions).toArray(ExecutionDTO[]::new);
+    public ProcessAssetDTO[] getAssetOfProcess(int processId, Current current) {
+        List<ProcessAsset> assets = service.getAssetsOfProcess(processId);
+        AssetMapper mapper = AssetMapper.getInstance();
+        ProcessAssetDTO[] ret = assets.stream()
+                .map(PA -> new ProcessAssetDTO(processId, mapper.asEntityDTO(PA.getAsset()), PA.getDelayRead()))
+                .toArray(ProcessAssetDTO[]::new);
+        return ret;
     }
 
 }

@@ -29,7 +29,7 @@ public class PLCReaderDummy implements DriverAssetConcrete {
             for (AssetDTO assetDTO : asset) {
                 if (assetDTO.typeName.equals(TYPE_NAMES[0])) {
                     MeasurementDTO value = readTag(assetDTO);
-                    value.exeId = execId;
+                    value.execId = execId;
                     value.timeStamp = timeStamp;
                     values.add(value);
                 } else if (assetDTO.typeName.equals(TYPE_NAMES[1])) {
@@ -82,7 +82,7 @@ public class PLCReaderDummy implements DriverAssetConcrete {
             for (int i = 0; i < tags.length; i++) {
                 if (tags[i].state.equals(STATE_ENABLE_ID)) {
                     MeasurementDTO dto = readTag(tags[i]);
-                    dto.exeId = execId;
+                    dto.execId = execId;
                     dto.timeStamp = timestamp;
                     values.add(dto);
                 }

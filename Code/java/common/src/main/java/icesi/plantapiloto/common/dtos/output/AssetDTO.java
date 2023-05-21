@@ -35,4 +35,23 @@ public class AssetDTO implements Serializable {
     public AssetDTO() {
     }
 
+    public boolean contains(AssetDTO dto) {
+        if (assetId == dto.assetId) {
+            return true;
+        } else {
+            if (childrens != null && childrens.length > 0) {
+                boolean con = false;
+                for (AssetDTO assetDTO : childrens) {
+                    con |= assetDTO.contains(dto);
+                    if (con) {
+                        return true;
+                    }
+                }
+                return con;
+            } else {
+                return false;
+            }
+        }
+    }
+
 }

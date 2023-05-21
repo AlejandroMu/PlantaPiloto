@@ -8,6 +8,7 @@ import com.zeroc.Ice.Communicator;
 
 import icesi.plantapiloto.cli.CommanLineInterface;
 import icesi.plantapiloto.common.controllers.ProcessManagerControllerPrx;
+import icesi.plantapiloto.common.dtos.ExecutionDTO;
 
 public class ProcessCLI implements CommanLineInterface {
     private ProcessManagerControllerPrx prx;
@@ -25,8 +26,10 @@ public class ProcessCLI implements CommanLineInterface {
                 .append(pading + " process stop -e {execId}*\n")
                 .append(pading + " process pause -e {execId}*\n")
                 .append(pading + " process continue -e {execId}*\n")
-                .append(pading + " process execution list -p {processId}* -s {startD}* -e {endDate}\n")
-                .append(pading + " process asset add -p {processId}* -a {assetId}* -d {delay}*\n")
+                .append(pading + " process execution list -p {processId}* -s {startD}* -e {endDate} -r {running?}\n")
+                .append(pading + " process asset add -p {processId}* -a {assetId}* -f {readFreq}*\n")
+                .append(pading + " process asset update -p {processId}* -a {assetId}* -f {readFreq}*\n")
+                .append(pading + " process asset list -p {processId}*\n")
                 .append(pading + " process instruction add -p {processId}* -i {instId}*\n")
                 .append(pading + " process instruction apply -e {execId}* -i {instId}*\n");
         return builder.toString();
@@ -56,17 +59,42 @@ public class ProcessCLI implements CommanLineInterface {
             writer.write(processInstApplyController(command));
         } else if (command.matches("process\\s+asset\\s+add.*")) {
             writer.write(processAssetAddController(command));
+        } else if (command.matches("process\\s+asset\\s+list.*")) {
+            writer.write(processAsseListController(command));
+        } else if (command.matches("process\\s+asset\\s+update.*")) {
+            writer.write(processAssetUpdateController(command));
         } else {
             return false;
         }
         return true;
     }
 
+    private String processAssetUpdateController(String command) {
+        Map<String, String> props = parseOptions(command);
+        String p = props.get("-p");
+        String a = props.get("-a");
+        String period = props.get("-f");
+        if (!anyNull(p, a, period)) {
+            prx.updateAssetToProcess(Integer.parseInt(a), Integer.parseInt(p), Long.parseLong(period));
+            return "Successfull, added asset to process\n";
+        }
+        return errorMessage();
+    }
+
+    private String processAsseListController(String command) {
+        Map<String, String> props = parseOptions(command);
+        String proc = props.get("-p");
+        if (proc != null) {
+            return encoderList(prx.getAssetOfProcess(Integer.parseInt(proc)));
+        }
+        return errorMessage();
+    }
+
     private String processAssetAddController(String command) {
         Map<String, String> props = parseOptions(command);
         String p = props.get("-p");
         String a = props.get("-a");
-        String period = props.get("-d");
+        String period = props.get("-f");
         if (!anyNull(p, a, period)) {
             prx.addAssetToProcess(Integer.parseInt(a), Integer.parseInt(p), Long.parseLong(period));
             return "Successfull, added asset to process\n";
@@ -102,9 +130,13 @@ public class ProcessCLI implements CommanLineInterface {
         String p = props.get("-p");
         String s = props.get("-s");
         String e = props.get("-e");
+        String r = props.get("-r");
+
         if (!anyNull(p, s)) {
             long time = e != null ? Long.parseLong(e) : System.currentTimeMillis();
-            return encoderList(prx.findExecutions(Integer.parseInt(p), Long.parseLong(s), time));
+            boolean run = r != null ? Boolean.parseBoolean(r) : false;
+            ExecutionDTO[] executionDTOs = prx.findExecutions(Integer.parseInt(p), Long.parseLong(s), time, run);
+            return encoderList(executionDTOs);
         }
         return errorMessage();
     }

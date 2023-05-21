@@ -102,8 +102,13 @@ public class AssetService {
         DriverAssetPrx prx = DriverAssetPrx
                 .checkedCast(Main.communicator.stringToProxy(asset.getTypeBean().getDriver().getServiceProxy()));
         int execId = prx.setPointAsset(AssetMapper.getInstance().asEntityDTO(asset), value);
-        MeasurementDTO dto = new MeasurementDTO(assetDto, asset.getName(), value, execId, System.currentTimeMillis());
-        measurementService.saveMeasurements(new MeasurementDTO[] { dto });
+        if (execId != -1) {
+            MeasurementDTO dto = new MeasurementDTO(assetDto, asset.getName(), value, execId,
+                    System.currentTimeMillis());
+            measurementService.saveMeasurements(new MeasurementDTO[] { dto });
+        } else {
+            System.out.println("no esta en ninguna ejecución");
+        }
     }
 
     public List<Asset> getAssetsByType(Type type) {

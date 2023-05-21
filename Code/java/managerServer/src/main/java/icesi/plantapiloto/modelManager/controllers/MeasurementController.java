@@ -48,7 +48,7 @@ public class MeasurementController implements MeasurementManagerController {
     public void saveAssetValue(MeasurementDTO[] value, Current current) {
         service.saveMeasurements(value);
         Map<Object, List<MeasurementDTO>> map = new HashMap<>();
-        map = Arrays.asList(value).stream().collect(Collectors.groupingBy(t -> t.exeId));
+        map = Arrays.asList(value).stream().collect(Collectors.groupingBy(t -> t.execId));
         Iterator<Object> keys = map.keySet().iterator();
         while (keys.hasNext()) {
             Integer execId = (Integer) keys.next();
