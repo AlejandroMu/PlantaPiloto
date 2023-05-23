@@ -4,21 +4,21 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 import javax.persistence.Query;
 
-public interface Repository<T, K> {
-    public EntityManagerFactory managerFactory = Persistence.createEntityManagerFactory("planta");
+import icesi.plantapiloto.modelManager.entityManager.ManagerPool;
 
-    public default EntityManager getManager() {
-        return managerFactory.createEntityManager();
+public interface Repository<T, K> {
+
+    public ManagerPool pool = new ManagerPool();
+
+    public default EntityManager getManager(boolean isT) {
+        return pool.getManager(isT);
     }
 
     public default T save(T element) {
 
-        EntityManager manager = getManager();
-        manager.getTransaction().begin();
+        EntityManager manager = getManager(true);
         manager.persist(element);
         manager.getTransaction().commit();
         manager.clear();
@@ -27,8 +27,7 @@ public interface Repository<T, K> {
 
     public default T update(T element) {
 
-        EntityManager manager = getManager();
-        manager.getTransaction().begin();
+        EntityManager manager = getManager(true);
         element = manager.merge(element);
         manager.getTransaction().commit();
         manager.clear();
@@ -36,7 +35,7 @@ public interface Repository<T, K> {
     };
 
     public default void deleteById(K id) {
-        EntityManager manager = getManager();
+        EntityManager manager = getManager(true);
         boolean isActive = manager.getTransaction().isActive();
         if (!isActive) {
             manager.getTransaction().begin();
@@ -44,22 +43,24 @@ public interface Repository<T, K> {
         manager.remove(findById(id).get());
         manager.getTransaction().commit();
         manager.clear();
+
     }
 
     public default Optional<T> findById(K id) {
-        EntityManager manager = getManager();
+        EntityManager manager = getManager(false);
         Class<T> type = getType();
         Optional<T> element = Optional.ofNullable(manager.find(type, id));
         return element;
     }
 
     public default List<T> findAll() {
-        EntityManager manager = getManager();
+        EntityManager manager = getManager(false);
         Class<T> type = getType();
         String query = "From " + type.getSimpleName();
         List<T> values = manager
                 .createQuery(query, type)
                 .getResultList();
+
         return values;
     }
 
@@ -69,7 +70,7 @@ public interface Repository<T, K> {
 
     @SuppressWarnings("unchecked")
     public default List<T> executeQuery(String query, boolean isNative, Object... params) {
-        EntityManager manager = getManager();
+        EntityManager manager = getManager(false);
         Class<?> type = getType();
         Query queryMan = null;
         if (isNative) {
@@ -84,6 +85,7 @@ public interface Repository<T, K> {
             }
         }
         List<T> resutl = (List<T>) queryMan.getResultList();
+
         return resutl;
     }
 

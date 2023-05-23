@@ -29,6 +29,8 @@
 		<property name="hibernate.default_schema" value="${database.schema}"/>
         <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect" />
         <property name="hibernate.hbm2ddl.auto" value="update" />
+		<property name="hibernate.connection.pool_size" value="10" />
+
     </properties>
   </persistence-unit>
 
