@@ -49,7 +49,7 @@ public class Asset implements Serializable {
 	private List<Measurement> measurements;
 
 	// bi-directional many-to-one association to MetaData
-	@OneToMany(mappedBy = "assetBean", cascade = { CascadeType.REMOVE, CascadeType.PERSIST })
+	@OneToMany(mappedBy = "assetBean", cascade = { CascadeType.REMOVE, CascadeType.PERSIST, CascadeType.MERGE })
 	private List<MetaData> metaData;
 
 	// bi-directional many-to-one association to ProcessAsset
