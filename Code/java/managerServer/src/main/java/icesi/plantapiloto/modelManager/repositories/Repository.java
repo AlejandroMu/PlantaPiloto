@@ -21,7 +21,6 @@ public interface Repository<T, K> {
         EntityManager manager = getManager(true);
         manager.persist(element);
         manager.getTransaction().commit();
-        manager.clear();
         return element;
     };
 
@@ -30,7 +29,6 @@ public interface Repository<T, K> {
         EntityManager manager = getManager(true);
         element = manager.merge(element);
         manager.getTransaction().commit();
-        manager.clear();
         return element;
     };
 

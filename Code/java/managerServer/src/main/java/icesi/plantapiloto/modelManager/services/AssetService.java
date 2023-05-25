@@ -12,7 +12,6 @@ import icesi.plantapiloto.common.model.Type;
 import icesi.plantapiloto.common.model.WorkSpace;
 import icesi.plantapiloto.modelManager.Main;
 import icesi.plantapiloto.modelManager.repositories.AssetRepository;
-import icesi.plantapiloto.modelManager.repositories.MetaDataRepository;
 import icesi.plantapiloto.modelManager.repositories.TypeRepository;
 import icesi.plantapiloto.modelManager.repositories.WorkSpaceRepository;
 
@@ -24,7 +23,6 @@ public class AssetService {
     // Repositories
     private AssetRepository assetRepository;
     private TypeRepository typeRepository;
-    private MetaDataRepository metaDataRepository;
     private WorkSpaceRepository workSpaceRepository;
 
     private MeasurementService measurementService;
@@ -32,7 +30,6 @@ public class AssetService {
     public AssetService() {
         assetRepository = AssetRepository.getInstance();
         typeRepository = TypeRepository.getInstance();
-        metaDataRepository = MetaDataRepository.getInstance();
         workSpaceRepository = WorkSpaceRepository.getInstance();
     }
 
@@ -89,7 +86,8 @@ public class AssetService {
 
             if (isValid) {
                 metaData.setAssetBean(asset);
-                metaDataRepository.save(metaData);
+                asset.addMetaData(metaData);
+                assetRepository.update(asset);
             } else {
                 System.out.println("Metadata invalid: " + (new JsonEncoder()).encode(metaData));
             }
