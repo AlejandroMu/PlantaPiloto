@@ -220,6 +220,10 @@ public class ProcessService {
         Process process = processRepository.findById(processId).get();
         if (asset2.getWorkSpace().getId() == process.getWorkSpaceBean().getId()) {
             ProcessAsset v = new ProcessAsset();
+            ProcessAssetPK pk = new ProcessAssetPK();
+            pk.setAssetId(asset);
+            pk.setProcessId(processId);
+            v.setId(pk);
             v.setAsset(asset2);
             v.setDelayRead(period);
             v.setProcess(process);
