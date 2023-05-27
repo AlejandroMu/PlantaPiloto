@@ -48,7 +48,7 @@ public class ScheduleManager {
             }
         }
         Task task = new Task(concrete, asset, execId, callback, period);
-        ScheduledFuture<?> future = scheduler.scheduleAtFixedRate(task, 0, period,
+        ScheduledFuture<?> future = scheduler.scheduleAtFixedRate(task, period, period,
                 TimeUnit.MILLISECONDS);
         List<ScheduledFuture<?>> futs = futures.get(execId);
         if (futs == null) {

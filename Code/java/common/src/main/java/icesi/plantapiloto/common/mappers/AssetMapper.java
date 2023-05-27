@@ -54,9 +54,10 @@ public class AssetMapper implements Maper<Asset, AssetDTO> {
                 null);
         HashMap<String, String> props = new HashMap<>();
         List<MetaData> metaDatas = assetPar.getMetaData();
-
-        for (MetaData metaData : metaDatas) {
-            props.put(metaData.getName(), metaData.getValue());
+        if (metaDatas != null) {
+            for (MetaData metaData : metaDatas) {
+                props.put(metaData.getName(), metaData.getValue());
+            }
         }
         parent.props = props;
         parent.parent = getParent(assetPar);

@@ -83,17 +83,20 @@ public class ProcessService {
 
     public void runExecution(Execution execution) {
         Process process = execution.getProcessBean();
-        List<ProcessAsset> Procesassets = process.getProcessAssets();
+        List<ProcessAsset> procesassets = processAssetRepository.findByProcess(process.getId());
         AssetMapper mapper = AssetMapper.getInstance();
-
-        for (ProcessAsset processAsset : Procesassets) {
-            Asset asset = processAsset.getAsset();
-            // TODO: VERIFY ASSET STATE, BUSY?
-            long period = processAsset.getDelayRead();
-            Driver driver = asset.getTypeBean().getDriver();
-            DriverAssetPrx prx = DriverAssetPrx
-                    .checkedCast(Main.communicator.stringToProxy(driver.getServiceProxy()));
-            prx.readAsset(mapper.asEntityDTO(asset), callback, execution.getId(), period, false);
+        if (procesassets != null) {
+            for (ProcessAsset processAsset : procesassets) {
+                Asset asset = processAsset.getAsset();
+                // TODO: VERIFY ASSET STATE, BUSY?
+                long period = processAsset.getDelayRead();
+                Driver driver = asset.getTypeBean().getDriver();
+                DriverAssetPrx prx = DriverAssetPrx
+                        .checkedCast(Main.communicator.stringToProxy(driver.getServiceProxy()));
+                prx.readAsset(mapper.asEntityDTO(asset), callback, execution.getId(), period, false);
+            }
+        } else {
+            System.out.println("Process dont have assets");
         }
 
     }
@@ -228,6 +231,10 @@ public class ProcessService {
             v.setDelayRead(period);
             v.setProcess(process);
             processAssetRepository.save(v);
+
+            asset2.addProcessAsset(v);
+            process.addProcessAsset(v);
+
         } else {
             System.out.println("el asset no es añadible al proceso, no pertenecen al mismo workspace");
             // TODO: error report

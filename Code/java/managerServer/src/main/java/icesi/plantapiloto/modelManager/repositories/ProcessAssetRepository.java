@@ -1,5 +1,7 @@
 package icesi.plantapiloto.modelManager.repositories;
 
+import java.util.List;
+
 import icesi.plantapiloto.common.model.ProcessAsset;
 import icesi.plantapiloto.common.model.ProcessAssetPK;
 
@@ -19,6 +21,11 @@ public class ProcessAssetRepository implements Repository<ProcessAsset, ProcessA
     @Override
     public Class<ProcessAsset> getType() {
         return ProcessAsset.class;
+    }
+
+    public List<ProcessAsset> findByProcess(Integer id) {
+        String query = "From ProcessAsset pa Where pa.process.id = ?1";
+        return executeQuery(query, id);
     }
 
 }

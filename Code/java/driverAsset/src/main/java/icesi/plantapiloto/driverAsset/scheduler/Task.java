@@ -34,7 +34,9 @@ public class Task implements Runnable {
     }
 
     public void addAsset(AssetDTO dto) {
-        assets.add(dto);
+        synchronized (assets) {
+            assets.add(dto);
+        }
     }
 
     public boolean contains(AssetDTO asset) {
@@ -58,7 +60,10 @@ public class Task implements Runnable {
     @Override
     public void run() {
         if (isRunning) {
-            List<MeasurementDTO> measurementDTOs = source.readAsset(assets, exeId);
+            List<MeasurementDTO> measurementDTOs = null;
+            synchronized (assets) {
+                measurementDTOs = source.readAsset(assets, exeId);
+            }
             PublisherManager sender = PublisherManager.getInstance(callback);
             sender.addMessage(measurementDTOs);
         }
