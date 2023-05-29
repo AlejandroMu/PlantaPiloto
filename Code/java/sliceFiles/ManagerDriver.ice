@@ -163,6 +163,7 @@ module common{
            AssetsDTO findByWorkSpace(int workSpaceId);
            AssetsDTO findByState(string state);
            AssetsDTO findAll();
+           AssetDTO findById(int id);
 
            void deletById(int id);
 

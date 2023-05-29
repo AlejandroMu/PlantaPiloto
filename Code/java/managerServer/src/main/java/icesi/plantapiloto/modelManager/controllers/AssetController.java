@@ -77,4 +77,10 @@ public class AssetController implements AssetManagerController {
         service.addMetadata(assetId, metaDatas);
     }
 
+    @Override
+    public AssetDTO findById(int id, Current current) {
+
+        return AssetMapper.getInstance().asEntityDTO(service.getAssetById(id));
+    }
+
 }
