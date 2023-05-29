@@ -14,7 +14,7 @@ public class MeasurmentMapper implements Maper<Measurement, MeasurementDTO> {
     }
 
     public MeasurementDTO asEntityDTO(Measurement value) {
-        MeasurementDTO measurementDTO = new MeasurementDTO(value.getId(), value.getAssetBean().getName(),
+        MeasurementDTO measurementDTO = new MeasurementDTO(value.getAssetBean().getId(), value.getAssetBean().getName(),
                 value.getValue(), value.getExecutionBean().getId(), value.getTime().getTime());
         return measurementDTO;
     }
