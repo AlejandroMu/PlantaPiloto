@@ -2,6 +2,8 @@ package icesi.plantapiloto.common.model;
 
 import java.io.Serializable;
 import javax.persistence.*;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -78,6 +80,9 @@ public class Instruction implements Serializable {
 	}
 
 	public List<Action> getActions() {
+		if (this.actions == null) {
+			this.actions = new ArrayList<>();
+		}
 		return this.actions;
 	}
 

@@ -2,6 +2,8 @@ package icesi.plantapiloto.common.model;
 
 import java.io.Serializable;
 import javax.persistence.*;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -160,6 +162,9 @@ public class Asset implements Serializable {
 	}
 
 	public List<MetaData> getMetaData() {
+		if (this.metaData == null) {
+			this.metaData = new ArrayList<>();
+		}
 		return this.metaData;
 	}
 
@@ -182,6 +187,9 @@ public class Asset implements Serializable {
 	}
 
 	public List<ProcessAsset> getProcessAssets() {
+		if (this.processAssets == null) {
+			this.processAssets = new ArrayList<>();
+		}
 		return this.processAssets;
 	}
 

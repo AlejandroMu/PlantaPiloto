@@ -1,6 +1,5 @@
 package icesi.plantapiloto.modelManager.services;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import icesi.plantapiloto.common.controllers.DriverAssetPrx;
@@ -80,7 +79,6 @@ public class AssetService {
     }
 
     public void addMetadata(Asset asset, MetaData... metaDatas) {
-        List<MetaData> mDatas = new ArrayList<>();
         for (MetaData metaData : metaDatas) {
             boolean isValid = metaData.getDescription() != null
                     && metaData.getName() != null
@@ -88,16 +86,13 @@ public class AssetService {
 
             if (isValid) {
                 metaData.setAssetBean(asset);
-                mDatas.add(metaData);
+                asset.addMetaData(metaData);
             } else {
                 System.out.println("Metadata invalid: " + (new JsonEncoder()).encode(metaData));
             }
 
         }
-        if (mDatas.size() > 0) {
-            asset.setMetaData(mDatas);
-            assetRepository.update(asset);
-        }
+        assetRepository.update(asset);
     }
 
     public void changeSetPoint(int assetDto, double value) {
