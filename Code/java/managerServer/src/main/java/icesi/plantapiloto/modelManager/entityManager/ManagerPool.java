@@ -16,7 +16,7 @@ public class ManagerPool {
     public ManagerPool() {
         entityManagers = new ArrayList<>();
         nameUnit = "planta";
-        nEntities = 5;
+        nEntities = 1;
         managerFactory = Persistence.createEntityManagerFactory(nameUnit);
         for (int i = 0; i < nEntities; i++) {
             entityManagers.add(managerFactory.createEntityManager());
@@ -26,6 +26,7 @@ public class ManagerPool {
     public EntityManager getManager(boolean isT) {
         synchronized (entityManagers) {
             if (!isT) {
+                entityManagers.get(0).clear();
                 return entityManagers.get(0);
             }
             EntityManager current = null;
