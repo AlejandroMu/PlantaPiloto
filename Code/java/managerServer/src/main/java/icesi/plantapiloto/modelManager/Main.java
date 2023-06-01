@@ -16,6 +16,7 @@ import icesi.plantapiloto.modelManager.controllers.InstructionController;
 import icesi.plantapiloto.modelManager.controllers.MeasurementController;
 import icesi.plantapiloto.modelManager.controllers.ProcessController;
 import icesi.plantapiloto.modelManager.controllers.WorkSpaceController;
+import icesi.plantapiloto.modelManager.entityManager.ManagerPool;
 import icesi.plantapiloto.modelManager.services.ActionService;
 import icesi.plantapiloto.modelManager.services.AssetService;
 import icesi.plantapiloto.modelManager.services.DriverService;
@@ -46,6 +47,8 @@ public class Main {
         System.setProperties(p);
 
         communicator = Util.initialize();
+
+        ManagerPool.init(10);
 
         // Services
 

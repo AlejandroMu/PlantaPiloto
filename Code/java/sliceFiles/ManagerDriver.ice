@@ -89,6 +89,7 @@ module common{
             string operName;
             long startDate;
             long endDate;
+            string state;
             ExecLogs logs;
         }
         class WorkSpaceDTO{
@@ -187,7 +188,7 @@ module common{
 
            ProcessesDTO findProcessByWorkSpace(int workSpaceId);
 
-           ExecutionsDTO findExecutions(int processId, long startDate, long endDate,bool running);
+           ExecutionsDTO findExecutions(int processId, long startDate, long endDate,string state);
 
         }
 

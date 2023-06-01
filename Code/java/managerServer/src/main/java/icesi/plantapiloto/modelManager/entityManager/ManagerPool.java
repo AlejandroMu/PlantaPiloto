@@ -8,20 +8,8 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
 public class ManagerPool {
-    private EntityManagerFactory managerFactory;
+    private static EntityManagerFactory managerFactory = Persistence.createEntityManagerFactory("planta");;
     private static Queue<EntityManager> entityManagers;
-    private String nameUnit;
-    private int nEntities;
-
-    public ManagerPool() {
-        entityManagers = new ArrayDeque<>();
-        nameUnit = "planta";
-        nEntities = 10;
-        managerFactory = Persistence.createEntityManagerFactory(nameUnit);
-        for (int i = 0; i < nEntities; i++) {
-            entityManagers.add(managerFactory.createEntityManager());
-        }
-    }
 
     public static EntityManager getManager() {
         synchronized (entityManagers) {
@@ -37,6 +25,13 @@ public class ManagerPool {
     public static void close(EntityManager manager) {
         manager.clear();
         entityManagers.add(manager);
+    }
+
+    public static void init(int j) {
+        entityManagers = new ArrayDeque<>();
+        for (int i = 0; i < j; i++) {
+            entityManagers.add(managerFactory.createEntityManager());
+        }
     }
 
 }

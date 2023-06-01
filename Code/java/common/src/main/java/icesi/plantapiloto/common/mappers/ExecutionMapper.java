@@ -25,7 +25,7 @@ public class ExecutionMapper implements Maper<Execution, ExecutionDTO> {
     public ExecutionDTO asEntityDTO(Execution entity) {
         ExecutionDTO dto = new ExecutionDTO(entity.getId(), entity.getProcessBean().getId(),
                 entity.getProcessBean().getName(), entity.getOperUsername(), entity.getStartDate().getTime(),
-                entity.getEndDate() != null ? entity.getEndDate().getTime() : -1,
+                entity.getEndDate() != null ? entity.getEndDate().getTime() : -1, entity.getStatus(),
                 null);
         List<ExecutionInstruction> exeIns = entity.getExecutionInstructions();
         if (exeIns != null) {

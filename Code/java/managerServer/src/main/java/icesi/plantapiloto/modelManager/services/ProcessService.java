@@ -249,7 +249,7 @@ public class ProcessService {
     }
 
     public List<Execution> getExecutionByProcessIdAndDateStartBetween(int processId, long startDate, long endDate,
-            boolean run, EntityManager manager) {
+            String run, EntityManager manager) {
         return executionRepository.findByProcessAndStartDateBetween(processId, startDate, endDate, run, manager);
     }
 
@@ -279,7 +279,7 @@ public class ProcessService {
     }
 
     public List<Execution> findExecutionsRunning(int processId, EntityManager manager) {
-        return executionRepository.findExecutionsRunning(processId, manager);
+        return executionRepository.findExecutionByState(processId, ExecutionState.RUNNING.getValue(), manager);
     }
 
     public void updateAssetToProcess(int asset, int processId, long period, EntityManager manager) {

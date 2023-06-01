@@ -25,12 +25,12 @@ public class ExecutionRepository implements Repository<Execution, Integer> {
         return Execution.class;
     }
 
-    public List<Execution> findByProcessAndStartDateBetween(int processId, long startDate, long endDate, boolean run,
+    public List<Execution> findByProcessAndStartDateBetween(int processId, long startDate, long endDate, String run,
             EntityManager manager) {
-        if (run) {
+        if (run != null && !run.equals("")) {
             String query = "From Execution e Where e.processBean.id = ?1 "
-                    + "AND e.startDate between ?2 AND ?3 AND e.endDate IS NULL";
-            return executeQuery(manager, query, processId, new Timestamp(startDate), new Timestamp(endDate));
+                    + "AND e.startDate between ?2 AND ?3 AND e.status = ?4";
+            return executeQuery(manager, query, processId, new Timestamp(startDate), new Timestamp(endDate), run);
 
         } else {
             String query = "From Execution e Where e.processBean.id = ?1 "
@@ -39,9 +39,9 @@ public class ExecutionRepository implements Repository<Execution, Integer> {
         }
     }
 
-    public List<Execution> findExecutionsRunning(int processId, EntityManager manager) {
+    public List<Execution> findExecutionByState(int processId, String state, EntityManager manager) {
         String query = "From Execution e Where e.processBean.id = ?1 "
-                + "AND e.endDate IS NULL ";
-        return executeQuery(manager, query, processId);
+                + "AND e.status = ?2";
+        return executeQuery(manager, query, processId, state);
     }
 }

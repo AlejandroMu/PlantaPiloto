@@ -26,7 +26,8 @@ public class ProcessCLI implements CommanLineInterface {
                 .append(pading + " process stop -e {execId}*\n")
                 .append(pading + " process pause -e {execId}*\n")
                 .append(pading + " process continue -e {execId}*\n")
-                .append(pading + " process execution list -p {processId}* -s {startD}* -e {endDate} -r {running?}\n")
+                .append(pading
+                        + " process execution list -p {processId}* -s {startD}* -e {endDate} -st {running | paused | stoped}\n")
                 .append(pading + " process asset add -p {processId}* -a {assetId}* -f {readFreq}*\n")
                 .append(pading + " process asset update -p {processId}* -a {assetId}* -f {readFreq}*\n")
                 .append(pading + " process asset list -p {processId}*\n")
@@ -130,12 +131,11 @@ public class ProcessCLI implements CommanLineInterface {
         String p = props.get("-p");
         String s = props.get("-s");
         String e = props.get("-e");
-        String r = props.get("-r");
+        String r = props.get("-st");
 
         if (!anyNull(p, s)) {
             long time = e != null ? Long.parseLong(e) : System.currentTimeMillis();
-            boolean run = r != null ? Boolean.parseBoolean(r) : false;
-            ExecutionDTO[] executionDTOs = prx.findExecutions(Integer.parseInt(p), Long.parseLong(s), time, run);
+            ExecutionDTO[] executionDTOs = prx.findExecutions(Integer.parseInt(p), Long.parseLong(s), time, r);
             return encoderList(executionDTOs);
         }
         return errorMessage();

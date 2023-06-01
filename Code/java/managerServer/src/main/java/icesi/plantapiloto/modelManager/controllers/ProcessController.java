@@ -108,7 +108,7 @@ public class ProcessController implements ProcessManagerController {
     }
 
     @Override
-    public ExecutionDTO[] findExecutions(int processId, long startDate, long endDate, boolean running,
+    public ExecutionDTO[] findExecutions(int processId, long startDate, long endDate, String running,
             Current current) {
         EntityManager manager = ManagerPool.getManager();
         manager.getTransaction().begin();
