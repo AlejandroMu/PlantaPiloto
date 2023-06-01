@@ -4,7 +4,7 @@ SET search_path to asset_manager;
 INSERT INTO WORK_SPACE VALUES(nextval('work_space_seq'),'Laboratorio de BioQuimica','Laboratorio de práctica IBQ planta piloto',null);
 
 --- id name proxy work_space
-INSERT INTO DRIVER VALUES(nextval('driver_seq'),'PLC Driver dummy','DriverAsset:tcp -h driver -p 1804',1);
+INSERT INTO DRIVER VALUES(nextval('driver_seq'),'PLC Driver dummy','DriverAsset:tcp -h driverDummy -p 1804',1);
 
 --- id name desc driver
 INSERT INTO ASSET_TYPE VALUES(nextval('type_seq'),'PLC','PLC Allen Bradley',1);
