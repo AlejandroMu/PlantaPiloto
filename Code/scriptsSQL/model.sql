@@ -57,7 +57,8 @@ CREATE TABLE execution (
     end_date timestamp without time zone,
     oper_username character varying(255),
     start_date timestamp without time zone,
-    process integer
+    process integer,
+    status character varying(255)
 );
 
 CREATE SEQUENCE execution_inst_seq
