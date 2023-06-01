@@ -2,6 +2,8 @@ package icesi.plantapiloto.modelManager.repositories;
 
 import java.util.List;
 
+import javax.persistence.EntityManager;
+
 import icesi.plantapiloto.common.model.Instruction;
 
 public class InstructionRepository implements Repository<Instruction, Integer> {
@@ -22,8 +24,8 @@ public class InstructionRepository implements Repository<Instruction, Integer> {
         return Instruction.class;
     }
 
-    public List<Instruction> findByNameMatch(String namepattern) {
+    public List<Instruction> findByNameMatch(String namepattern, EntityManager manager) {
         String query = "From Instruction i Where i.nameTech Like CONCAT('%', ?1, '%')";
-        return executeQuery(query, namepattern);
+        return executeQuery(manager, query, namepattern);
     }
 }

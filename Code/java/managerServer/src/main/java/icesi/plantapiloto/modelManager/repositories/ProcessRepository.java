@@ -2,6 +2,8 @@ package icesi.plantapiloto.modelManager.repositories;
 
 import java.util.List;
 
+import javax.persistence.EntityManager;
+
 import icesi.plantapiloto.common.model.Process;
 
 public class ProcessRepository implements Repository<Process, Integer> {
@@ -22,8 +24,8 @@ public class ProcessRepository implements Repository<Process, Integer> {
         return Process.class;
     }
 
-    public List<Process> findByWorkSpace(int workSpaceId) {
+    public List<Process> findByWorkSpace(int workSpaceId, EntityManager manager) {
         String query = "From Process p Where p.workSpaceBean.id = ?1";
-        return executeQuery(query, workSpaceId);
+        return executeQuery(manager, query, workSpaceId);
     }
 }

@@ -2,6 +2,8 @@ package icesi.plantapiloto.modelManager.services;
 
 import java.util.List;
 
+import javax.persistence.EntityManager;
+
 import icesi.plantapiloto.common.model.Driver;
 import icesi.plantapiloto.common.model.WorkSpace;
 import icesi.plantapiloto.modelManager.repositories.DriverRepository;
@@ -23,15 +25,15 @@ public class DriverService {
         repository = DriverRepository.getInstance();
     }
 
-    public List<Driver> findAll() {
-        return repository.findAll();
+    public List<Driver> findAll(EntityManager manager) {
+        return repository.findAll(manager);
     }
 
-    public List<Driver> findByWorkSpace(int workSpaceId) {
-        return repository.findByWorkSpace(workSpaceId);
+    public List<Driver> findByWorkSpace(int workSpaceId, EntityManager manager) {
+        return repository.findByWorkSpace(workSpaceId, manager);
     }
 
-    public int save(String name, String serviceProxy, int workSpaceId) {
+    public int save(String name, String serviceProxy, int workSpaceId, EntityManager manager) {
         String[] split = serviceProxy.split(" ");
         String host = null;
         String port = "1804";
@@ -46,9 +48,9 @@ public class DriverService {
             Driver driver = new Driver();
             driver.setName(name);
             driver.setServiceProxy("DriverAsset:tcp -h " + host + " -p " + port);
-            WorkSpace workSpace = workSpaceService.getById(workSpaceId);
+            WorkSpace workSpace = workSpaceService.getById(workSpaceId, manager);
             driver.setWorkSpaceBean(workSpace);
-            repository.save(driver);
+            repository.save(driver, manager);
             return driver.getId();
 
         } else {
@@ -56,8 +58,8 @@ public class DriverService {
         }
     }
 
-    public Driver findById(int driver) {
-        return repository.findById(driver).get();
+    public Driver findById(int driver, EntityManager manager) {
+        return repository.findById(driver, manager).get();
     }
 
 }

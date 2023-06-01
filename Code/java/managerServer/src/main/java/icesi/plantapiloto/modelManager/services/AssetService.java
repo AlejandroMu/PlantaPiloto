@@ -2,6 +2,8 @@ package icesi.plantapiloto.modelManager.services;
 
 import java.util.List;
 
+import javax.persistence.EntityManager;
+
 import icesi.plantapiloto.common.controllers.DriverAssetPrx;
 import icesi.plantapiloto.common.dtos.MeasurementDTO;
 import icesi.plantapiloto.common.encoders.JsonEncoder;
@@ -40,22 +42,23 @@ public class AssetService {
         this.measurementService = measurementService;
     }
 
-    public Asset createAsset(String name, String desc, Integer type, Integer workSpace, Integer parent, String state) {
-        Type t = typeRepository.findById(type).get();
+    public Asset createAsset(String name, String desc, Integer type, Integer workSpace, Integer parent, String state,
+            EntityManager manager) {
+        Type t = typeRepository.findById(type, manager).get();
         Asset asset = new Asset();
         asset.setAssetState(state);
         asset.setDescription(desc);
         asset.setName(name);
         asset.setTypeBean(t);
         if (workSpace != null) {
-            WorkSpace dr = workSpaceRepository.findById(workSpace).get();
+            WorkSpace dr = workSpaceRepository.findById(workSpace, manager).get();
             asset.setWorkSpace(dr);
         }
-        saveAsset(asset, parent);
+        saveAsset(asset, parent, manager);
         return asset;
     }
 
-    public void saveAsset(Asset asset, Integer assetParent) {
+    public void saveAsset(Asset asset, Integer assetParent, EntityManager manager) {
         boolean isValid = asset.getName() != null
                 && asset.getTypeBean() != null
                 && asset.getDescription() != null
@@ -67,18 +70,18 @@ public class AssetService {
             asset.setAssetState(ASSET_ACTIVE_STATE);
         }
         if (asset.getAsset() == null && assetParent != null && assetParent != -1) {
-            Asset parent = assetRepository.findById(assetParent).get();
+            Asset parent = assetRepository.findById(assetParent, manager).get();
             asset.setAsset(parent);
         }
-        assetRepository.save(asset);
+        assetRepository.save(asset, manager);
     }
 
-    public void addMetadata(int asset, MetaData... metaDatas) {
-        Asset as = assetRepository.findById(asset).get();
-        addMetadata(as, metaDatas);
+    public void addMetadata(int asset, EntityManager manager, MetaData... metaDatas) {
+        Asset as = assetRepository.findById(asset, manager).get();
+        addMetadata(as, manager, metaDatas);
     }
 
-    public void addMetadata(Asset asset, MetaData... metaDatas) {
+    public void addMetadata(Asset asset, EntityManager manager, MetaData... metaDatas) {
         for (MetaData metaData : metaDatas) {
             boolean isValid = metaData.getDescription() != null
                     && metaData.getName() != null
@@ -92,47 +95,47 @@ public class AssetService {
             }
 
         }
-        assetRepository.update(asset);
+        assetRepository.update(asset, manager);
     }
 
-    public void changeSetPoint(int assetDto, double value) {
-        Asset asset = assetRepository.findById(assetDto).get();
+    public void changeSetPoint(int assetDto, double value, EntityManager manager) {
+        Asset asset = assetRepository.findById(assetDto, manager).get();
         DriverAssetPrx prx = DriverAssetPrx
                 .checkedCast(Main.communicator.stringToProxy(asset.getTypeBean().getDriver().getServiceProxy()));
         int execId = prx.setPointAsset(AssetMapper.getInstance().asEntityDTO(asset), value);
         if (execId != -1) {
             MeasurementDTO dto = new MeasurementDTO(assetDto, asset.getName(), value, execId,
                     System.currentTimeMillis());
-            measurementService.saveMeasurements(new MeasurementDTO[] { dto });
+            measurementService.saveMeasurements(new MeasurementDTO[] { dto }, manager);
         } else {
             System.out.println("no esta en ninguna ejecución");
         }
     }
 
-    public List<Asset> getAssetsByType(Type type) {
+    public List<Asset> getAssetsByType(int type, EntityManager manager) {
 
-        return assetRepository.findByType(type.getId());
+        return assetRepository.findByType(type, manager);
     }
 
-    public List<Asset> getAssets() {
-        return assetRepository.findAll();
+    public List<Asset> getAssets(EntityManager manager) {
+        return assetRepository.findAll(manager);
     }
 
-    public List<Asset> getAssetsByState(String state) {
-        return assetRepository.findByState(state);
+    public List<Asset> getAssetsByState(String state, EntityManager manager) {
+        return assetRepository.findByState(state, manager);
     }
 
-    public void deletById(int id) {
-        Asset asset = assetRepository.findById(id).get();
+    public void deletById(int id, EntityManager manager) {
+        Asset asset = assetRepository.findById(id, manager).get();
         asset.setAssetState(ASSET_REMOVED_STATE);
-        assetRepository.update(asset);
+        assetRepository.update(asset, manager);
     }
 
-    public List<Asset> getAssetsByWorkSpace(int workSpaceId) {
-        return assetRepository.findByWorkSpace(workSpaceId);
+    public List<Asset> getAssetsByWorkSpace(int workSpaceId, EntityManager manager) {
+        return assetRepository.findByWorkSpace(workSpaceId, manager);
     }
 
-    public Asset getAssetById(int asset) {
-        return assetRepository.findById(asset).get();
+    public Asset getAssetById(int asset, EntityManager manager) {
+        return assetRepository.findById(asset, manager).get();
     }
 }

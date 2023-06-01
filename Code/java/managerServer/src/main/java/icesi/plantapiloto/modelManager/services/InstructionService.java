@@ -2,6 +2,8 @@ package icesi.plantapiloto.modelManager.services;
 
 import java.util.List;
 
+import javax.persistence.EntityManager;
+
 import icesi.plantapiloto.common.model.Action;
 import icesi.plantapiloto.common.model.Instruction;
 import icesi.plantapiloto.modelManager.repositories.InstructionRepository;
@@ -22,37 +24,37 @@ public class InstructionService {
         this.actionService = actionService;
     }
 
-    public int saveInstruction(String nameTec, String predicate, String type) {
+    public int saveInstruction(String nameTec, String predicate, String type, EntityManager manager) {
         Instruction instruction = new Instruction();
         instruction.setNameTech(nameTec);
         instruction.setPredicate(predicate);
         instruction.setType(type);
-        instructionRepository.save(instruction);
+        instructionRepository.save(instruction, manager);
         return instruction.getId();
     }
 
-    public Instruction getInstruction(int instId) {
-        return instructionRepository.findById(instId).get();
+    public Instruction getInstruction(int instId, EntityManager manager) {
+        return instructionRepository.findById(instId, manager).get();
     }
 
-    public void addActionToInstruction(int actionId, int instId) {
-        Action action = actionService.getAction(actionId);
-        Instruction instruction = instructionRepository.findById(instId).get();
+    public void addActionToInstruction(int actionId, int instId, EntityManager manager) {
+        Action action = actionService.getAction(actionId, manager);
+        Instruction instruction = instructionRepository.findById(instId, manager).get();
 
         instruction.addAction(action);
-        instructionRepository.update(instruction);
+        instructionRepository.update(instruction, manager);
     }
 
-    public List<Instruction> getInstructions() {
-        return instructionRepository.findAll();
+    public List<Instruction> getInstructions(EntityManager manager) {
+        return instructionRepository.findAll(manager);
     }
 
-    public List<Instruction> getInstructionsByNameMatch(String namepattern) {
-        return instructionRepository.findByNameMatch(namepattern);
+    public List<Instruction> getInstructionsByNameMatch(String namepattern, EntityManager manager) {
+        return instructionRepository.findByNameMatch(namepattern, manager);
     }
 
-    public List<Action> getActions(int intructionId) {
-        Instruction instruction = instructionRepository.findById(intructionId).get();
+    public List<Action> getActions(int intructionId, EntityManager manager) {
+        Instruction instruction = instructionRepository.findById(intructionId, manager).get();
         return instruction.getActions();
     }
 

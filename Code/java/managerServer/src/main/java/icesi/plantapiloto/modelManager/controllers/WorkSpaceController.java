@@ -2,6 +2,8 @@ package icesi.plantapiloto.modelManager.controllers;
 
 import java.util.List;
 
+import javax.persistence.EntityManager;
+
 import com.zeroc.Ice.Current;
 
 import icesi.plantapiloto.common.controllers.WorkSpaceManagerController;
@@ -14,6 +16,7 @@ import icesi.plantapiloto.common.mappers.WorkSpaceMapper;
 import icesi.plantapiloto.common.model.Driver;
 import icesi.plantapiloto.common.model.Type;
 import icesi.plantapiloto.common.model.WorkSpace;
+import icesi.plantapiloto.modelManager.entityManager.ManagerPool;
 import icesi.plantapiloto.modelManager.services.DriverService;
 import icesi.plantapiloto.modelManager.services.TypeService;
 import icesi.plantapiloto.modelManager.services.WorkSpaceService;
@@ -47,55 +50,100 @@ public class WorkSpaceController implements WorkSpaceManagerController {
 
     @Override
     public int saveWorkSpace(String name, String desc, int depart, Current current) {
-        return service.saveWorkSpace(name, desc, depart);
+        EntityManager manager = ManagerPool.getManager();
+        manager.getTransaction().begin();
+
+        int ret = service.saveWorkSpace(name, desc, depart, manager);
+
+        manager.getTransaction().commit();
+        ManagerPool.close(manager);
+        return ret;
     }
 
     @Override
     public WorkSpaceDTO[] findWorkSpaces(Current current) {
-        List<WorkSpace> workSpaces = service.getAll();
-        return WorkSpaceMapper.getInstance().asEntityDTO(workSpaces).toArray(WorkSpaceDTO[]::new);
+        EntityManager manager = ManagerPool.getManager();
+        manager.getTransaction().begin();
+        List<WorkSpace> workSpaces = service.getAll(manager);
+        WorkSpaceDTO[] ret = WorkSpaceMapper.getInstance().asEntityDTO(workSpaces).toArray(WorkSpaceDTO[]::new);
+
+        manager.getTransaction().commit();
+        ManagerPool.close(manager);
+        return ret;
     }
 
     @Override
     public WorkSpaceDTO[] findWorkSpacesByDepartment(int idDep, Current current) {
-        List<WorkSpace> workSpaces = service.getByDepartment(idDep);
-        return WorkSpaceMapper.getInstance().asEntityDTO(workSpaces).toArray(WorkSpaceDTO[]::new);
+        EntityManager manager = ManagerPool.getManager();
+        manager.getTransaction().begin();
+        List<WorkSpace> workSpaces = service.getByDepartment(idDep, manager);
+        WorkSpaceDTO[] ret = WorkSpaceMapper.getInstance().asEntityDTO(workSpaces).toArray(WorkSpaceDTO[]::new);
+        manager.getTransaction().commit();
+        ManagerPool.close(manager);
+        return ret;
     }
 
     @Override
     public int saveDriver(String name, String serviceProxy, int workSpaceId, Current current) {
-        return driverService.save(name, serviceProxy, workSpaceId);
+        EntityManager manager = ManagerPool.getManager();
+        manager.getTransaction().begin();
+        int ret = driverService.save(name, serviceProxy, workSpaceId, manager);
+        manager.getTransaction().commit();
+        ManagerPool.close(manager);
+        return ret;
     }
 
     @Override
     public DriverDTO[] findAllDrivers(Current current) {
-
-        List<Driver> drivers = driverService.findAll();
-        return DriverMapper.getInstance().asEntityDTO(drivers).toArray(DriverDTO[]::new);
+        EntityManager manager = ManagerPool.getManager();
+        manager.getTransaction().begin();
+        List<Driver> drivers = driverService.findAll(manager);
+        DriverDTO[] ret = DriverMapper.getInstance().asEntityDTO(drivers).toArray(DriverDTO[]::new);
+        manager.getTransaction().commit();
+        ManagerPool.close(manager);
+        return ret;
     }
 
     @Override
     public DriverDTO[] findDriversByWorkSpace(int workSpaceId, Current current) {
-
-        List<Driver> drivers = driverService.findByWorkSpace(workSpaceId);
-        return DriverMapper.getInstance().asEntityDTO(drivers).toArray(DriverDTO[]::new);
+        EntityManager manager = ManagerPool.getManager();
+        manager.getTransaction().begin();
+        List<Driver> drivers = driverService.findByWorkSpace(workSpaceId, manager);
+        DriverDTO[] ret = DriverMapper.getInstance().asEntityDTO(drivers).toArray(DriverDTO[]::new);
+        manager.getTransaction().commit();
+        ManagerPool.close(manager);
+        return ret;
     }
 
     @Override
     public TypeDTO[] findTypesByDriver(int driverId, Current current) {
-        List<Type> types = typeService.findByDriver(driverId);
-        return TypeMapper.getInstance().asEntityDTO(types).toArray(TypeDTO[]::new);
+        EntityManager manager = ManagerPool.getManager();
+        manager.getTransaction().begin();
+        List<Type> types = typeService.findByDriver(driverId, manager);
+        TypeDTO[] ret = TypeMapper.getInstance().asEntityDTO(types).toArray(TypeDTO[]::new);
+        manager.getTransaction().commit();
+        ManagerPool.close(manager);
+        return ret;
     }
 
     @Override
     public TypeDTO[] findAllTypes(Current current) {
-
-        List<Type> types = typeService.findAll();
-        return TypeMapper.getInstance().asEntityDTO(types).toArray(TypeDTO[]::new);
+        EntityManager manager = ManagerPool.getManager();
+        manager.getTransaction().begin();
+        List<Type> types = typeService.findAll(manager);
+        TypeDTO[] ret = TypeMapper.getInstance().asEntityDTO(types).toArray(TypeDTO[]::new);
+        manager.getTransaction().commit();
+        ManagerPool.close(manager);
+        return ret;
     }
 
     @Override
     public int saveAssetType(String name, String desc, int driver, Current current) {
-        return typeService.saveType(name, desc, driverService.findById(driver));
+        EntityManager manager = ManagerPool.getManager();
+        manager.getTransaction().begin();
+        int ret = typeService.saveType(name, desc, driverService.findById(driver, manager), manager);
+        manager.getTransaction().commit();
+        ManagerPool.close(manager);
+        return ret;
     }
 }

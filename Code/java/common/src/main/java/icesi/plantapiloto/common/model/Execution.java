@@ -28,6 +28,8 @@ public class Execution implements Serializable {
 	@Column(name = "start_date")
 	private Timestamp startDate;
 
+	private String status;
+
 	// bi-directional many-to-one association to Process
 	@ManyToOne
 	@JoinColumn(name = "process")
@@ -126,6 +128,20 @@ public class Execution implements Serializable {
 		measurement.setExecutionBean(null);
 
 		return measurement;
+	}
+
+	/**
+	 * @return the status
+	 */
+	public String getStatus() {
+		return status;
+	}
+
+	/**
+	 * @param status the status to set
+	 */
+	public void setStatus(String status) {
+		this.status = status;
 	}
 
 }

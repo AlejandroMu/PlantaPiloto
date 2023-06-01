@@ -2,6 +2,8 @@ package icesi.plantapiloto.modelManager.controllers;
 
 import java.util.List;
 
+import javax.persistence.EntityManager;
+
 import com.zeroc.Ice.Current;
 
 import icesi.plantapiloto.common.controllers.AssetManagerController;
@@ -9,7 +11,7 @@ import icesi.plantapiloto.common.dtos.output.AssetDTO;
 import icesi.plantapiloto.common.mappers.AssetMapper;
 import icesi.plantapiloto.common.model.Asset;
 import icesi.plantapiloto.common.model.MetaData;
-import icesi.plantapiloto.common.model.Type;
+import icesi.plantapiloto.modelManager.entityManager.ManagerPool;
 import icesi.plantapiloto.modelManager.services.AssetService;
 
 public class AssetController implements AssetManagerController {
@@ -25,62 +27,98 @@ public class AssetController implements AssetManagerController {
 
     @Override
     public void changeAssetValue(int asset, double value, Current current) {
-        service.changeSetPoint(asset, value);
+        EntityManager manager = ManagerPool.getManager();
+        manager.getTransaction().begin();
+        service.changeSetPoint(asset, value, manager);
+        manager.getTransaction().commit();
+        ManagerPool.close(manager);
     }
 
     @Override
     public AssetDTO[] findByType(int type, Current current) {
-        Type t = new Type();
-        t.setId(type);
-        List<Asset> asset = service.getAssetsByType(t);
-        return AssetMapper.getInstance().asEntityDTO(asset).toArray(AssetDTO[]::new);
+        EntityManager manager = ManagerPool.getManager();
+        manager.getTransaction().begin();
+        List<Asset> asset = service.getAssetsByType(type, manager);
+        AssetDTO[] ret = AssetMapper.getInstance().asEntityDTO(asset).toArray(AssetDTO[]::new);
+        manager.getTransaction().commit();
+        ManagerPool.close(manager);
+        return ret;
     }
 
     @Override
     public AssetDTO[] findAll(Current current) {
-        List<Asset> assets = service.getAssets();
-        return AssetMapper.getInstance().asEntityDTO(assets).toArray(AssetDTO[]::new);
-
+        EntityManager manager = ManagerPool.getManager();
+        manager.getTransaction().begin();
+        List<Asset> assets = service.getAssets(manager);
+        AssetDTO[] ret = AssetMapper.getInstance().asEntityDTO(assets).toArray(AssetDTO[]::new);
+        manager.getTransaction().commit();
+        ManagerPool.close(manager);
+        return ret;
     }
 
     @Override
     public AssetDTO[] findByState(String state, Current current) {
-        List<Asset> assets = service.getAssetsByState(state);
-        return AssetMapper.getInstance().asEntityDTO(assets).toArray(AssetDTO[]::new);
-
+        EntityManager manager = ManagerPool.getManager();
+        manager.getTransaction().begin();
+        List<Asset> assets = service.getAssetsByState(state, manager);
+        AssetDTO[] ret = AssetMapper.getInstance().asEntityDTO(assets).toArray(AssetDTO[]::new);
+        manager.getTransaction().commit();
+        ManagerPool.close(manager);
+        return ret;
     }
 
     @Override
     public void deletById(int id, Current current) {
-
-        service.deletById(id);
+        EntityManager manager = ManagerPool.getManager();
+        manager.getTransaction().begin();
+        service.deletById(id, manager);
+        manager.getTransaction().commit();
+        ManagerPool.close(manager);
     }
 
     @Override
     public AssetDTO[] findByWorkSpace(int workSpaceId, Current current) {
-        List<Asset> assets = service.getAssetsByWorkSpace(workSpaceId);
-        return AssetMapper.getInstance().asEntityDTO(assets).toArray(AssetDTO[]::new);
+        EntityManager manager = ManagerPool.getManager();
+        manager.getTransaction().begin();
+        List<Asset> assets = service.getAssetsByWorkSpace(workSpaceId, manager);
+        AssetDTO[] ret = AssetMapper.getInstance().asEntityDTO(assets).toArray(AssetDTO[]::new);
+        manager.getTransaction().commit();
+        ManagerPool.close(manager);
+        return ret;
     }
 
     @Override
     public int saveAsset(String name, String desc, int typeId, int workId, int assetP, String state,
             MetaData[] metaDatas, Current current) {
-        Asset assetN = service.createAsset(name, desc, typeId, workId, assetP, state);
+        EntityManager manager = ManagerPool.getManager();
+        manager.getTransaction().begin();
+        Asset assetN = service.createAsset(name, desc, typeId, workId, assetP, state, manager);
         if (metaDatas != null) {
-            service.addMetadata(assetN, metaDatas);
+            service.addMetadata(assetN, manager, metaDatas);
         }
-        return assetN.getId();
+        int ret = assetN.getId();
+        manager.getTransaction().commit();
+        ManagerPool.close(manager);
+        return ret;
     }
 
     @Override
     public void addMetadataToAsset(MetaData[] metaDatas, int assetId, Current current) {
-        service.addMetadata(assetId, metaDatas);
+        EntityManager manager = ManagerPool.getManager();
+        manager.getTransaction().begin();
+        service.addMetadata(assetId, manager, metaDatas);
+        manager.getTransaction().commit();
+        ManagerPool.close(manager);
     }
 
     @Override
     public AssetDTO findById(int id, Current current) {
-
-        return AssetMapper.getInstance().asEntityDTO(service.getAssetById(id));
+        EntityManager manager = ManagerPool.getManager();
+        manager.getTransaction().begin();
+        AssetDTO ret = AssetMapper.getInstance().asEntityDTO(service.getAssetById(id, manager));
+        manager.getTransaction().commit();
+        ManagerPool.close(manager);
+        return ret;
     }
 
 }

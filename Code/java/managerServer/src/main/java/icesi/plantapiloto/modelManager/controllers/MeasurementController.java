@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import javax.persistence.EntityManager;
+
 import com.zeroc.Ice.Current;
 
 import icesi.plantapiloto.MQTT.Publisher;
@@ -16,6 +18,7 @@ import icesi.plantapiloto.common.encoders.JsonEncoder;
 import icesi.plantapiloto.common.envents.PublisherI;
 import icesi.plantapiloto.common.mappers.MeasurmentMapper;
 import icesi.plantapiloto.common.model.Measurement;
+import icesi.plantapiloto.modelManager.entityManager.ManagerPool;
 import icesi.plantapiloto.modelManager.services.MeasurementService;
 
 public class MeasurementController implements MeasurementManagerController {
@@ -46,7 +49,10 @@ public class MeasurementController implements MeasurementManagerController {
 
     @Override
     public void saveAssetValue(MeasurementDTO[] value, Current current) {
-        service.saveMeasurements(value);
+        EntityManager manager = ManagerPool.getManager();
+        manager.getTransaction().begin();
+        service.saveMeasurements(value, manager);
+        manager.getTransaction().commit();
         Map<Object, List<MeasurementDTO>> map = new HashMap<>();
         map = Arrays.asList(value).stream().collect(Collectors.groupingBy(t -> t.execId));
         Iterator<Object> keys = map.keySet().iterator();
@@ -56,19 +62,30 @@ public class MeasurementController implements MeasurementManagerController {
             publisher.setTopic(execId + "");
             publisher.publish(data);
         }
+        ManagerPool.close(manager);
     }
 
     @Override
     public MeasurementDTO[] getMeasurments(int assetId, long initdata, long endDate, Current current) {
-
-        List<Measurement> measurements = service.getMeasurements(assetId, initdata, endDate);
-        return MeasurmentMapper.getInstance().asEntityDTO(measurements).toArray(MeasurementDTO[]::new);
+        EntityManager manager = ManagerPool.getManager();
+        manager.getTransaction().begin();
+        List<Measurement> measurements = service.getMeasurements(assetId, initdata, endDate, manager);
+        MeasurementDTO[] ret = MeasurmentMapper.getInstance().asEntityDTO(measurements).toArray(MeasurementDTO[]::new);
+        manager.getTransaction().commit();
+        ManagerPool.close(manager);
+        return ret;
     }
 
     @Override
     public MeasurementDTO[] getMeasurmentsByExecution(int execId, Current current) {
-        List<Measurement> measurements = service.getMeasurementsByExecution(execId);
-        return MeasurmentMapper.getInstance().asEntityDTO(measurements).toArray(MeasurementDTO[]::new);
+        EntityManager manager = ManagerPool.getManager();
+        manager.getTransaction().begin();
+        List<Measurement> measurements = service.getMeasurementsByExecution(execId, manager);
+        MeasurementDTO[] ret = MeasurmentMapper.getInstance().asEntityDTO(measurements).toArray(MeasurementDTO[]::new);
+
+        manager.getTransaction().commit();
+        ManagerPool.close(manager);
+        return ret;
 
     }
 

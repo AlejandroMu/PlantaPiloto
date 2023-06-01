@@ -4,6 +4,8 @@ import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.List;
 
+import javax.persistence.EntityManager;
+
 import icesi.plantapiloto.common.controllers.DriverAssetPrx;
 import icesi.plantapiloto.common.controllers.MeasurementManagerControllerPrx;
 import icesi.plantapiloto.common.mappers.AssetMapper;
@@ -16,6 +18,7 @@ import icesi.plantapiloto.common.model.Process;
 import icesi.plantapiloto.common.model.ProcessAsset;
 import icesi.plantapiloto.common.model.ProcessAssetPK;
 import icesi.plantapiloto.modelManager.Main;
+import icesi.plantapiloto.modelManager.consts.ExecutionState;
 import icesi.plantapiloto.modelManager.repositories.ExecutionInstructionRepository;
 import icesi.plantapiloto.modelManager.repositories.ExecutionRepository;
 import icesi.plantapiloto.modelManager.repositories.ProcessAssetRepository;
@@ -64,28 +67,33 @@ public class ProcessService {
         this.callback = callback;
     }
 
-    public Process getProcessOfExeId(int execId) {
-        Execution execution = executionRepository.findById(execId).get();
+    public Process getProcessOfExeId(int execId, EntityManager manager) {
+        Execution execution = executionRepository.findById(execId, manager).get();
 
         return execution.getProcessBean();
     }
 
-    public int startProcess(int processId, String name) {
-        Process process = processRepository.findById(processId).get();
+    public int startProcess(int processId, String name, EntityManager manager) {
+        Process process = processRepository.findById(processId, manager).get();
         Execution newEx = new Execution();
         newEx.setProcessBean(process);
         newEx.setStartDate(new Timestamp(System.currentTimeMillis()));
         newEx.setOperUsername(name);
-        executionRepository.save(newEx);
-        runExecution(newEx);
+        newEx.setStatus(ExecutionState.PAUSED.getValue());
+        executionRepository.save(newEx, manager);
+        runExecution(newEx, manager);
         return newEx.getId();
     }
 
-    public void runExecution(Execution execution) {
+    public void runExecution(Execution execution, EntityManager manager) {
+        if (!execution.getStatus().equals(ExecutionState.PAUSED.getValue())) {
+            System.out.println("execution can't run again");
+            return;
+        }
         Process process = execution.getProcessBean();
-        List<ProcessAsset> procesassets = processAssetRepository.findByProcess(process.getId());
+        List<ProcessAsset> procesassets = process.getProcessAssets();
         AssetMapper mapper = AssetMapper.getInstance();
-        if (procesassets != null) {
+        if (procesassets != null && procesassets.size() > 0) {
             for (ProcessAsset processAsset : procesassets) {
                 Asset asset = processAsset.getAsset();
                 // TODO: VERIFY ASSET STATE, BUSY?
@@ -95,132 +103,159 @@ public class ProcessService {
                         .checkedCast(Main.communicator.stringToProxy(driver.getServiceProxy()));
                 prx.readAsset(mapper.asEntityDTO(asset), callback, execution.getId(), period, false);
             }
+            execution.setStatus(ExecutionState.RUNNING.getValue());
+
         } else {
+            execution.setStatus(ExecutionState.STOPED.getValue());
             System.out.println("Process dont have assets");
         }
+        executionRepository.update(execution, manager);
 
     }
 
-    public void runExecution(int execution) {
-        runExecution(executionRepository.findById(execution).get());
+    public void runExecution(int execution, EntityManager manager) {
+        runExecution(executionRepository.findById(execution, manager).get(), manager);
     }
 
-    public void stopExecutionProcess(int execId) {
-        stopCapure(executionRepository.findById(execId).get());
+    public void stopExecutionProcess(int execId, EntityManager manager) {
+        stopCapure(executionRepository.findById(execId, manager).get(), manager);
     }
 
-    public void stopCapure(Execution execution) {
-
-        Process process = execution.getProcessBean();
-        Asset[] assets = process.getProcessAssets().stream().map(pa -> pa.getAsset()).toArray(Asset[]::new);
-        HashSet<Integer> drivId = new HashSet<>();
-        for (Asset asset : assets) {
-            Driver driver = asset.getTypeBean().getDriver();
-            if (!drivId.contains(driver.getId())) {
-                DriverAssetPrx prx = DriverAssetPrx
-                        .checkedCast(Main.communicator.stringToProxy(driver.getServiceProxy()));
-                prx.stopRead(execution.getId());
-                drivId.add(driver.getId());
-            }
-
+    public void stopCapure(Execution execution, EntityManager manager) {
+        if (execution.getStatus().equals(ExecutionState.STOPED.getValue())) {
+            System.out.println("The execution was already stopped");
+            return;
         }
-        execution.setEndDate(new Timestamp(System.currentTimeMillis()));
-        executionRepository.update(execution);
-    }
 
-    public void pauseExecutionProcess(int execId) {
-        pauseExecutionProcess(executionRepository.findById(execId).get());
-    }
-
-    public void pauseExecutionProcess(Execution execution) {
         Process process = execution.getProcessBean();
-        Asset[] assets = process.getProcessAssets().stream().map(pa -> pa.getAsset()).toArray(Asset[]::new);
-        HashSet<Integer> drivId = new HashSet<>();
-        for (Asset asset : assets) {
-            Driver driver = asset.getTypeBean().getDriver();
-            if (!drivId.contains(driver.getId())) {
-                DriverAssetPrx prx = DriverAssetPrx
-                        .checkedCast(Main.communicator.stringToProxy(driver.getServiceProxy()));
-                prx.pauseReader(execution.getId());
-                drivId.add(driver.getId());
-            }
+        if (process.getProcessAssets() != null && process.getProcessAssets().size() > 0) {
+            Asset[] assets = process.getProcessAssets().stream().map(pa -> pa.getAsset()).toArray(Asset[]::new);
+            HashSet<Integer> drivId = new HashSet<>();
+            for (Asset asset : assets) {
+                Driver driver = asset.getTypeBean().getDriver();
+                if (!drivId.contains(driver.getId())) {
+                    DriverAssetPrx prx = DriverAssetPrx
+                            .checkedCast(Main.communicator.stringToProxy(driver.getServiceProxy()));
+                    prx.stopRead(execution.getId());
+                    drivId.add(driver.getId());
+                }
 
+            }
+            execution.setStatus(ExecutionState.STOPED.getValue());
+            execution.setEndDate(new Timestamp(System.currentTimeMillis()));
+            executionRepository.update(execution, manager);
         }
     }
 
-    public void continueExecutionProcess(int execId) {
-        continueExecutionProcess(executionRepository.findById(execId).get());
-
+    public void pauseExecutionProcess(int execId, EntityManager manager) {
+        pauseExecutionProcess(executionRepository.findById(execId, manager).get(), manager);
     }
 
-    public void continueExecutionProcess(Execution execution) {
+    public void pauseExecutionProcess(Execution execution, EntityManager manager) {
+        if (!execution.getStatus().equals(ExecutionState.RUNNING.getValue())) {
+            System.out.println("The execution can't be paused");
+            return;
+        }
         Process process = execution.getProcessBean();
-        Asset[] assets = process.getProcessAssets().stream().map(pa -> pa.getAsset()).toArray(Asset[]::new);
-        HashSet<Integer> drivId = new HashSet<>();
-        for (Asset asset : assets) {
-            Driver driver = asset.getTypeBean().getDriver();
-            if (!drivId.contains(driver.getId())) {
-                DriverAssetPrx prx = DriverAssetPrx
-                        .checkedCast(Main.communicator.stringToProxy(driver.getServiceProxy()));
-                prx.resumeReader(execution.getId());
-                drivId.add(driver.getId());
+        if (process.getProcessAssets() != null && process.getProcessAssets().size() > 0) {
+            Asset[] assets = process.getProcessAssets().stream().map(pa -> pa.getAsset()).toArray(Asset[]::new);
+            HashSet<Integer> drivId = new HashSet<>();
+            for (Asset asset : assets) {
+                Driver driver = asset.getTypeBean().getDriver();
+                if (!drivId.contains(driver.getId())) {
+                    DriverAssetPrx prx = DriverAssetPrx
+                            .checkedCast(Main.communicator.stringToProxy(driver.getServiceProxy()));
+                    prx.pauseReader(execution.getId());
+                    drivId.add(driver.getId());
+                }
             }
-
+            execution.setStatus(ExecutionState.PAUSED.getValue());
+            executionRepository.update(execution, manager);
         }
     }
 
-    public int saveProcess(String name, String desc, int workSpaceId) {
+    public void continueExecutionProcess(int execId, EntityManager manager) {
+        continueExecutionProcess(executionRepository.findById(execId, manager).get(), manager);
+
+    }
+
+    public void continueExecutionProcess(Execution execution, EntityManager manager) {
+        if (!execution.getStatus().equals(ExecutionState.PAUSED.getValue())) {
+            System.out.println("The execution can't continue");
+            return;
+        }
+        Process process = execution.getProcessBean();
+
+        if (process.getProcessAssets() != null && process.getProcessAssets().size() > 0) {
+            Asset[] assets = process.getProcessAssets().stream().map(pa -> pa.getAsset()).toArray(Asset[]::new);
+            HashSet<Integer> drivId = new HashSet<>();
+            for (Asset asset : assets) {
+                Driver driver = asset.getTypeBean().getDriver();
+                if (!drivId.contains(driver.getId())) {
+                    DriverAssetPrx prx = DriverAssetPrx
+                            .checkedCast(Main.communicator.stringToProxy(driver.getServiceProxy()));
+                    prx.resumeReader(execution.getId());
+                    drivId.add(driver.getId());
+                }
+
+            }
+            execution.setStatus(ExecutionState.RUNNING.getValue());
+            executionRepository.update(execution, manager);
+        }
+    }
+
+    public int saveProcess(String name, String desc, int workSpaceId, EntityManager manager) {
         Process process = new Process();
         process.setDescription(desc);
         process.setName(name);
-        process.setWorkSpaceBean(workSpaceRepository.findById(workSpaceId).get());
-        processRepository.save(process);
+        process.setWorkSpaceBean(workSpaceRepository.findById(workSpaceId, manager).get());
+        processRepository.save(process, manager);
         return process.getId();
     }
 
-    public void addInstructionToProcess(int instId, int processId) {
-        Instruction instruction = instructionService.getInstruction(instId);
-        Process process = processRepository.findById(processId).get();
+    public void addInstructionToProcess(int instId, int processId, EntityManager manager) {
+        Instruction instruction = instructionService.getInstruction(instId, manager);
+        Process process = processRepository.findById(processId, manager).get();
 
         process.addInstruction(instruction);
 
-        processRepository.update(process);
+        processRepository.update(process, manager);
 
     }
 
-    public void applyIntructionToExecution(int instId, int execId) {
-        Instruction ins = instructionService.getInstruction(instId);
-        Execution exc = executionRepository.findById(execId).get();
-        applyIntructionToExecution(ins, exc);
+    public void applyIntructionToExecution(int instId, int execId, EntityManager manager) {
+        Instruction ins = instructionService.getInstruction(instId, manager);
+        Execution exc = executionRepository.findById(execId, manager).get();
+        applyIntructionToExecution(ins, exc, manager);
     }
 
-    public void applyIntructionToExecution(Instruction instId, Execution execId) {
+    public void applyIntructionToExecution(Instruction instId, Execution execId, EntityManager manager) {
         boolean contains = instId.getProcesses().stream().anyMatch(p -> p.getId() == execId.getProcessBean().getId());
         if (contains) {
             ExecutionInstruction exeIns = new ExecutionInstruction();
             exeIns.setExcTime(new Timestamp(System.currentTimeMillis()));
             exeIns.setExecutionBean(execId);
             exeIns.setInstructionBean(instId);
-            executionInstructionRepository.save(exeIns);
+            executionInstructionRepository.save(exeIns, manager);
         } else {
             System.out.println("La instrucción no es aplicable a la ejecución, no pertenecen al mismo proceso");
             // TODO: error report
         }
     }
 
-    public List<Process> getProcessesByWorkSpace(int workSpaceId) {
+    public List<Process> getProcessesByWorkSpace(int workSpaceId, EntityManager manager) {
 
-        return processRepository.findByWorkSpace(workSpaceId);
+        return processRepository.findByWorkSpace(workSpaceId, manager);
     }
 
     public List<Execution> getExecutionByProcessIdAndDateStartBetween(int processId, long startDate, long endDate,
-            boolean run) {
-        return executionRepository.findByProcessAndStartDateBetween(processId, startDate, endDate, run);
+            boolean run, EntityManager manager) {
+        return executionRepository.findByProcessAndStartDateBetween(processId, startDate, endDate, run, manager);
     }
 
-    public void addAssetToProcess(int asset, int processId, long period) {
-        Asset asset2 = assetService.getAssetById(asset);
-        Process process = processRepository.findById(processId).get();
+    public void addAssetToProcess(int asset, int processId, long period, EntityManager manager) {
+        Asset asset2 = assetService.getAssetById(asset, manager);
+        Process process = processRepository.findById(processId, manager).get();
         if (asset2.getWorkSpace().getId() == process.getWorkSpaceBean().getId()) {
             ProcessAsset v = new ProcessAsset();
             ProcessAssetPK pk = new ProcessAssetPK();
@@ -230,10 +265,7 @@ public class ProcessService {
             v.setAsset(asset2);
             v.setDelayRead(period);
             v.setProcess(process);
-            processAssetRepository.save(v);
-
-            asset2.addProcessAsset(v);
-            process.addProcessAsset(v);
+            processAssetRepository.save(v, manager);
 
         } else {
             System.out.println("el asset no es añadible al proceso, no pertenecen al mismo workspace");
@@ -241,22 +273,22 @@ public class ProcessService {
         }
     }
 
-    public List<ProcessAsset> getAssetsOfProcess(int processId) {
-        Process process = processRepository.findById(processId).get();
+    public List<ProcessAsset> getAssetsOfProcess(int processId, EntityManager manager) {
+        Process process = processRepository.findById(processId, manager).get();
         return process.getProcessAssets();
     }
 
-    public List<Execution> findExecutionsRunning(int processId) {
-        return executionRepository.findExecutionsRunning(processId);
+    public List<Execution> findExecutionsRunning(int processId, EntityManager manager) {
+        return executionRepository.findExecutionsRunning(processId, manager);
     }
 
-    public void updateAssetToProcess(int asset, int processId, long period) {
+    public void updateAssetToProcess(int asset, int processId, long period, EntityManager manager) {
         ProcessAssetPK pk = new ProcessAssetPK();
         pk.setAssetId(asset);
         pk.setProcessId(processId);
-        ProcessAsset pa = processAssetRepository.findById(pk).get();
+        ProcessAsset pa = processAssetRepository.findById(pk, manager).get();
         pa.setDelayRead(period);
-        processAssetRepository.update(pa);
+        processAssetRepository.update(pa, manager);
 
     }
 

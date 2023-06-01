@@ -1,7 +1,7 @@
 package icesi.plantapiloto.modelManager.entityManager;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.ArrayDeque;
+import java.util.Queue;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -9,44 +9,34 @@ import javax.persistence.Persistence;
 
 public class ManagerPool {
     private EntityManagerFactory managerFactory;
-    private List<EntityManager> entityManagers;
+    private static Queue<EntityManager> entityManagers;
     private String nameUnit;
     private int nEntities;
 
     public ManagerPool() {
-        entityManagers = new ArrayList<>();
+        entityManagers = new ArrayDeque<>();
         nameUnit = "planta";
-        nEntities = 1;
+        nEntities = 10;
         managerFactory = Persistence.createEntityManagerFactory(nameUnit);
         for (int i = 0; i < nEntities; i++) {
             entityManagers.add(managerFactory.createEntityManager());
         }
     }
 
-    public EntityManager getManager(boolean isT) {
+    public static EntityManager getManager() {
         synchronized (entityManagers) {
-            if (!isT) {
-                entityManagers.get(0).clear();
-                return entityManagers.get(0);
+            while (entityManagers.isEmpty()) {
+                Thread.yield();
             }
-            EntityManager current = null;
-            while (current == null) {
-                for (int i = 0; i < entityManagers.size(); i++) {
-                    EntityManager tmp = entityManagers.get(i);
-                    if (!tmp.getTransaction().isActive()) {
-                        current = tmp;
-                        current.getTransaction().begin();
-                        break;
-                    }
 
-                }
-                if (current == null) {
-                    Thread.yield();
-                }
-            }
-            return current;
+            return entityManagers.poll();
 
         }
+    }
+
+    public static void close(EntityManager manager) {
+        manager.clear();
+        entityManagers.add(manager);
     }
 
 }
