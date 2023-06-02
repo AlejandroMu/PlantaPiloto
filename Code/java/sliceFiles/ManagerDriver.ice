@@ -181,6 +181,8 @@ module common{
 
            void addAssetToProcess(int asset, int processId,long period);
            void updateAssetToProcess(int asset, int processId,long period);
+           void removeAssetToProcess(int asset, int processId);
+
            ProcessAssetsDTO getAssetOfProcess(int processId);
 
            void addInstructionToProcess(int instId, int processId);

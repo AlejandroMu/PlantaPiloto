@@ -293,4 +293,11 @@ public class ProcessService {
 
     }
 
+    public void removeAssetToProcess(int asset, int processId, EntityManager manager) {
+        ProcessAssetPK pk = new ProcessAssetPK();
+        pk.setAssetId(asset);
+        pk.setProcessId(processId);
+        processAssetRepository.deleteById(pk, manager);
+    }
+
 }

@@ -141,6 +141,15 @@ public class ProcessController implements ProcessManagerController {
     }
 
     @Override
+    public void removeAssetToProcess(int asset, int processId, Current current) {
+        EntityManager manager = ManagerPool.getManager();
+        manager.getTransaction().begin();
+        service.removeAssetToProcess(asset, processId, manager);
+        manager.getTransaction().commit();
+        ManagerPool.close(manager);
+    }
+
+    @Override
     public ProcessAssetDTO[] getAssetOfProcess(int processId, Current current) {
         EntityManager manager = ManagerPool.getManager();
         manager.getTransaction().begin();
