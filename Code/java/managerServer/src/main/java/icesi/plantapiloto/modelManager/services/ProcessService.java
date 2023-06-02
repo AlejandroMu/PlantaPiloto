@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 
+import icesi.plantapiloto.common.consts.ExecutionState;
 import icesi.plantapiloto.common.controllers.DriverAssetPrx;
 import icesi.plantapiloto.common.controllers.MeasurementManagerControllerPrx;
 import icesi.plantapiloto.common.mappers.AssetMapper;
@@ -18,7 +19,6 @@ import icesi.plantapiloto.common.model.Process;
 import icesi.plantapiloto.common.model.ProcessAsset;
 import icesi.plantapiloto.common.model.ProcessAssetPK;
 import icesi.plantapiloto.modelManager.Main;
-import icesi.plantapiloto.modelManager.consts.ExecutionState;
 import icesi.plantapiloto.modelManager.repositories.ExecutionInstructionRepository;
 import icesi.plantapiloto.modelManager.repositories.ExecutionRepository;
 import icesi.plantapiloto.modelManager.repositories.ProcessAssetRepository;
@@ -279,6 +279,7 @@ public class ProcessService {
     }
 
     public List<Execution> findExecutionsRunning(int processId, EntityManager manager) {
+        ExecutionState.valueOf(null);
         return executionRepository.findExecutionByState(processId, ExecutionState.RUNNING.getValue(), manager);
     }
 

@@ -1,4 +1,4 @@
-package icesi.plantapiloto.modelManager.consts;
+package icesi.plantapiloto.common.consts;
 
 public enum ExecutionState {
     RUNNING("running"),
