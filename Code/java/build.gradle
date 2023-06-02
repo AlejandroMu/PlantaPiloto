@@ -24,6 +24,11 @@ subprojects{
         }
         // // Ruta y nombre del archivo XML de cobertura
     }
+    java {
+        sourceCompatibility = '1.8'
+        targetCompatibility = '1.8'
+    }
+
 
     repositories {
         mavenCentral()
