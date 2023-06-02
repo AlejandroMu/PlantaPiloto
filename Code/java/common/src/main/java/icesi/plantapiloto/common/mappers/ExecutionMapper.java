@@ -30,7 +30,7 @@ public class ExecutionMapper implements Maper<Execution, ExecutionDTO> {
         List<ExecutionInstruction> exeIns = entity.getExecutionInstructions();
         if (exeIns != null) {
             ExecutionInstructionDTO logs[] = ExecutionInstructionMapper.getInstance().asEntityDTO(exeIns)
-                    .toArray(ExecutionInstructionDTO[]::new);
+                    .toArray(new ExecutionInstructionDTO[exeIns.size()]);
 
             dto.logs = logs;
         }

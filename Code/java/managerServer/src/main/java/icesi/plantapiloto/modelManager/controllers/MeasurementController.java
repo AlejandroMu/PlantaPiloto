@@ -70,7 +70,8 @@ public class MeasurementController implements MeasurementManagerController {
         EntityManager manager = ManagerPool.getManager();
         manager.getTransaction().begin();
         List<Measurement> measurements = service.getMeasurements(assetId, initdata, endDate, manager);
-        MeasurementDTO[] ret = MeasurmentMapper.getInstance().asEntityDTO(measurements).toArray(MeasurementDTO[]::new);
+        MeasurementDTO[] ret = MeasurmentMapper.getInstance().asEntityDTO(measurements)
+                .toArray(new MeasurementDTO[measurements.size()]);
         manager.getTransaction().commit();
         ManagerPool.close(manager);
         return ret;
@@ -81,7 +82,8 @@ public class MeasurementController implements MeasurementManagerController {
         EntityManager manager = ManagerPool.getManager();
         manager.getTransaction().begin();
         List<Measurement> measurements = service.getMeasurementsByExecution(execId, manager);
-        MeasurementDTO[] ret = MeasurmentMapper.getInstance().asEntityDTO(measurements).toArray(MeasurementDTO[]::new);
+        MeasurementDTO[] ret = MeasurmentMapper.getInstance().asEntityDTO(measurements)
+                .toArray(new MeasurementDTO[measurements.size()]);
 
         manager.getTransaction().commit();
         ManagerPool.close(manager);

@@ -27,7 +27,8 @@ public class InstructionMapper implements Maper<Instruction, InstructionDTO> {
                 entity.getType(), null);
         List<Action> actions = entity.getActions();
         if (actions != null) {
-            ActionDTO[] actionDTOs = ActionMapper.getInstance().asEntityDTO(actions).toArray(ActionDTO[]::new);
+            ActionDTO[] actionDTOs = ActionMapper.getInstance().asEntityDTO(actions)
+                    .toArray(new ActionDTO[actions.size()]);
             dto.actions = actionDTOs;
         }
         return dto;

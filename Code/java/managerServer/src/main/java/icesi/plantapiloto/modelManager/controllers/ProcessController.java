@@ -101,7 +101,7 @@ public class ProcessController implements ProcessManagerController {
         EntityManager manager = ManagerPool.getManager();
         manager.getTransaction().begin();
         List<Process> processes = service.getProcessesByWorkSpace(workSpaceId, manager);
-        ProcessDTO[] ret = ProcessMaper.getInstance().asEntityDTO(processes).toArray(ProcessDTO[]::new);
+        ProcessDTO[] ret = ProcessMaper.getInstance().asEntityDTO(processes).toArray(new ProcessDTO[processes.size()]);
         manager.getTransaction().commit();
         ManagerPool.close(manager);
         return ret;
@@ -114,7 +114,8 @@ public class ProcessController implements ProcessManagerController {
         manager.getTransaction().begin();
         List<Execution> executions = service.getExecutionByProcessIdAndDateStartBetween(processId, startDate, endDate,
                 running, manager);
-        ExecutionDTO[] ret = ExecutionMapper.getInstance().asEntityDTO(executions).toArray(ExecutionDTO[]::new);
+        ExecutionDTO[] ret = ExecutionMapper.getInstance().asEntityDTO(executions)
+                .toArray(new ExecutionDTO[executions.size()]);
         manager.getTransaction().commit();
         ManagerPool.close(manager);
         return ret;

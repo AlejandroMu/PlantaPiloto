@@ -39,7 +39,7 @@ public class ActionController implements ActionManagerController {
         EntityManager manager = ManagerPool.getManager();
         manager.getTransaction().begin();
         List<Action> actions = service.getActions(manager);
-        ActionDTO[] ret = ActionMapper.getInstance().asEntityDTO(actions).toArray(ActionDTO[]::new);
+        ActionDTO[] ret = ActionMapper.getInstance().asEntityDTO(actions).toArray(new ActionDTO[actions.size()]);
         manager.getTransaction().commit();
         ManagerPool.close(manager);
         return ret;
@@ -50,7 +50,7 @@ public class ActionController implements ActionManagerController {
         EntityManager manager = ManagerPool.getManager();
         manager.getTransaction().begin();
         List<Action> actions = service.getActionsByNameMatch(namepattern, manager);
-        ActionDTO[] ret = ActionMapper.getInstance().asEntityDTO(actions).toArray(ActionDTO[]::new);
+        ActionDTO[] ret = ActionMapper.getInstance().asEntityDTO(actions).toArray(new ActionDTO[actions.size()]);
         manager.getTransaction().commit();
         ManagerPool.close(manager);
         return ret;

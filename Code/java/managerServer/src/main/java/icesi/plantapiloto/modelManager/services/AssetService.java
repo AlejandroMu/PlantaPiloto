@@ -1,11 +1,13 @@
 package icesi.plantapiloto.modelManager.services;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.EntityManager;
 
 import icesi.plantapiloto.common.controllers.DriverAssetPrx;
 import icesi.plantapiloto.common.dtos.MeasurementDTO;
+import icesi.plantapiloto.common.dtos.output.AssetDTO;
 import icesi.plantapiloto.common.encoders.JsonEncoder;
 import icesi.plantapiloto.common.mappers.AssetMapper;
 import icesi.plantapiloto.common.model.Asset;
@@ -137,5 +139,37 @@ public class AssetService {
 
     public Asset getAssetById(int asset, EntityManager manager) {
         return assetRepository.findById(asset, manager).get();
+    }
+
+    public void updateAsset(AssetDTO assetDto, EntityManager manager) {
+        Asset asset = assetRepository.findById(assetDto.assetId, manager).get();
+        asset.setName(assetDto.name);
+        asset.setDescription(assetDto.description);
+
+        if (!asset.getTypeBean().getName().equals(assetDto.typeName)) {
+            Type type = typeRepository.findByName(assetDto.typeName, manager);
+            asset.setTypeBean(type);
+        }
+
+        if (asset.getWorkSpace().getId() != assetDto.workId) {
+            WorkSpace workSpace = workSpaceRepository.findById(assetDto.workId, manager).get();
+            asset.setWorkSpace(workSpace);
+        }
+        if (assetDto.parent != null) {
+            Asset par = assetRepository.findById(asset.getAsset().getId(), manager).get();
+            asset.setAsset(par);
+        } else {
+            asset.setAsset(null);
+        }
+        asset.setAssetState(assetDto.state);
+        Map<String, String> props = assetDto.props;
+        if (props != null) {
+            asset.getMetaData().stream().forEach(x -> {
+                if (props.containsKey(x.getName())) {
+                    x.setValue(props.get(x.getName()));
+                }
+            });
+        }
+        assetRepository.update(asset, manager);
     }
 }

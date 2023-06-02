@@ -28,7 +28,8 @@ public class ProcessMaper implements Maper<Process, ProcessDTO> {
                 entity.getWorkSpaceBean().getId(), null);
         List<Instruction> instructions = entity.getInstructions();
         if (instructions != null) {
-            dto.instructions = InstructionMapper.getInstance().asEntityDTO(instructions).toArray(InstructionDTO[]::new);
+            dto.instructions = InstructionMapper.getInstance().asEntityDTO(instructions)
+                    .toArray(new InstructionDTO[instructions.size()]);
         }
         return dto;
     }

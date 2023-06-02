@@ -1,10 +1,10 @@
-plugins {
-    id 'org.hidetake.ssh' version '2.11.2' apply false
-}
+// plugins {
+//     id 'org.hidetake.ssh' version '2.11.2' apply false
+// }
 subprojects{
     apply plugin: 'java'
     apply plugin: 'application'
-    apply plugin: 'org.hidetake.ssh'
+    // apply plugin: 'org.hidetake.ssh'
     apply plugin: 'jacoco'
    
     jacoco {
@@ -38,26 +38,26 @@ subprojects{
         implementation 'com.zeroc:ice:3.7.9'
     }
 
-    remotes {
-        dirver {
-            role 'plcDriver'
-            host = 'xrio'
-            user = project.property("rio.user")
-            password = project.property("rio.password")
-        }
-        dummy {
-            role 'dummyDriver'
-            host = 'xhgrid19'
-            user = project.property("lab1.user")
-            password = project.property("lab1.password")
-        }
-        manager {
-            role 'managerServer'
-            host = 'xgrid103'
-            user = project.property("xgrid103.user")
-            password = project.property("xgrid103.password")
-        }
-    }
+    // remotes {
+    //     dirver {
+    //         role 'plcDriver'
+    //         host = '10.147.19.1'
+    //         user = project.property("rio.user")
+    //         password = project.property("rio.password")
+    //     }
+    //     dummy {
+    //         role 'dummyDriver'
+    //         host = 'xhgrid19'
+    //         user = project.property("lab1.user")
+    //         password = project.property("lab1.password")
+    //     }
+    //     manager {
+    //         role 'managerServer'
+    //         host = 'xhgrid20'
+    //         user = project.property("lab1.user")
+    //         password = project.property("lab1.password")
+    //     }
+    // }
 
     task cleanBin(type: Delete){
         delete "${projectDir}/bin"
@@ -80,40 +80,40 @@ subprojects{
         dependsOn copyToLib
         dependsOn cleanZip
     }
-    task deploy {
-        doLast {
-            def remoteFolder = "planta/${project.name}"
-            def machines = remotes.role("$project.name")
-            def mainClass = "$mainClassName"
+    // task deploy {
+    //     doLast {
+    //         def remoteFolder = "planta/${project.name}"
+    //         def machines = remotes.role("$project.name")
+    //         def mainClass = "$mainClassName"
 
-            if(!machines.isEmpty() && !mainClass.toString().equals('null')){
-                ssh.run {
-                    session(machines) {
-                        def awkCommand = "ps -ef | awk -F \" \" '\$0 ~ /.*$mainClass.*/ && \$8 ~ /java/ {print \$2}'"
-                        println "awkCommand: $awkCommand"
-                        def processId = execute "$awkCommand"
-                        if(!processId.isBlank()){
-                            execute "kill -9 $processId"
-                            println "kill process $processId"
-                        }
-                        execute "rm -rf $remoteFolder"
-                        execute "mkdir -p $remoteFolder"
-                        put from: "$rootDir/distributable/${project.name}.zip", into: "$remoteFolder/"
-                        execute "cd $remoteFolder && unzip ${project.name}.zip"
+    //         if(!machines.isEmpty() && !mainClass.toString().equals('null')){
+    //             ssh.run {
+    //                 session(machines) {
+    //                     def awkCommand = "ps -ef | awk -F \" \" '\$0 ~ /.*$mainClass.*/ && \$8 ~ /java/ {print \$2}'"
+    //                     println "awkCommand: $awkCommand"
+    //                     def processId = execute "$awkCommand"
+    //                     if(!processId.isBlank()){
+    //                         execute "kill -9 $processId"
+    //                         println "kill process $processId"
+    //                     }
+    //                     execute "rm -rf $remoteFolder"
+    //                     execute "mkdir -p $remoteFolder"
+    //                     put from: "$rootDir/distributable/${project.name}.zip", into: "$remoteFolder/"
+    //                     execute "cd $remoteFolder && unzip ${project.name}.zip"
                        
-                        def fileprops = "-props prod.properties"
-                        def nohupCommand = "nohup java -cp \"$remoteFolder/*\" $mainClass ${fileprops} > $remoteFolder/${project.name}.out 2>&1 &"
-                        println "nohupCommand: $nohupCommand"
-                        def nohupOut = execute "$nohupCommand"
-                        println "nohupCommandOut: $nohupOut"
-                        def outPutContent = "cat $remoteFolder/${project.name}.out"
-                        execute "$outPutContent"
+    //                     def fileprops = "-props prod.properties"
+    //                     def nohupCommand = "nohup java -cp \"$remoteFolder/*\" $mainClass ${fileprops} > $remoteFolder/${project.name}.out 2>&1 &"
+    //                     println "nohupCommand: $nohupCommand"
+    //                     def nohupOut = execute "$nohupCommand"
+    //                     println "nohupCommandOut: $nohupOut"
+    //                     def outPutContent = "cat $remoteFolder/${project.name}.out"
+    //                     execute "$outPutContent"
 
-                    }
-                }
-            }
-        }
-        dependsOn comprimir 
-    }
+    //                 }
+    //             }
+    //         }
+    //     }
+    //     dependsOn comprimir 
+    // }
 
 }

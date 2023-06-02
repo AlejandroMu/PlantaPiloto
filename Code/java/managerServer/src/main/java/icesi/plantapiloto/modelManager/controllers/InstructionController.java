@@ -51,7 +51,8 @@ public class InstructionController implements InstructionManagerController {
         EntityManager manager = ManagerPool.getManager();
         manager.getTransaction().begin();
         List<Instruction> instructions = service.getInstructions(manager);
-        InstructionDTO[] ret = InstructionMapper.getInstance().asEntityDTO(instructions).toArray(InstructionDTO[]::new);
+        InstructionDTO[] ret = InstructionMapper.getInstance().asEntityDTO(instructions)
+                .toArray(new InstructionDTO[instructions.size()]);
         manager.getTransaction().commit();
         ManagerPool.close(manager);
         return ret;
@@ -62,7 +63,8 @@ public class InstructionController implements InstructionManagerController {
         EntityManager manager = ManagerPool.getManager();
         manager.getTransaction().begin();
         List<Instruction> instructions = service.getInstructionsByNameMatch(namepattern, manager);
-        InstructionDTO[] ret = InstructionMapper.getInstance().asEntityDTO(instructions).toArray(InstructionDTO[]::new);
+        InstructionDTO[] ret = InstructionMapper.getInstance().asEntityDTO(instructions)
+                .toArray(new InstructionDTO[instructions.size()]);
         manager.getTransaction().commit();
         ManagerPool.close(manager);
         return ret;
@@ -72,7 +74,7 @@ public class InstructionController implements InstructionManagerController {
         EntityManager manager = ManagerPool.getManager();
         manager.getTransaction().begin();
         List<Action> actions = service.getActions(intructionId, manager);
-        ActionDTO[] ret = ActionMapper.getInstance().asEntityDTO(actions).toArray(ActionDTO[]::new);
+        ActionDTO[] ret = ActionMapper.getInstance().asEntityDTO(actions).toArray(new ActionDTO[actions.size()]);
         manager.getTransaction().commit();
         ManagerPool.close(manager);
         return ret;

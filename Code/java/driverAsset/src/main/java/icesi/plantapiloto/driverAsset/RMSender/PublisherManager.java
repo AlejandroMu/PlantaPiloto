@@ -64,7 +64,8 @@ public class PublisherManager extends Thread {
             try {
                 while (!messages.isEmpty()) {
                     mesg = messages.peek();
-                    publisherI.saveAssetValue(mesg.toArray(MeasurementDTO[]::new));
+
+                    publisherI.saveAssetValue(mesg.toArray(new MeasurementDTO[mesg.size()]));
                     messages.poll();
                 }
                 Thread.yield();

@@ -39,7 +39,7 @@ public class AssetController implements AssetManagerController {
         EntityManager manager = ManagerPool.getManager();
         manager.getTransaction().begin();
         List<Asset> asset = service.getAssetsByType(type, manager);
-        AssetDTO[] ret = AssetMapper.getInstance().asEntityDTO(asset).toArray(AssetDTO[]::new);
+        AssetDTO[] ret = AssetMapper.getInstance().asEntityDTO(asset).toArray(new AssetDTO[asset.size()]);
         manager.getTransaction().commit();
         ManagerPool.close(manager);
         return ret;
@@ -50,7 +50,7 @@ public class AssetController implements AssetManagerController {
         EntityManager manager = ManagerPool.getManager();
         manager.getTransaction().begin();
         List<Asset> assets = service.getAssets(manager);
-        AssetDTO[] ret = AssetMapper.getInstance().asEntityDTO(assets).toArray(AssetDTO[]::new);
+        AssetDTO[] ret = AssetMapper.getInstance().asEntityDTO(assets).toArray(new AssetDTO[assets.size()]);
         manager.getTransaction().commit();
         ManagerPool.close(manager);
         return ret;
@@ -61,7 +61,7 @@ public class AssetController implements AssetManagerController {
         EntityManager manager = ManagerPool.getManager();
         manager.getTransaction().begin();
         List<Asset> assets = service.getAssetsByState(state, manager);
-        AssetDTO[] ret = AssetMapper.getInstance().asEntityDTO(assets).toArray(AssetDTO[]::new);
+        AssetDTO[] ret = AssetMapper.getInstance().asEntityDTO(assets).toArray(new AssetDTO[assets.size()]);
         manager.getTransaction().commit();
         ManagerPool.close(manager);
         return ret;
@@ -81,7 +81,7 @@ public class AssetController implements AssetManagerController {
         EntityManager manager = ManagerPool.getManager();
         manager.getTransaction().begin();
         List<Asset> assets = service.getAssetsByWorkSpace(workSpaceId, manager);
-        AssetDTO[] ret = AssetMapper.getInstance().asEntityDTO(assets).toArray(AssetDTO[]::new);
+        AssetDTO[] ret = AssetMapper.getInstance().asEntityDTO(assets).toArray(new AssetDTO[assets.size()]);
         manager.getTransaction().commit();
         ManagerPool.close(manager);
         return ret;
@@ -119,6 +119,15 @@ public class AssetController implements AssetManagerController {
         manager.getTransaction().commit();
         ManagerPool.close(manager);
         return ret;
+    }
+
+    @Override
+    public void updateAsset(AssetDTO asset, Current current) {
+        EntityManager manager = ManagerPool.getManager();
+        manager.getTransaction().begin();
+        service.updateAsset(asset, manager);
+        manager.getTransaction().commit();
+        ManagerPool.close(manager);
     }
 
 }

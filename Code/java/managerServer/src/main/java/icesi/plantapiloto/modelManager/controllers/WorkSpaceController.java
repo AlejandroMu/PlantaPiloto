@@ -65,7 +65,8 @@ public class WorkSpaceController implements WorkSpaceManagerController {
         EntityManager manager = ManagerPool.getManager();
         manager.getTransaction().begin();
         List<WorkSpace> workSpaces = service.getAll(manager);
-        WorkSpaceDTO[] ret = WorkSpaceMapper.getInstance().asEntityDTO(workSpaces).toArray(WorkSpaceDTO[]::new);
+        WorkSpaceDTO[] ret = WorkSpaceMapper.getInstance().asEntityDTO(workSpaces)
+                .toArray(new WorkSpaceDTO[workSpaces.size()]);
 
         manager.getTransaction().commit();
         ManagerPool.close(manager);
@@ -77,7 +78,8 @@ public class WorkSpaceController implements WorkSpaceManagerController {
         EntityManager manager = ManagerPool.getManager();
         manager.getTransaction().begin();
         List<WorkSpace> workSpaces = service.getByDepartment(idDep, manager);
-        WorkSpaceDTO[] ret = WorkSpaceMapper.getInstance().asEntityDTO(workSpaces).toArray(WorkSpaceDTO[]::new);
+        WorkSpaceDTO[] ret = WorkSpaceMapper.getInstance().asEntityDTO(workSpaces)
+                .toArray(new WorkSpaceDTO[workSpaces.size()]);
         manager.getTransaction().commit();
         ManagerPool.close(manager);
         return ret;
@@ -98,7 +100,7 @@ public class WorkSpaceController implements WorkSpaceManagerController {
         EntityManager manager = ManagerPool.getManager();
         manager.getTransaction().begin();
         List<Driver> drivers = driverService.findAll(manager);
-        DriverDTO[] ret = DriverMapper.getInstance().asEntityDTO(drivers).toArray(DriverDTO[]::new);
+        DriverDTO[] ret = DriverMapper.getInstance().asEntityDTO(drivers).toArray(new DriverDTO[drivers.size()]);
         manager.getTransaction().commit();
         ManagerPool.close(manager);
         return ret;
@@ -109,7 +111,7 @@ public class WorkSpaceController implements WorkSpaceManagerController {
         EntityManager manager = ManagerPool.getManager();
         manager.getTransaction().begin();
         List<Driver> drivers = driverService.findByWorkSpace(workSpaceId, manager);
-        DriverDTO[] ret = DriverMapper.getInstance().asEntityDTO(drivers).toArray(DriverDTO[]::new);
+        DriverDTO[] ret = DriverMapper.getInstance().asEntityDTO(drivers).toArray(new DriverDTO[drivers.size()]);
         manager.getTransaction().commit();
         ManagerPool.close(manager);
         return ret;
@@ -120,7 +122,7 @@ public class WorkSpaceController implements WorkSpaceManagerController {
         EntityManager manager = ManagerPool.getManager();
         manager.getTransaction().begin();
         List<Type> types = typeService.findByDriver(driverId, manager);
-        TypeDTO[] ret = TypeMapper.getInstance().asEntityDTO(types).toArray(TypeDTO[]::new);
+        TypeDTO[] ret = TypeMapper.getInstance().asEntityDTO(types).toArray(new TypeDTO[types.size()]);
         manager.getTransaction().commit();
         ManagerPool.close(manager);
         return ret;
@@ -131,7 +133,7 @@ public class WorkSpaceController implements WorkSpaceManagerController {
         EntityManager manager = ManagerPool.getManager();
         manager.getTransaction().begin();
         List<Type> types = typeService.findAll(manager);
-        TypeDTO[] ret = TypeMapper.getInstance().asEntityDTO(types).toArray(TypeDTO[]::new);
+        TypeDTO[] ret = TypeMapper.getInstance().asEntityDTO(types).toArray(new TypeDTO[types.size()]);
         manager.getTransaction().commit();
         ManagerPool.close(manager);
         return ret;

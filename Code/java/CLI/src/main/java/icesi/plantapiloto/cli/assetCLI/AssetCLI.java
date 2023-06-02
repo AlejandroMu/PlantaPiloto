@@ -81,7 +81,7 @@ public class AssetCLI implements CommanLineInterface {
             }
         }
         if (asset != null && metaDatas.size() > 0) {
-            prx.addMetadataToAsset(metaDatas.toArray(MetaData[]::new), Integer.parseInt(asset));
+            prx.addMetadataToAsset(metaDatas.toArray(new MetaData[metaDatas.size()]), Integer.parseInt(asset));
             return "Successfull";
         } else {
             return errorMessage();
@@ -123,7 +123,8 @@ public class AssetCLI implements CommanLineInterface {
         }
 
         if (isValid) {
-            prx.saveAsset(name, desc, typeId, workId, parentId, state, metaDatas.toArray(MetaData[]::new));
+            prx.saveAsset(name, desc, typeId, workId, parentId, state,
+                    metaDatas.toArray(new MetaData[metaDatas.size()]));
         }
 
         return "Saved\n";
@@ -157,7 +158,8 @@ public class AssetCLI implements CommanLineInterface {
             if (state != null) {
                 if (values != null) {
                     final String s = state;
-                    values = Arrays.asList(values).stream().filter(v -> v.state.equals(s)).toArray(AssetDTO[]::new);
+                    values = Arrays.asList(values).stream().filter(v -> v.state.equals(s))
+                            .toArray(AssetDTO[]::new);
                 } else {
                     values = prx.findByState(state);
                 }
@@ -165,7 +167,8 @@ public class AssetCLI implements CommanLineInterface {
             if (work != null) {
                 final int s = Integer.parseInt(work);
                 if (values != null) {
-                    values = Arrays.asList(values).stream().filter(v -> v.workId == s).toArray(AssetDTO[]::new);
+                    values = Arrays.asList(values).stream().filter(v -> v.workId == s)
+                            .toArray(AssetDTO[]::new);
                 } else {
                     values = prx.findByWorkSpace(s);
                 }

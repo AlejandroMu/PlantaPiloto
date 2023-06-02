@@ -156,6 +156,7 @@ module common{
         interface AssetManagerController{
            
            int saveAsset(string name,string desc, int typeId, int workId, int assetP,string state,MetaDatas metaData);
+           void updateAsset(AssetDTO asset);
            void addMetadataToAsset(MetaDatas metaDatas, int assetId);
 
            void changeAssetValue(int assetId, double value);

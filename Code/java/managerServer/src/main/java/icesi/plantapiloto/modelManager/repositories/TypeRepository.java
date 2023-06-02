@@ -28,4 +28,9 @@ public class TypeRepository implements Repository<Type, Integer> {
         String query = "From Type t Where t.driver.id = ?1";
         return executeQuery(manager, query, driverId);
     }
+
+    public Type findByName(String typeName, EntityManager manager) {
+        String query = "From Type t Where t.name = ?1";
+        return executeQuery(manager, query, typeName).get(0);
+    }
 }
