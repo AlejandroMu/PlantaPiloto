@@ -8,6 +8,7 @@ import java.util.Map;
 import etherip.EtherNetIP;
 import etherip.types.CIPData;
 import etherip.types.CIPData.Type;
+import icesi.plantapiloto.common.consts.AssetState;
 import icesi.plantapiloto.common.dtos.MeasurementDTO;
 import icesi.plantapiloto.common.dtos.output.AssetDTO;
 import icesi.plantapiloto.driverAsset.concrete.DriverAssetConcrete;
@@ -17,7 +18,6 @@ public class PLCReader implements DriverAssetConcrete {
     public static final String[] TYPE_NAMES = { "PLC_TAG", "PLC" };
     public static final String PLC_IP_PROP = "plc.ip";
     public static final String PLC_SLOT_PROP = "plc.slot";
-    public static final String STATE_ENABLE_ID = "A";
 
     public PLCReader() {
 
@@ -51,9 +51,9 @@ public class PLCReader implements DriverAssetConcrete {
     @Override
     public void setPointAsset(AssetDTO asset, double value) {
         try {
-            boolean active = asset.state.equals(STATE_ENABLE_ID);
+            boolean inActive = asset.state.equals(AssetState.INACTIVE.getValue());
             boolean isTag = asset.typeName.equals(TYPE_NAMES[0]);
-            if (!active || !isTag) {
+            if (inActive || !isTag) {
                 return;
             }
             Map<String, String> config = asset.parent.props;
@@ -96,7 +96,7 @@ public class PLCReader implements DriverAssetConcrete {
             AssetDTO[] tags = plc.childrens;
             List<MeasurementDTO> values = new ArrayList<>();
             for (int i = 0; i < tags.length; i++) {
-                if (tags[i].state.equals(STATE_ENABLE_ID)) {
+                if (!tags[i].state.equals(AssetState.INACTIVE.getValue())) {
                     MeasurementDTO dto = readTag(tags[i], connection);
                     dto.execId = execId;
                     dto.timeStamp = timestamp;

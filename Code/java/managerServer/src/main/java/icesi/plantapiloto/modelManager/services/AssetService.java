@@ -14,7 +14,6 @@ import icesi.plantapiloto.common.model.Asset;
 import icesi.plantapiloto.common.model.MetaData;
 import icesi.plantapiloto.common.model.Type;
 import icesi.plantapiloto.common.model.WorkSpace;
-import icesi.plantapiloto.modelManager.Main;
 import icesi.plantapiloto.modelManager.repositories.AssetRepository;
 import icesi.plantapiloto.modelManager.repositories.TypeRepository;
 import icesi.plantapiloto.modelManager.repositories.WorkSpaceRepository;
@@ -31,10 +30,19 @@ public class AssetService {
 
     private MeasurementService measurementService;
 
+    private DriverService driverService;
+
     public AssetService() {
         assetRepository = AssetRepository.getInstance();
         typeRepository = TypeRepository.getInstance();
         workSpaceRepository = WorkSpaceRepository.getInstance();
+    }
+
+    /**
+     * @param driverService the driverService to set
+     */
+    public void setDriverService(DriverService driverService) {
+        this.driverService = driverService;
     }
 
     /**
@@ -102,9 +110,13 @@ public class AssetService {
 
     public void changeSetPoint(int assetDto, double value, EntityManager manager) {
         Asset asset = assetRepository.findById(assetDto, manager).get();
-        DriverAssetPrx prx = DriverAssetPrx
-                .checkedCast(Main.communicator.stringToProxy(asset.getTypeBean().getDriver().getServiceProxy()));
+        DriverAssetPrx prx = driverService.getDriverProxy(asset.getTypeBean().getDriver());
+        if (prx == null) {
+            System.err.println("is not posible connect with driver");
+            return;
+        }
         int execId = prx.setPointAsset(AssetMapper.getInstance().asEntityDTO(asset), value);
+
         if (execId != -1) {
             MeasurementDTO dto = new MeasurementDTO(assetDto, asset.getName(), value, execId,
                     System.currentTimeMillis());
@@ -170,6 +182,10 @@ public class AssetService {
                 }
             });
         }
+        updateAsset(asset, manager);
+    }
+
+    public void updateAsset(Asset asset, EntityManager manager) {
         assetRepository.update(asset, manager);
     }
 }

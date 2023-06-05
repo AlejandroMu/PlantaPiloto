@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 
+import icesi.plantapiloto.common.consts.AssetState;
 import icesi.plantapiloto.common.consts.ExecutionState;
 import icesi.plantapiloto.common.controllers.DriverAssetPrx;
 import icesi.plantapiloto.common.controllers.MeasurementManagerControllerPrx;
@@ -18,7 +19,6 @@ import icesi.plantapiloto.common.model.Instruction;
 import icesi.plantapiloto.common.model.Process;
 import icesi.plantapiloto.common.model.ProcessAsset;
 import icesi.plantapiloto.common.model.ProcessAssetPK;
-import icesi.plantapiloto.modelManager.Main;
 import icesi.plantapiloto.modelManager.repositories.ExecutionInstructionRepository;
 import icesi.plantapiloto.modelManager.repositories.ExecutionRepository;
 import icesi.plantapiloto.modelManager.repositories.ProcessAssetRepository;
@@ -37,6 +37,7 @@ public class ProcessService {
 
     private InstructionService instructionService;
     private AssetService assetService;
+    private DriverService driverService;
 
     public ProcessService() {
         executionRepository = ExecutionRepository.getInstance();
@@ -44,6 +45,13 @@ public class ProcessService {
         workSpaceRepository = WorkSpaceRepository.getInstance();
         executionInstructionRepository = ExecutionInstructionRepository.getInstance();
         processAssetRepository = ProcessAssetRepository.getInstance();
+    }
+
+    /**
+     * @param driverService the driverService to set
+     */
+    public void setDriverService(DriverService driverService) {
+        this.driverService = driverService;
     }
 
     /**
@@ -96,12 +104,19 @@ public class ProcessService {
         if (procesassets != null && procesassets.size() > 0) {
             for (ProcessAsset processAsset : procesassets) {
                 Asset asset = processAsset.getAsset();
-                // TODO: VERIFY ASSET STATE, BUSY?
-                long period = processAsset.getDelayRead();
-                Driver driver = asset.getTypeBean().getDriver();
-                DriverAssetPrx prx = DriverAssetPrx
-                        .checkedCast(Main.communicator.stringToProxy(driver.getServiceProxy()));
-                prx.readAsset(mapper.asEntityDTO(asset), callback, execution.getId(), period, false);
+                if (asset.getAssetState().equals(AssetState.ACTIVE.getValue())) {
+                    long period = processAsset.getDelayRead();
+                    Driver driver = asset.getTypeBean().getDriver();
+                    DriverAssetPrx prx = driverService.getDriverProxy(driver);
+                    if (prx != null) {
+                        prx.readAsset(mapper.asEntityDTO(asset), callback, execution.getId(), period, false);
+                        asset.setAssetState(AssetState.BUSY.getValue());
+                        assetService.updateAsset(asset, manager);
+                    }
+
+                } else {
+                    System.out.println("The asset is not avaible");
+                }
             }
             execution.setStatus(ExecutionState.RUNNING.getValue());
 
@@ -134,10 +149,13 @@ public class ProcessService {
             for (Asset asset : assets) {
                 Driver driver = asset.getTypeBean().getDriver();
                 if (!drivId.contains(driver.getId())) {
-                    DriverAssetPrx prx = DriverAssetPrx
-                            .checkedCast(Main.communicator.stringToProxy(driver.getServiceProxy()));
-                    prx.stopRead(execution.getId());
-                    drivId.add(driver.getId());
+                    DriverAssetPrx prx = driverService.getDriverProxy(driver);
+                    if (prx != null) {
+                        prx.stopRead(execution.getId());
+                        drivId.add(driver.getId());
+                        asset.setAssetState(AssetState.ACTIVE.getValue());
+                        assetService.updateAsset(asset, manager);
+                    }
                 }
 
             }
@@ -163,10 +181,11 @@ public class ProcessService {
             for (Asset asset : assets) {
                 Driver driver = asset.getTypeBean().getDriver();
                 if (!drivId.contains(driver.getId())) {
-                    DriverAssetPrx prx = DriverAssetPrx
-                            .checkedCast(Main.communicator.stringToProxy(driver.getServiceProxy()));
-                    prx.pauseReader(execution.getId());
-                    drivId.add(driver.getId());
+                    DriverAssetPrx prx = driverService.getDriverProxy(driver);
+                    if (prx != null) {
+                        prx.pauseReader(execution.getId());
+                        drivId.add(driver.getId());
+                    }
                 }
             }
             execution.setStatus(ExecutionState.PAUSED.getValue());
@@ -192,10 +211,12 @@ public class ProcessService {
             for (Asset asset : assets) {
                 Driver driver = asset.getTypeBean().getDriver();
                 if (!drivId.contains(driver.getId())) {
-                    DriverAssetPrx prx = DriverAssetPrx
-                            .checkedCast(Main.communicator.stringToProxy(driver.getServiceProxy()));
-                    prx.resumeReader(execution.getId());
-                    drivId.add(driver.getId());
+                    DriverAssetPrx prx = driverService.getDriverProxy(driver);
+                    if (prx != null) {
+                        prx.resumeReader(execution.getId());
+                        drivId.add(driver.getId());
+
+                    }
                 }
 
             }

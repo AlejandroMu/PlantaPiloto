@@ -71,6 +71,7 @@ public class Main {
 
         // dependencies
         assetService.setMeasurementService(measureService);
+        assetService.setDriverService(driverService);
         asset.setService(assetService);
 
         measure.setService(measureService);
@@ -81,6 +82,7 @@ public class Main {
         processService.setInstructionService(instructionService);
         processService.setAssetService(assetService);
         processController.setService(processService);
+        processService.setDriverService(driverService);
 
         actionController.setService(actionService);
 

@@ -4,8 +4,10 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 
+import icesi.plantapiloto.common.controllers.DriverAssetPrx;
 import icesi.plantapiloto.common.model.Driver;
 import icesi.plantapiloto.common.model.WorkSpace;
+import icesi.plantapiloto.modelManager.Main;
 import icesi.plantapiloto.modelManager.repositories.DriverRepository;
 
 public class DriverService {
@@ -62,4 +64,15 @@ public class DriverService {
         return repository.findById(driver, manager).get();
     }
 
+    public DriverAssetPrx getDriverProxy(Driver driver) {
+        DriverAssetPrx prx = DriverAssetPrx
+                .checkedCast(Main.communicator.stringToProxy(driver.getServiceProxy()));
+        try {
+            prx.ice_ping();
+            return prx;
+        } catch (Exception e) {
+            System.out.println("Driver no connected: " + driver.getName());
+            return null;
+        }
+    }
 }
