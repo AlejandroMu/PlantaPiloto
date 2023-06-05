@@ -97,7 +97,11 @@ public class ProcessService {
         newEx.setStatus(ExecutionState.PAUSED.getValue());
         executionRepository.save(newEx, manager);
         runExecution(newEx, manager);
-        return newEx.getId();
+        if (newEx.getStatus().equals(ExecutionState.RUNNING.getValue())) {
+            return newEx.getId();
+        } else {
+            return -1;
+        }
     }
 
     public void runExecution(Execution execution, EntityManager manager) {
@@ -109,6 +113,7 @@ public class ProcessService {
         List<ProcessAsset> procesassets = process.getProcessAssets();
         AssetMapper mapper = AssetMapper.getInstance();
         if (procesassets != null && procesassets.size() > 0) {
+            boolean running = false;
             for (ProcessAsset processAsset : procesassets) {
                 Asset asset = processAsset.getAsset();
                 if (asset.getAssetState().equals(AssetState.ACTIVE.getValue())) {
@@ -119,13 +124,18 @@ public class ProcessService {
                         prx.readAsset(mapper.asEntityDTO(asset), callback, execution.getId(), period, false);
                         asset.setAssetState(AssetState.BUSY.getValue());
                         assetService.updateAsset(asset, manager);
+                        running = true;
                     }
 
                 } else {
                     System.out.println("The asset is not avaible");
                 }
             }
-            execution.setStatus(ExecutionState.RUNNING.getValue());
+            if (running) {
+                execution.setStatus(ExecutionState.RUNNING.getValue());
+            } else {
+                execution.setStatus(ExecutionState.STOPED.getValue());
+            }
 
         } else {
             execution.setStatus(ExecutionState.STOPED.getValue());
