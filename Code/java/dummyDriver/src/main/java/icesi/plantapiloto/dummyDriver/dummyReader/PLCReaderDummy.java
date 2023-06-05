@@ -13,7 +13,7 @@ import icesi.plantapiloto.driverAsset.concrete.DriverAssetConcrete;
 
 public class PLCReaderDummy implements DriverAssetConcrete {
 
-    public static final String[] TYPE_NAMES = { "PLC_TAG", "PLC" };
+    public static final String[] TYPE_NAMES = { "PLC_TAG_DUMMY", "PLC_DUMMY" };
     public static final String PLC_IP_PROP = "plc.ip";
     public static final String PLC_SLOT_PROP = "plc.slot";
 

@@ -83,6 +83,13 @@ public class ProcessService {
 
     public int startProcess(int processId, String name, EntityManager manager) {
         Process process = processRepository.findById(processId, manager).get();
+        List<Execution> exs = executionRepository.findExecutionActives(processId,
+                manager);
+        if (exs.size() > 0) {
+            System.out.println(
+                    "Process has a execution active: " + exs.get(0).getId() + " status: " + exs.get(0).getStatus());
+            return -1;
+        }
         Execution newEx = new Execution();
         newEx.setProcessBean(process);
         newEx.setStartDate(new Timestamp(System.currentTimeMillis()));

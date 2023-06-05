@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 
+import icesi.plantapiloto.common.consts.ExecutionState;
 import icesi.plantapiloto.common.model.Execution;
 
 public class ExecutionRepository implements Repository<Execution, Integer> {
@@ -44,4 +45,12 @@ public class ExecutionRepository implements Repository<Execution, Integer> {
                 + "AND e.status = ?2";
         return executeQuery(manager, query, processId, state);
     }
+
+    public List<Execution> findExecutionActives(int processId, EntityManager manager) {
+        String query = "From Execution e Where e.processBean.id = ?1 "
+                + "AND (e.status = ?2 OR e.status = ?3)";
+        return executeQuery(manager, query, processId, ExecutionState.RUNNING.getValue(),
+                ExecutionState.PAUSED.getValue());
+    }
+
 }
