@@ -65,10 +65,9 @@ public class DriverService {
     }
 
     public DriverAssetPrx getDriverProxy(Driver driver) {
-        DriverAssetPrx prx = DriverAssetPrx
-                .checkedCast(Main.communicator.stringToProxy(driver.getServiceProxy()));
         try {
-            prx.ice_ping();
+            DriverAssetPrx prx = DriverAssetPrx
+                    .checkedCast(Main.communicator.stringToProxy(driver.getServiceProxy()));
             return prx;
         } catch (Exception e) {
             System.out.println("Driver no connected: " + driver.getName());
