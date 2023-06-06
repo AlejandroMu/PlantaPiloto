@@ -9,12 +9,12 @@ public class JsonEncoder implements ObjectEncoder {
 
     public JsonEncoder() {
 
-        parser = new Gson();
+        parser = new GsonBuilder().serializeSpecialFloatingPointValues().create();
     }
 
     public <T> String encodePretty(T message) {
         GsonBuilder builder = new GsonBuilder();
-        String ret = builder.setPrettyPrinting().create().toJson(message);
+        String ret = builder.setPrettyPrinting().serializeSpecialFloatingPointValues().create().toJson(message);
         return ret;
     }
 
