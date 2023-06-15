@@ -163,4 +163,14 @@ public class ProcessController implements ProcessManagerController {
         return ret;
     }
 
+    @Override
+    public int deleteProcessById(int id, Current current) {
+        EntityManager manager = ManagerPool.getManager();
+        manager.getTransaction().begin();
+        int ret = service.deleteProcessById(id, manager);
+        manager.getTransaction().commit();
+        ManagerPool.close(manager);
+        return ret;
+    }
+
 }

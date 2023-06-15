@@ -8,6 +8,7 @@ import javax.persistence.EntityManager;
 
 import icesi.plantapiloto.common.consts.AssetState;
 import icesi.plantapiloto.common.consts.ExecutionState;
+import icesi.plantapiloto.common.consts.ProcessState;
 import icesi.plantapiloto.common.controllers.DriverAssetPrx;
 import icesi.plantapiloto.common.controllers.MeasurementManagerControllerPrx;
 import icesi.plantapiloto.common.mappers.AssetMapper;
@@ -336,6 +337,13 @@ public class ProcessService {
         pk.setAssetId(asset);
         pk.setProcessId(processId);
         processAssetRepository.deleteById(pk, manager);
+    }
+
+    public int deleteProcessById(int id, EntityManager manager) {
+        Process process = processRepository.findById(id, manager).get();
+        process.setState(ProcessState.REMOVED.getValue());
+        processRepository.update(process, manager);
+        return id;
     }
 
 }

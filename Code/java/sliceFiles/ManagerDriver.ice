@@ -31,7 +31,9 @@ module common{
 	sequence<byte> WorkSpace;  
 
     ["java:serializable:icesi.plantapiloto.common.dtos.output.AssetDTO"]
-    sequence<byte> AssetDTO;        
+    sequence<byte> AssetDTO;
+    sequence<AssetDTO> AssetsDTO;
+        
     module dtos{
         class MeasurementDTO{
             int assetId;
@@ -73,6 +75,7 @@ module common{
             string description;
             int workSpaceId;
             InstructionsDTO instructions;
+            AssetsDTO assets;
         }
         class ExecutionInstructionDTO{
             int id;
@@ -125,7 +128,6 @@ module common{
     sequence<byte> ProcessAssetDTO;
     module controllers{
 
-        sequence<AssetDTO> AssetsDTO;
         sequence<Asset> Assets;
         sequence<MeasurementDTO> MeasurementsDTO;
         sequence<TypeDTO> TypesDTO;
@@ -178,6 +180,7 @@ module common{
            void continueExecutionProcess(int execId);
 
            int saveProcess(string name, string desc, int workSpaceId);
+           int deleteProcessById(int id);
 
            void addAssetToProcess(int asset, int processId,long period);
            void updateAssetToProcess(int asset, int processId,long period);

@@ -70,7 +70,7 @@ public class DriverService {
                     .checkedCast(Main.communicator.stringToProxy(driver.getServiceProxy()));
             return prx;
         } catch (Exception e) {
-            System.out.println("Driver no connected: " + driver.getName());
+            System.out.println("Driver no connected: " + driver.getName() + " proxy: " + driver.getServiceProxy());
             return null;
         }
     }

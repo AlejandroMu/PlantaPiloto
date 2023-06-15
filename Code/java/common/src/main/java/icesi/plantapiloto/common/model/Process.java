@@ -24,6 +24,8 @@ public class Process implements Serializable {
 
 	private String description;
 
+	private String state;
+
 	// bi-directional many-to-one association to WorkSpace
 	@ManyToOne
 	@JoinColumn(name = "work_space")
@@ -42,6 +44,20 @@ public class Process implements Serializable {
 	private List<ProcessAsset> processAssets;
 
 	public Process() {
+	}
+
+	/**
+	 * @param state the state to set
+	 */
+	public void setState(String state) {
+		this.state = state;
+	}
+
+	/**
+	 * @return the state
+	 */
+	public String getState() {
+		return state;
 	}
 
 	public Integer getId() {
