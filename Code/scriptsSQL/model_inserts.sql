@@ -26,7 +26,7 @@ INSERT INTO META_DATA VALUES(nextval('meta_data_seq'),'plc.ip','B40B','Direcció
 INSERT INTO META_DATA VALUES(nextval('meta_data_seq'),'plc.slot','0','Slot de conexión del bio reactor 40B',1);
 
 --- id name desc workspace
-INSERT INTO PROCESS VALUES(nextval('process_seq'),'Proceso de DUMMY','Proceso para probar la aplicación',1);
+INSERT INTO PROCESS VALUES(nextval('process_seq'),'Proceso de DUMMY','Proceso para probar la aplicación','A',1);
 
 --- process asset delay
 INSERT INTO PROCESS_ASSET VALUES(1,1,30000);

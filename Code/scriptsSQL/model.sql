@@ -136,6 +136,7 @@ CREATE TABLE process (
     id integer NOT NULL,
     description character varying(255),
     name character varying(255),
+    state character varying(255),
     work_space integer
 );
 
