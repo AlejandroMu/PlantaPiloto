@@ -248,6 +248,7 @@ public class ProcessService {
         process.setDescription(desc);
         process.setName(name);
         process.setWorkSpaceBean(workSpaceRepository.findById(workSpaceId, manager).get());
+        process.setState(ProcessState.ACTIVE.getValue());
         processRepository.save(process, manager);
         return process.getId();
     }
@@ -318,7 +319,6 @@ public class ProcessService {
     }
 
     public List<Execution> findExecutionsRunning(int processId, EntityManager manager) {
-        ExecutionState.valueOf(null);
         return executionRepository.findExecutionByState(processId, ExecutionState.RUNNING.getValue(), manager);
     }
 

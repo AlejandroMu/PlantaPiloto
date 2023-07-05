@@ -21,6 +21,9 @@ public class Publisher implements PublisherI {
         String message;
 
         try {
+            if (!client.getState().isConnected()) {
+                connect();
+            }
             message = encoder.encode(msg);
             client.publishWith()
                     .topic(topic)

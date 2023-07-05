@@ -63,9 +63,9 @@ public class Task implements Runnable {
             List<MeasurementDTO> measurementDTOs = null;
             synchronized (assets) {
                 measurementDTOs = source.readAsset(assets, exeId);
+                PublisherManager sender = PublisherManager.getInstance(callback);
+                sender.addMessage(measurementDTOs);
             }
-            PublisherManager sender = PublisherManager.getInstance(callback);
-            sender.addMessage(measurementDTOs);
         }
     }
 
