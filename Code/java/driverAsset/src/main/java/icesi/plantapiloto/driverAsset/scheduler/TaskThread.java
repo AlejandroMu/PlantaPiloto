@@ -1,5 +1,6 @@
 package icesi.plantapiloto.driverAsset.scheduler;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,13 +9,14 @@ import icesi.plantapiloto.common.dtos.output.AssetDTO;
 import icesi.plantapiloto.driverAsset.RMSender.PublisherManager;
 import icesi.plantapiloto.driverAsset.concrete.DriverAssetConcrete;
 
-public class Task implements Runnable {
+public class TaskThread implements Runnable {
+
     private DriverAssetConcrete source;
     private List<AssetDTO> assets;
     private int exeId;
     private String callback;
     private long period;
-    private boolean isRunning;
+    private boolean share;
 
     /**
      * @param sender
@@ -22,15 +24,22 @@ public class Task implements Runnable {
      * @param assets
      * @param configs
      */
-    public Task(DriverAssetConcrete source, AssetDTO asset,
-            int exeId, String callback, long period) {
+    public TaskThread(DriverAssetConcrete source, AssetDTO asset,
+            int exeId, String callback, long period, boolean share) {
         this.source = source;
         this.assets = new ArrayList<>();
         assets.add(asset);
         this.exeId = exeId;
         this.callback = callback;
         this.period = period;
-        isRunning = true;
+        this.share = share;
+    }
+
+    /**
+     * @return the share
+     */
+    public boolean isShare() {
+        return share;
     }
 
     public void addAsset(AssetDTO dto) {
@@ -50,23 +59,19 @@ public class Task implements Runnable {
         return period;
     }
 
-    /**
-     * @param isRunning the isRunning to set
-     */
-    public void setRunning(boolean isRunning) {
-        this.isRunning = isRunning;
-    }
-
     @Override
     public void run() {
-        if (isRunning) {
-            List<MeasurementDTO> measurementDTOs = null;
-            synchronized (assets) {
-                measurementDTOs = source.readAsset(assets, exeId);
-                PublisherManager sender = PublisherManager.getInstance(callback);
-                sender.addMessage(measurementDTOs);
-            }
+        System.out
+                .println(new Timestamp(System.currentTimeMillis()).toString() + " Task executing, read execution: "
+                        + exeId
+                        + " freq: " + period);
+        List<MeasurementDTO> measurementDTOs = null;
+        synchronized (assets) {
+            measurementDTOs = source.readAsset(assets, exeId);
+            PublisherManager sender = PublisherManager.getInstance(callback);
+            sender.addMessage(measurementDTOs);
         }
+
     }
 
 }

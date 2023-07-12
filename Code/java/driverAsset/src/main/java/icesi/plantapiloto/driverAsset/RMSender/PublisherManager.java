@@ -26,15 +26,6 @@ public class PublisherManager extends Thread {
         return ret;
     }
 
-    public static void addInstance(MeasurementManagerControllerPrx proxy, String name) {
-        if (instances.containsKey(name)) {
-            return;
-        }
-        PublisherManager ret = new PublisherManager(proxy);
-        ret.start();
-        instances.put(name, ret);
-    }
-
     private MeasurementManagerControllerPrx publisherI;
     private ArrayDeque<List<MeasurementDTO>> messages;
     private boolean stop;

@@ -20,7 +20,7 @@ import icesi.plantapiloto.driverAsset.concrete.DriverAssetConcrete;
 public class ScheduleManager {
 
     private ScheduledExecutorService scheduler;
-    private Map<Integer, List<Task>> process;
+    private Map<Integer, List<TaskThread>> process;
     private Map<Integer, List<ScheduledFuture<?>>> futures;
 
     public ScheduleManager() {
@@ -34,20 +34,21 @@ public class ScheduleManager {
 
     public void addProcess(AssetDTO asset, int execId, long period, DriverAssetConcrete concrete,
             String callback, boolean newProcess) {
-        List<Task> tasks = process.get(execId);
+        List<TaskThread> tasks = process.get(execId);
+        boolean control = newProcess;
         if (tasks == null) {
             tasks = new ArrayList<>();
-            newProcess = true;
+            control = true;
         }
 
-        if (!newProcess) {
-            Optional<Task> task = tasks.stream().filter(t -> t.getPeriod() == period).findFirst();
+        if (!control) {
+            Optional<TaskThread> task = tasks.stream().filter(t -> t.getPeriod() == period && t.isShare()).findFirst();
             if (task.isPresent()) {
                 task.get().addAsset(asset);
                 return;
             }
         }
-        Task task = new Task(concrete, asset, execId, callback, period);
+        TaskThread task = new TaskThread(concrete, asset, execId, callback, period, !newProcess);
         ScheduledFuture<?> future = scheduler.scheduleAtFixedRate(task, period, period,
                 TimeUnit.MILLISECONDS);
         List<ScheduledFuture<?>> futs = futures.get(execId);
@@ -62,10 +63,9 @@ public class ScheduleManager {
     }
 
     public void stopProcess(int execId) {
-        System.out.println("Stop process: " + execId);
         List<ScheduledFuture<?>> futs = futures.get(execId);
         if (futs != null) {
-            System.out.println("Stop process not null: " + execId);
+            System.out.println("Stop process: " + execId);
 
             futs.stream().forEach(t -> t.cancel(false));
             process.remove(execId);
@@ -73,27 +73,11 @@ public class ScheduleManager {
         }
     }
 
-    public void pauseProcess(int execId) {
-        System.out.println("pause process: " + execId);
-        List<Task> futs = process.get(execId);
-        if (futs != null) {
-            futs.stream().forEach(t -> t.setRunning(false));
-        }
-    }
-
-    public void resumeProcess(int execId) {
-        System.out.println("resume process: " + execId);
-        List<Task> futs = process.get(execId);
-        if (futs != null) {
-            futs.stream().forEach(t -> t.setRunning(true));
-        }
-    }
-
     public int getExecutionOf(AssetDTO asset) {
         Iterator<Integer> execIds = process.keySet().iterator();
         while (execIds.hasNext()) {
             int execId = execIds.next();
-            List<Task> tasks = process.get(execId);
+            List<TaskThread> tasks = process.get(execId);
             boolean contains = tasks.stream().anyMatch(t -> t.contains(asset));
             if (contains) {
                 return execId;

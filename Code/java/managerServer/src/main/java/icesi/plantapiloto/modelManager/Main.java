@@ -31,7 +31,7 @@ public class Main {
     public static Communicator communicator;
 
     public static void main(String[] args) throws Exception {
-        System.err.println("run ManagerServer");
+        System.out.println("run ManagerServer");
         String propName = "application.properties";
         for (int i = 0; i < args.length; i++) {
             if (args[i].equals("-props")) {

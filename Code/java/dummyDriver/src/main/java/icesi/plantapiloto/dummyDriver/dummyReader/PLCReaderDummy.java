@@ -75,8 +75,6 @@ public class PLCReaderDummy implements DriverAssetConcrete {
     public List<MeasurementDTO> readPLC(AssetDTO plc, long timestamp, int execId) {
 
         try {
-            Map<String, String> config = plc.props;
-            System.out.println("Read Plc: " + plc.name + " Config: " + config.toString());
             AssetDTO[] tags = plc.childrens;
             List<MeasurementDTO> values = new ArrayList<>();
             for (int i = 0; i < tags.length; i++) {
