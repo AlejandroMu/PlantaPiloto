@@ -2,7 +2,6 @@ mainClassName ="icesi.plantapiloto.plcDriver.PlcDriver"
 dependencies {
 
     implementation project(":driverAsset")
-    implementation project(":common")
     implementation fileTree(dir:'.', include:'*.jar')
 
 }

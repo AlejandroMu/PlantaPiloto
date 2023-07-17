@@ -1,6 +1,5 @@
 dependencies {
     implementation 'com.hivemq:hivemq-mqtt-client:1.2.2'
-    implementation project(':common')
 }
 
 

@@ -1,47 +1,43 @@
 package icesi.plantapiloto.driverAsset.RMSender;
 
-import java.util.ArrayDeque;
-import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
-
-import com.zeroc.Ice.ObjectPrx;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import icesi.plantapiloto.common.controllers.MeasurementManagerControllerPrx;
 import icesi.plantapiloto.common.dtos.MeasurementDTO;
 import icesi.plantapiloto.driverAsset.DriverAssetImp;
+import icesi.plantapiloto.driverAsset.model.MeasurementRepository;
+import icesi.plantapiloto.driverAsset.model.Measurements;
 
 public class PublisherManager extends Thread {
-    private static HashMap<String, PublisherManager> instances = new HashMap<>();
 
-    public static PublisherManager getInstance(String proxy) {
-        PublisherManager ret = instances.get(proxy);
-        if (ret == null) {
-            ObjectPrx objectPrx = DriverAssetImp.communicator.stringToProxy(proxy);
-            MeasurementManagerControllerPrx assetPrx = MeasurementManagerControllerPrx.checkedCast(objectPrx);
-            ret = new PublisherManager(assetPrx);
-            ret.start();
-            instances.put(proxy, ret);
-        }
-
-        return ret;
-    }
-
-    private MeasurementManagerControllerPrx publisherI;
-    private ArrayDeque<List<MeasurementDTO>> messages;
     private boolean stop;
+    private MeasurementRepository repository;
+    private static PublisherManager instance;
+
+    public static PublisherManager getInstance() {
+        if (instance == null) {
+            instance = new PublisherManager();
+            instance.start();
+        }
+        return instance;
+    }
 
     /**
      * @param publisherI
      */
-    private PublisherManager(MeasurementManagerControllerPrx publisherI) {
-        this.publisherI = publisherI;
-
-        messages = new ArrayDeque<>();
+    private PublisherManager() {
+        repository = MeasurementRepository.getInstance();
     }
 
-    public void addMessage(List<MeasurementDTO> message) {
-        synchronized (messages) {
-            messages.add(message);
+    public void addMessage(List<MeasurementDTO> message, String server) {
+        List<Measurements> m = message.stream()
+                .map(d -> new Measurements(0, d.assetId, d.assetName, d.value, d.execId, d.timeStamp, server))
+                .collect(Collectors.toList());
+        for (Measurements measurements : m) {
+            repository.insert(measurements);
         }
     }
 
@@ -51,13 +47,18 @@ public class PublisherManager extends Thread {
 
     public void run() {
         while (!stop) {
-            List<MeasurementDTO> mesg = null;
+            Map<String, List<Measurements>> data = repository.getMeasurements();
+            Iterator<String> keys = data.keySet().iterator();
             try {
-                while (!messages.isEmpty()) {
-                    mesg = messages.peek();
+                while (keys.hasNext()) {
+                    String proxy = keys.next();
+                    List<Measurements> mesg = data.get(proxy);
 
-                    publisherI.saveAssetValue(mesg.toArray(new MeasurementDTO[mesg.size()]));
-                    messages.poll();
+                    MeasurementManagerControllerPrx publisherI = MeasurementManagerControllerPrx
+                            .checkedCast(DriverAssetImp.communicator.stringToProxy(proxy));
+                    Measurements[] elements = mesg.toArray(new Measurements[mesg.size()]);
+                    publisherI.saveAssetValue(elements);
+                    repository.remove(elements);
                 }
                 Thread.yield();
 

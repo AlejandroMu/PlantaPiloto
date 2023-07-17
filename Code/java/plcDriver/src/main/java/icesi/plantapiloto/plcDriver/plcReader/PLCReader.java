@@ -43,7 +43,6 @@ public class PLCReader implements DriverAssetConcrete {
             }
             return values;
         } catch (Exception e) {
-            e.printStackTrace();
             throw new RuntimeException(e);
         }
     }
@@ -64,7 +63,6 @@ public class PLCReader implements DriverAssetConcrete {
             plc.close();
         } catch (Exception e) {
             e.printStackTrace();
-            throw new RuntimeException();
 
         }
 
@@ -106,9 +104,7 @@ public class PLCReader implements DriverAssetConcrete {
             connection.close();
             return values;
         } catch (Exception e) {
-            e.printStackTrace();
             throw new RuntimeException(e);
-
         }
     }
 

@@ -1,8 +1,8 @@
 package icesi.plantapiloto.driverAsset.scheduler;
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import icesi.plantapiloto.common.dtos.MeasurementDTO;
 import icesi.plantapiloto.common.dtos.output.AssetDTO;
@@ -10,6 +10,8 @@ import icesi.plantapiloto.driverAsset.RMSender.PublisherManager;
 import icesi.plantapiloto.driverAsset.concrete.DriverAssetConcrete;
 
 public class TaskThread implements Runnable {
+
+    private static final Logger logger = Logger.getLogger(TaskThread.class.getName());
 
     private DriverAssetConcrete source;
     private List<AssetDTO> assets;
@@ -61,15 +63,16 @@ public class TaskThread implements Runnable {
 
     @Override
     public void run() {
-        System.out
-                .println(new Timestamp(System.currentTimeMillis()).toString() + " Task executing, read execution: "
-                        + exeId
-                        + " freq: " + period);
+        logger.info(" Task executing, read execution: " + exeId + " freq: " + period);
         List<MeasurementDTO> measurementDTOs = null;
-        synchronized (assets) {
-            measurementDTOs = source.readAsset(assets, exeId);
-            PublisherManager sender = PublisherManager.getInstance(callback);
-            sender.addMessage(measurementDTOs);
+        try {
+            synchronized (assets) {
+                measurementDTOs = source.readAsset(assets, exeId);
+                PublisherManager sender = PublisherManager.getInstance();
+                sender.addMessage(measurementDTOs, callback);
+            }
+        } catch (Exception e) {
+            logger.severe(" Task fail, read execution: " + exeId + " freq: " + period);
         }
 
     }

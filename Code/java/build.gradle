@@ -29,10 +29,14 @@ subprojects{
 
     repositories {
         mavenCentral()
+        mavenLocal()
+
     }
 
     dependencies{
         implementation 'com.zeroc:ice:3.7.9'
+        implementation 'icesi.plantapiloto:common:1.0'
+
     }
 
     task cleanBin(type: Delete){

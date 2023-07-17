@@ -14,8 +14,8 @@ import icesi.plantapiloto.common.controllers.MeasurementManagerControllerPrx;
 import icesi.plantapiloto.common.dtos.output.AssetDTO;
 import icesi.plantapiloto.common.encoders.JsonEncoder;
 import icesi.plantapiloto.driverAsset.concrete.DriverAssetConcrete;
-import icesi.plantapiloto.driverAsset.model.DataManager;
 import icesi.plantapiloto.driverAsset.model.Task;
+import icesi.plantapiloto.driverAsset.model.TaskRepository;
 import icesi.plantapiloto.driverAsset.scheduler.ScheduleManager;
 
 public class DriverAssetImp implements DriverAsset {
@@ -44,20 +44,20 @@ public class DriverAssetImp implements DriverAsset {
 
     private ScheduleManager manager;
     private Class<? extends DriverAssetConcrete> type;
-    private DataManager dataManager;
     private JsonEncoder encoder;
+    private TaskRepository taskRepository;
 
     public DriverAssetImp(Class<? extends DriverAssetConcrete> type) {
         this.manager = new ScheduleManager();
-        dataManager = new DataManager();
         encoder = new JsonEncoder();
         this.type = type;
+        taskRepository = TaskRepository.getInstance();
     }
 
     // read task incompletes from database
     public void loadData() {
 
-        List<Task> tasks = dataManager.getTasks();
+        List<Task> tasks = taskRepository.getTasks();
         if (tasks.size() > 0) {
             System.out.println(new Timestamp(System.currentTimeMillis()).toString() + ": iniciando procesos activos");
             for (Task task : tasks) {
@@ -101,18 +101,18 @@ public class DriverAssetImp implements DriverAsset {
 
         String assString = encoder.encode(asset);
         Task t = new Task(0, period, execId, assString, proxy, newProcess ? 1 : 0, "r");
-        dataManager.saveTask(t);
+        taskRepository.insert(t);
     }
 
     @Override
     public void pauseReader(int execId, Current current) {
         manager.stopProcess(execId);
-        dataManager.setState(execId, "p");
+        taskRepository.setState(execId, "p");
     }
 
     @Override
     public void resumeReader(int execId, Current current) {
-        List<Task> tasks = dataManager.getTasksByExecId(execId);
+        List<Task> tasks = taskRepository.getTasksByExecId(execId);
         for (Task task : tasks) {
             if (task.getState().equals("p")) {
                 AssetDTO dto = encoder.decode(task.getAssets(), AssetDTO.class);
@@ -120,12 +120,12 @@ public class DriverAssetImp implements DriverAsset {
                         task.getIsShare() == 1);
             }
         }
-        dataManager.setState(execId, "r");
+        taskRepository.setState(execId, "r");
     }
 
     @Override
     public void stopRead(int exeId, Current current) {
         manager.stopProcess(exeId);
-        dataManager.removeByExecId(exeId);
+        taskRepository.removeByExecId(exeId);
     }
 }

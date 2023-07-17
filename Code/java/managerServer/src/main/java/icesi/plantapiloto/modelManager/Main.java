@@ -3,6 +3,7 @@ package icesi.plantapiloto.modelManager;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.Properties;
+import java.util.logging.Logger;
 
 import com.zeroc.Ice.Communicator;
 import com.zeroc.Ice.ObjectAdapter;
@@ -28,10 +29,12 @@ import icesi.plantapiloto.modelManager.services.WorkSpaceService;
 
 public class Main {
 
+    private static final Logger logger = Logger.getLogger(Main.class.getName());
+
     public static Communicator communicator;
 
     public static void main(String[] args) throws Exception {
-        System.out.println("run ManagerServer");
+        logger.info("run ManagerServer");
         String propName = "application.properties";
         for (int i = 0; i < args.length; i++) {
             if (args[i].equals("-props")) {
