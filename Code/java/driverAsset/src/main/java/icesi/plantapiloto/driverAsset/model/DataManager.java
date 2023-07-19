@@ -4,8 +4,10 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.util.ArrayDeque;
 import java.util.Queue;
+import java.util.logging.Logger;
 
 public class DataManager {
+    private static final Logger logger = Logger.getLogger(DataManager.class.getName());
 
     public static Queue<Connection> connections = new ArrayDeque<>();
 
@@ -18,7 +20,7 @@ public class DataManager {
                 connections.add(c);
 
             } catch (Exception e) {
-                System.out.println("Error al establecer la conexión con la base de datos: " + e.getMessage());
+                logger.severe("Error al establecer la conexión con la base de datos: " + e.getMessage());
             }
         }
     }

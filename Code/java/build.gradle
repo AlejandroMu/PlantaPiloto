@@ -34,6 +34,8 @@ subprojects{
     }
 
     dependencies{
+        implementation 'javax.persistence:javax.persistence-api:2.2'
+        implementation 'com.google.code.gson:gson:2.10'
         implementation 'com.zeroc:ice:3.7.9'
         implementation 'icesi.plantapiloto:common:1.0'
 

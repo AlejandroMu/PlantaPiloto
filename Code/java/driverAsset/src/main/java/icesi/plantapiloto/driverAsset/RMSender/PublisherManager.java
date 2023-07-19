@@ -3,6 +3,7 @@ package icesi.plantapiloto.driverAsset.RMSender;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import icesi.plantapiloto.common.controllers.MeasurementManagerControllerPrx;
@@ -12,6 +13,8 @@ import icesi.plantapiloto.driverAsset.model.MeasurementRepository;
 import icesi.plantapiloto.driverAsset.model.Measurements;
 
 public class PublisherManager extends Thread {
+
+    private static final Logger logger = Logger.getLogger(PublisherManager.class.getName());
 
     private boolean stop;
     private MeasurementRepository repository;
@@ -57,13 +60,18 @@ public class PublisherManager extends Thread {
                     MeasurementManagerControllerPrx publisherI = MeasurementManagerControllerPrx
                             .checkedCast(DriverAssetImp.communicator.stringToProxy(proxy));
                     Measurements[] elements = mesg.toArray(new Measurements[mesg.size()]);
-                    publisherI.saveAssetValue(elements);
+                    MeasurementDTO[] dtos = new MeasurementDTO[mesg.size()];
+                    for (int i = 0; i < dtos.length; i++) {
+                        dtos[i] = new MeasurementDTO(elements[i].assetId, elements[i].assetName, elements[i].value,
+                                elements[i].execId, elements[i].timeStamp);
+                    }
+                    publisherI.saveAssetValue(dtos);
                     repository.remove(elements);
                 }
-                Thread.yield();
+                Thread.sleep(30000);
 
             } catch (Exception e) {
-                System.out.println("FAIL SEND MESSAGE");
+                logger.severe("FAIL SEND MESSAGE: " + e.getMessage());
             }
 
         }

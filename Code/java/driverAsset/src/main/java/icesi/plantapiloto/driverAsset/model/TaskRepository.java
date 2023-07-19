@@ -6,8 +6,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class TaskRepository implements Repository<Task> {
+
+    private static final Logger logger = Logger.getLogger(TaskRepository.class.getName());
 
     private static TaskRepository instance;
 
@@ -26,16 +29,16 @@ public class TaskRepository implements Repository<Task> {
         Connection connection = DataManager.getConnection();
         try (Statement statement = connection.createStatement()) {
             String createTableQuery = "CREATE TABLE IF NOT EXISTS task (" +
-                    "id INT AUTO_INCREMENT PRIMARY KEY, " +
+                    "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                     "period BIGINT, " +
-                    "execid INT, " +
+                    "execid INTEGER, " +
                     "assets VARCHAR, " +
                     "server VARCHAR, " +
-                    "share INT," +
+                    "share INTEGER," +
                     "state VARCHAR(10))";
             statement.execute(createTableQuery);
         } catch (SQLException ex) {
-            System.out.println("Error al iniciar la base de datos: " + ex.getMessage());
+            logger.severe("Error al iniciar la base de datos: " + ex.getMessage());
         }
         DataManager.closeConnection(connection);
 
@@ -65,10 +68,9 @@ public class TaskRepository implements Repository<Task> {
             statement.setString(4, task.getServer());
             statement.setInt(5, task.getIsShare());
             statement.setString(6, task.getState());
-            int rowsAffected = statement.executeUpdate();
-            System.out.println("Filas afectadas: " + rowsAffected);
+            statement.executeUpdate();
         } catch (Exception e) {
-            System.err.println("Error en la inserción" + e.getMessage());
+            logger.severe("Error en la inserción" + e.getMessage());
         }
         DataManager.closeConnection(connection);
     }
@@ -94,10 +96,9 @@ public class TaskRepository implements Repository<Task> {
 
         try (Statement statement = connection.createStatement()) {
             String deleteQuery = "DELETE FROM task WHERE execid = " + exeId;
-            int rowsAffected = statement.executeUpdate(deleteQuery);
-            System.out.println("Filas borradas: " + rowsAffected);
+            statement.executeUpdate(deleteQuery);
         } catch (Exception e) {
-            System.err.println("Error en la eliminación");
+            logger.severe("Error en la eliminación " + e.getMessage());
         }
         DataManager.closeConnection(connection);
     }
@@ -106,10 +107,9 @@ public class TaskRepository implements Repository<Task> {
         Connection connection = DataManager.getConnection();
         try (Statement statement = connection.createStatement()) {
             String updateQuery = "UPDATE task SET state = '" + string + "' WHERE execid = " + execId;
-            int rowsAffected = statement.executeUpdate(updateQuery);
-            System.out.println("Filas actualizadas: " + rowsAffected);
+            statement.executeUpdate(updateQuery);
         } catch (Exception e) {
-            System.err.println("Error en la actualización");
+            logger.severe("Error en la actualización: " + e.getMessage());
         }
         DataManager.closeConnection(connection);
     }

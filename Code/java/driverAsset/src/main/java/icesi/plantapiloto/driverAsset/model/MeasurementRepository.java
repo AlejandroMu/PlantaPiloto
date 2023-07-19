@@ -9,8 +9,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 public class MeasurementRepository implements Repository<Measurements> {
+
+    private static final Logger logger = Logger.getLogger(MeasurementRepository.class.getName());
+
     private static MeasurementRepository instance;
 
     public static MeasurementRepository getInstance() {
@@ -28,16 +32,16 @@ public class MeasurementRepository implements Repository<Measurements> {
         Connection connection = DataManager.getConnection();
         try (Statement statement = connection.createStatement()) {
             String createTableQuery = "CREATE TABLE IF NOT EXISTS measure (" +
-                    "id INT AUTO_INCREMENT PRIMARY KEY, " +
-                    "assetId INT, " +
+                    "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    "assetId INTEGER, " +
                     "assetName VARCHAR, " +
                     "value DOUBLE, " +
                     "serverProxy VARCHAR, " +
-                    "execId INT," +
+                    "execId INTEGER," +
                     "timeStamp BIGINT)";
             statement.execute(createTableQuery);
         } catch (SQLException ex) {
-            System.out.println("Error al iniciar la base de datos: " + ex.getMessage());
+            logger.severe("Error al iniciar la base de datos: " + ex.getMessage());
         }
         DataManager.closeConnection(connection);
 
@@ -60,7 +64,7 @@ public class MeasurementRepository implements Repository<Measurements> {
     @Override
     public void insert(Measurements entity) {
         Connection connection = DataManager.getConnection();
-        String insertQuery = "INSERT INTO task (assetId, assetName, value, serverProxy, execId, timeStamp) VALUES (?, ?, ?, ?, ?, ?)";
+        String insertQuery = "INSERT INTO measure (assetId, assetName, value, serverProxy, execId, timeStamp) VALUES (?, ?, ?, ?, ?, ?)";
         try (PreparedStatement statement = connection.prepareStatement(insertQuery)) {
             statement.setInt(1, entity.assetId);
             statement.setString(2, entity.assetName);
@@ -68,16 +72,15 @@ public class MeasurementRepository implements Repository<Measurements> {
             statement.setString(4, entity.getServerProxy());
             statement.setInt(5, entity.execId);
             statement.setLong(6, entity.timeStamp);
-            int rowsAffected = statement.executeUpdate();
-            System.out.println("Filas afectadas: " + rowsAffected);
+            statement.executeUpdate();
         } catch (Exception e) {
-            System.err.println("Error en la inserción" + e.getMessage());
+            logger.severe("Error en la inserción" + e.getMessage());
         }
         DataManager.closeConnection(connection);
     }
 
     public Map<String, List<Measurements>> getMeasurements() {
-        String query = "";
+        String query = "select * from measure";
         List<Measurements> result = executeQuery(query);
 
         Map<String, List<Measurements>> ret = new HashMap<>();
@@ -99,11 +102,10 @@ public class MeasurementRepository implements Repository<Measurements> {
         try (Statement statement = connection.createStatement()) {
             for (Measurements measurements2 : measurements) {
                 String deleteQuery = "DELETE FROM measure WHERE id = " + measurements2.getId();
-                int rowsAffected = statement.executeUpdate(deleteQuery);
-                System.out.println("Filas borradas: " + rowsAffected);
+                statement.executeUpdate(deleteQuery);
             }
         } catch (Exception e) {
-            System.err.println("Error en la eliminación");
+            logger.severe("Error en la eliminación " + e.getMessage());
         }
         DataManager.closeConnection(connection);
     }

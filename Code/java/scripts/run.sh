@@ -26,6 +26,7 @@ if [[ $crontab_prog != *"$script_dir/run.sh"* ]]; then
     echo "agendando tarea $(date)" 
     crontab_line="*/15 * * * * . $home_path/.bashrc; $script_dir/run.sh $component >> $script_dir/cron.log 2>&1"
     echo "$crontab_line" > cron_program
+    echo "$crontab_prog" >> cron_program
     crontab cron_program
 fi
 

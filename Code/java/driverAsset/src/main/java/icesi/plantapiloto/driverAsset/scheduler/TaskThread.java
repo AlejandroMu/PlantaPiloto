@@ -63,7 +63,7 @@ public class TaskThread implements Runnable {
 
     @Override
     public void run() {
-        logger.info(" Task executing, read execution: " + exeId + " freq: " + period);
+        logger.info("Task executing, read execution: " + exeId + " freq: " + period);
         List<MeasurementDTO> measurementDTOs = null;
         try {
             synchronized (assets) {
@@ -72,7 +72,7 @@ public class TaskThread implements Runnable {
                 sender.addMessage(measurementDTOs, callback);
             }
         } catch (Exception e) {
-            logger.severe(" Task fail, read execution: " + exeId + " freq: " + period);
+            logger.severe("Task fail, read execution: " + exeId + " freq: " + period);
         }
 
     }
