@@ -68,7 +68,7 @@ public class PublisherManager extends Thread {
                     publisherI.saveAssetValue(dtos);
                     repository.remove(elements);
                 }
-                Thread.sleep(30000);
+                Thread.yield();
 
             } catch (Exception e) {
                 logger.severe("FAIL SEND MESSAGE: " + e.getMessage());

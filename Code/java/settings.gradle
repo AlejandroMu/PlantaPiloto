@@ -15,4 +15,5 @@ include ':MQTT'
 include ':plcDriver'
 include ':dummyDriver'
 include ':CLI'
+include ':driverAssetPrx'
 

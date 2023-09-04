@@ -9,6 +9,9 @@ elif [ "$component" == "plcDriver" ]; then
     mainClass="icesi.plantapiloto.plcDriver.PlcDriver"
 elif [ "$component" == "dummyDriver" ]; then
     mainClass="icesi.plantapiloto.dummyDriver.DummyDriver"
+elif [ "$component" == "driverAssetPrx" ]; then
+    mainClass="icesi.plantapiloto.driverAssetPrx.Main"
+    props="-h 192.168.185.23 -p 1804"
 else
     echo "no component"
     exit -1

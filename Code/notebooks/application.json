@@ -1,0 +1,8 @@
+{
+    "database": {
+      "user": "postgres",
+      "password": "postgres",
+      "host": "xgrid103",
+      "database_name": "assets"
+    }
+  }
