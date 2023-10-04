@@ -24,6 +24,7 @@ class DataBaseBuffer(CursorBuffer):
         self.executions = self.execution_of_process()
         self.exec_id = self.executions[0]
         self.exec_id_index = 0
+        self.process_name = self.name_of_process()
 
         
     def get_batch(self):
@@ -60,6 +61,13 @@ class DataBaseBuffer(CursorBuffer):
         execution_ids = result.fetchall()
         execution_ids = np.array(execution_ids).flatten()
         return execution_ids
+    
+    def name_of_process(self):
+        executions_query = "select p.name from asset_manager.process p where p.id = "+str(self.process)
+        result  = self.cursor.execute(executions_query)
+        execution_ids = result.fetchall()
+        execution_ids = np.array(execution_ids).flatten()
+        return execution_ids[0].replace(" ","_")
     
     def next_execution(self):
         size = len(self.executions)

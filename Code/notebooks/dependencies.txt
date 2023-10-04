@@ -1,0 +1,3 @@
+conda install -c anaconda ipywidgets
+conda install -c anaconda pandas
+conda install -c conda-forge matplotlib
